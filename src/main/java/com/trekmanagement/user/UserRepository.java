@@ -1,0 +1,41 @@
+package com.trekmanagement.user;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, UUID> {
+
+    Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByPhone(String phone);
+
+    @Modifying
+    @Query("UPDATE User u SET u.emailVerified = true WHERE u.id = :id")
+    void markEmailVerified(@Param("id") UUID id);
+
+    @Modifying
+    @Query("UPDATE User u SET u.failedAttempts = u.failedAttempts + 1 WHERE u.id = :id")
+    void incrementFailedAttempts(@Param("id") UUID id);
+
+    @Modifying
+    @Query("UPDATE User u SET u.failedAttempts = 0 WHERE u.id = :id")
+    void resetFailedAttempts(@Param("id") UUID id);
+
+    @Modifying
+    @Query("UPDATE User u SET u.lastLogin = :lastLogin WHERE u.id = :id")
+    void updateLastLogin(@Param("id") UUID id, @Param("lastLogin") Instant lastLogin);
+
+    @Modifying
+    @Query("UPDATE User u SET u.passwordHash = :hash WHERE u.id = :id")
+    void updatePasswordHash(@Param("id") UUID id, @Param("hash") String hash);
+}
