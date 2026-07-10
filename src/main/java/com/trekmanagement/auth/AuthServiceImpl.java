@@ -298,7 +298,7 @@ public class AuthServiceImpl implements AuthService {
     @Async("notificationExecutor")
     public void sendVerificationEmailAsync(String to, String firstName, String token) {
         try {
-            String verifyUrl = mailConfig.getBaseUrl() + "/verify-email?token=" + token;
+            String verifyUrl = mailConfig.getBaseUrl() + "/verify?token=" + token;
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(mailConfig.getFromAddress());
             message.setTo(to);
