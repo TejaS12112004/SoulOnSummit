@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,24 +57,10 @@ public class Trek extends BaseEntity {
     @Column(name = "longitude", precision = 10, scale = 7)
     private BigDecimal longitude;
 
-    @Column(name = "price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
-
-    @Column(name = "discount_price", precision = 10, scale = 2)
-    private BigDecimal discountPrice;
-
-    @Column(name = "total_seats", nullable = false)
-    private Integer totalSeats;
-
-    @Column(name = "available_seats", nullable = false)
-    private Integer availableSeats;
-
-    @Column(name = "start_date", nullable = false)
-    private LocalDate startDate;
-
-    @Column(name = "end_date", nullable = false)
-    private LocalDate endDate;
-
+    /**
+     * Pickup / meeting point for this trek.
+     * The UI dashboard displays this as "Meeting Point" on the upcoming trek widget.
+     */
     @Column(name = "pickup_point", length = 255)
     private String pickupPoint;
 
@@ -109,6 +94,8 @@ public class Trek extends BaseEntity {
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
 
+    // ── Relationships ─────────────────────────────────────────────────────────
+
     @OneToMany(
         mappedBy = "trek",
         cascade = CascadeType.ALL,
@@ -117,4 +104,17 @@ public class Trek extends BaseEntity {
     )
     @OrderBy("displayOrder ASC")
     private List<TrekImage> images = new ArrayList<>();
+
+    /**
+     * Departures ordered by startDate ascending.
+     * All date/price/seat data lives here — not on Trek.
+     */
+    @OneToMany(
+        mappedBy = "trek",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
+    @OrderBy("startDate ASC")
+    private List<TrekDeparture> departures = new ArrayList<>();
 }

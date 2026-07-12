@@ -4,10 +4,8 @@ import com.trekmanagement.trek.TrekDifficulty;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -51,23 +49,6 @@ public class UpdateTrekRequest {
     @DecimalMin(value = "-180.0")
     @DecimalMax(value = "180.0")
     private BigDecimal longitude;
-
-    @DecimalMin(value = "0.0", message = "Price must be non-negative")
-    @Digits(integer = 8, fraction = 2)
-    private BigDecimal price;
-
-    @DecimalMin(value = "0.0", message = "Discount price must be non-negative")
-    @Digits(integer = 8, fraction = 2)
-    private BigDecimal discountPrice;
-
-    @Min(value = 1, message = "Total seats must be at least 1")
-    private Integer totalSeats;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate startDate;
-
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate endDate;
 
     @Size(max = 255)
     private String pickupPoint;

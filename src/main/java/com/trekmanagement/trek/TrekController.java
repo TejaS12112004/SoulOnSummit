@@ -14,14 +14,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Treks", description = "Trek discovery and management")
+@Tag(name = "Treks", description = "Trek discovery, management, and departure scheduling")
 public class TrekController {
 
     private final TrekService trekService;
+    private final TrekDepartureService departureService;
 
     // ═══════════════════════════════════════════════════════════════════════
     // PUBLIC ENDPOINTS — /api/v1/treks/**
@@ -43,10 +45,10 @@ public class TrekController {
             @Parameter(description = "Maximum duration in days")
             @RequestParam(required = false) Integer maxDurationDays,
 
-            @Parameter(description = "Minimum price (inclusive)")
+            @Parameter(description = "Minimum price — matched against active OPEN departures")
             @RequestParam(required = false) java.math.BigDecimal minPrice,
 
-            @Parameter(description = "Maximum price (inclusive)")
+            @Parameter(description = "Maximum price — matched against active OPEN departures")
             @RequestParam(required = false) java.math.BigDecimal maxPrice,
 
             @Parameter(description = "Filter by state")
@@ -58,14 +60,14 @@ public class TrekController {
             @Parameter(description = "Filter featured treks only")
             @RequestParam(required = false) Boolean featured,
 
-            @Parameter(description = "Start date from (ISO: yyyy-MM-dd)")
+            @Parameter(description = "Departure start date from (ISO: yyyy-MM-dd)")
             @RequestParam(required = false) java.time.LocalDate startDateFrom,
 
-            @Parameter(description = "Start date to (ISO: yyyy-MM-dd)")
+            @Parameter(description = "Departure start date to (ISO: yyyy-MM-dd)")
             @RequestParam(required = false) java.time.LocalDate startDateTo,
 
-            @Parameter(description = "Sort field: price | startDate | title | durationDays")
-            @RequestParam(defaultValue = "startDate") String sortBy,
+            @Parameter(description = "Sort field: title | durationDays | createdAt")
+            @RequestParam(defaultValue = "createdAt") String sortBy,
 
             @Parameter(description = "Sort direction: asc | desc")
             @RequestParam(defaultValue = "asc") String sortDir,
@@ -80,21 +82,27 @@ public class TrekController {
                 minPrice, maxPrice, state, location, featured, null, null,
                 startDateFrom, startDateTo, sortBy, sortDir, page, size);
 
-        PageResponse<TrekSummaryResponse> result = trekService.listPublicTreks(filter);
-        return ResponseEntity.ok(ApiResponse.success(result));
+        return ResponseEntity.ok(ApiResponse.success(trekService.listPublicTreks(filter)));
     }
 
     @GetMapping("/api/v1/treks/{id}")
-    @Operation(summary = "Get full trek details by ID (published only)")
+    @Operation(summary = "Get full trek details by ID — includes OPEN future departures (published only)")
     public ResponseEntity<ApiResponse<TrekResponse>> getPublicTrek(
             @PathVariable UUID id) {
 
-        TrekResponse response = trekService.getPublicTrekById(id);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(trekService.getPublicTrekById(id)));
+    }
+
+    @GetMapping("/api/v1/treks/{trekId}/departures")
+    @Operation(summary = "List open upcoming departures for a published trek")
+    public ResponseEntity<ApiResponse<List<DepartureResponse>>> listPublicDepartures(
+            @PathVariable UUID trekId) {
+
+        return ResponseEntity.ok(ApiResponse.success(departureService.listPublicDepartures(trekId)));
     }
 
     // ═══════════════════════════════════════════════════════════════════════
-    // ADMIN ENDPOINTS — /api/v1/admin/treks/**
+    // ADMIN TREK ENDPOINTS — /api/v1/admin/treks/**
     // Secured: ROLE_ADMIN (enforced in SecurityConfig + @PreAuthorize)
     // ═══════════════════════════════════════════════════════════════════════
 
@@ -118,14 +126,14 @@ public class TrekController {
             @PathVariable UUID id,
             @Valid @RequestBody UpdateTrekRequest request) {
 
-        TrekResponse response = trekService.updateTrek(id, request);
-        return ResponseEntity.ok(ApiResponse.success("Trek updated successfully", response));
+        return ResponseEntity.ok(
+                ApiResponse.success("Trek updated successfully", trekService.updateTrek(id, request)));
     }
 
     @DeleteMapping("/api/v1/admin/treks/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Soft-delete a trek (Admin)")
+    @Operation(summary = "Soft-delete a trek and all its departures (Admin)")
     public ResponseEntity<ApiResponse<Void>> deleteTrek(
             @PathVariable UUID id) {
 
@@ -136,7 +144,7 @@ public class TrekController {
     @PatchMapping("/api/v1/admin/treks/{id}/publish")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Publish a trek (Admin)")
+    @Operation(summary = "Publish a trek — requires cover image and at least one OPEN future departure (Admin)")
     public ResponseEntity<ApiResponse<Void>> publishTrek(
             @PathVariable UUID id) {
 
@@ -171,12 +179,11 @@ public class TrekController {
     @GetMapping("/api/v1/admin/treks/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
-    @Operation(summary = "Get any trek by ID including unpublished (Admin)")
+    @Operation(summary = "Get any trek by ID including unpublished — includes all departures (Admin)")
     public ResponseEntity<ApiResponse<TrekResponse>> getAdminTrek(
             @PathVariable UUID id) {
 
-        TrekResponse response = trekService.getAdminTrekById(id);
-        return ResponseEntity.ok(ApiResponse.success(response));
+        return ResponseEntity.ok(ApiResponse.success(trekService.getAdminTrekById(id)));
     }
 
     @GetMapping("/api/v1/admin/treks")
@@ -197,7 +204,7 @@ public class TrekController {
             @RequestParam(required = false) Boolean published,
             @RequestParam(required = false) java.time.LocalDate startDateFrom,
             @RequestParam(required = false) java.time.LocalDate startDateTo,
-            @RequestParam(defaultValue = "startDate") String sortBy,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
@@ -206,8 +213,101 @@ public class TrekController {
                 minPrice, maxPrice, state, location, featured, isActive, published,
                 startDateFrom, startDateTo, sortBy, sortDir, page, size);
 
-        PageResponse<TrekSummaryResponse> result = trekService.listTreksAdmin(filter);
-        return ResponseEntity.ok(ApiResponse.success(result));
+        return ResponseEntity.ok(ApiResponse.success(trekService.listTreksAdmin(filter)));
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════
+    // ADMIN DEPARTURE ENDPOINTS — /api/v1/admin/treks/{trekId}/departures/**
+    // All departure management is nested under the owning trek.
+    // ═══════════════════════════════════════════════════════════════════════
+
+    @PostMapping("/api/v1/admin/treks/{trekId}/departures")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Add a new departure to a trek (Admin)")
+    public ResponseEntity<ApiResponse<DepartureResponse>> createDeparture(
+            @PathVariable UUID trekId,
+            @Valid @RequestBody CreateDepartureRequest request) {
+
+        DepartureResponse response = departureService.createDeparture(trekId, request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Departure created successfully", response));
+    }
+
+    @GetMapping("/api/v1/admin/treks/{trekId}/departures")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "List all departures for a trek — all statuses, ordered startDate ASC (Admin)")
+    public ResponseEntity<ApiResponse<List<DepartureResponse>>> listDeparturesAdmin(
+            @PathVariable UUID trekId) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(departureService.listDeparturesAdmin(trekId)));
+    }
+
+    @GetMapping("/api/v1/admin/treks/{trekId}/departures/{departureId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Get a single departure by ID (Admin)")
+    public ResponseEntity<ApiResponse<DepartureResponse>> getDepartureAdmin(
+            @PathVariable UUID trekId,
+            @PathVariable UUID departureId) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(departureService.getDepartureAdmin(trekId, departureId)));
+    }
+
+    @PutMapping("/api/v1/admin/treks/{trekId}/departures/{departureId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Update a departure (Admin)")
+    public ResponseEntity<ApiResponse<DepartureResponse>> updateDeparture(
+            @PathVariable UUID trekId,
+            @PathVariable UUID departureId,
+            @Valid @RequestBody UpdateDepartureRequest request) {
+
+        DepartureResponse response = departureService.updateDeparture(trekId, departureId, request);
+        return ResponseEntity.ok(ApiResponse.success("Departure updated successfully", response));
+    }
+
+    @DeleteMapping("/api/v1/admin/treks/{trekId}/departures/{departureId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Soft-delete a departure (Admin)")
+    public ResponseEntity<ApiResponse<Void>> deleteDeparture(
+            @PathVariable UUID trekId,
+            @PathVariable UUID departureId) {
+
+        departureService.deleteDeparture(trekId, departureId);
+        return ResponseEntity.ok(ApiResponse.success("Departure deleted successfully"));
+    }
+
+    @PatchMapping("/api/v1/admin/treks/{trekId}/departures/{departureId}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Change departure status: OPEN | CANCELLED | COMPLETED (Admin)")
+    public ResponseEntity<ApiResponse<DepartureResponse>> changeDepartureStatus(
+            @PathVariable UUID trekId,
+            @PathVariable UUID departureId,
+            @RequestParam DepartureStatus status) {
+
+        DepartureResponse response = departureService.changeStatus(trekId, departureId, status);
+        return ResponseEntity.ok(ApiResponse.success(
+                "Departure status updated to " + status.name(), response));
+    }
+
+    @PostMapping("/api/v1/admin/treks/{trekId}/departures/{departureId}/duplicate")
+    @PreAuthorize("hasRole('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Duplicate an existing departure — copies all fields including dates (Admin). " +
+                         "Edit the duplicated departure immediately to adjust dates for the new batch.")
+    public ResponseEntity<ApiResponse<DepartureResponse>> duplicateDeparture(
+            @PathVariable UUID trekId,
+            @PathVariable UUID departureId) {
+
+        DepartureResponse response = departureService.duplicateDeparture(trekId, departureId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Departure duplicated successfully", response));
     }
 
     // ── private factory ───────────────────────────────────────────────────────

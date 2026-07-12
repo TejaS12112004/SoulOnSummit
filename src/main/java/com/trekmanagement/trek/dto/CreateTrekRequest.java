@@ -4,10 +4,8 @@ import com.trekmanagement.trek.TrekDifficulty;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -56,28 +54,6 @@ public class CreateTrekRequest {
     @DecimalMin(value = "-180.0", message = "Longitude must be >= -180")
     @DecimalMax(value = "180.0",  message = "Longitude must be <= 180")
     private BigDecimal longitude;
-
-    @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.0", message = "Price must be non-negative")
-    @Digits(integer = 8, fraction = 2, message = "Price must have at most 8 integer and 2 fraction digits")
-    private BigDecimal price;
-
-    @DecimalMin(value = "0.0", message = "Discount price must be non-negative")
-    @Digits(integer = 8, fraction = 2, message = "Discount price format invalid")
-    private BigDecimal discountPrice;
-
-    @NotNull(message = "Total seats is required")
-    @Min(value = 1, message = "Total seats must be at least 1")
-    private Integer totalSeats;
-
-    @NotNull(message = "Start date is required")
-    @Future(message = "Start date must be in the future")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate startDate;
-
-    @NotNull(message = "End date is required")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private LocalDate endDate;
 
     @Size(max = 255)
     private String pickupPoint;

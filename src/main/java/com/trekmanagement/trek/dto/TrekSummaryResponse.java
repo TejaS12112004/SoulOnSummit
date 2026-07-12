@@ -21,12 +21,28 @@ public class TrekSummaryResponse {
     private final String state;
     private final TrekDifficulty difficulty;
     private final Integer durationDays;
-    private final BigDecimal price;
-    private final BigDecimal discountPrice;
-    private final Integer availableSeats;
-    private final LocalDate startDate;
-    private final LocalDate endDate;
     private final String coverImageUrl;
     private final boolean featured;
     private final boolean published;
+
+    /**
+     * Lowest effective price across this trek's active OPEN departures.
+     * effectivePrice = discountPrice ?? price.
+     * Null when no qualifying departures exist (e.g. draft trek).
+     */
+    private final BigDecimal lowestPrice;
+
+    /**
+     * Start date of the nearest upcoming OPEN departure.
+     * Used by listing cards to show "Next Batch: Jan 15".
+     * Null when no qualifying departures exist.
+     */
+    private final LocalDate nextDepartureDate;
+
+    /**
+     * Available seats on the next departure.
+     * Used by listing cards for urgency badge ("Only 3 left!").
+     * Null when no qualifying departures exist.
+     */
+    private final Integer nextDepartureAvailableSeats;
 }

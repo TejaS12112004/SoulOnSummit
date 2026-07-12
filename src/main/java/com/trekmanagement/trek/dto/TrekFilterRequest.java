@@ -17,7 +17,7 @@ public class TrekFilterRequest {
     // ── Search ────────────────────────────────────────────────────────────────
     private String title;
 
-    // ── Filters ───────────────────────────────────────────────────────────────
+    // ── Trek-level filters ────────────────────────────────────────────────────
     private TrekDifficulty difficulty;
 
     @Min(value = 1, message = "Minimum duration must be at least 1 day")
@@ -26,17 +26,22 @@ public class TrekFilterRequest {
     @Min(value = 1, message = "Maximum duration must be at least 1 day")
     private Integer maxDurationDays;
 
+    private String state;
+    private String location;
+    private Boolean featured;
+
+    // Admin-only filters (ignored in publicOnly mode)
+    private Boolean isActive;
+    private Boolean published;
+
+    // ── Departure-based filters ───────────────────────────────────────────────
+    // These are applied via subquery on trek_departures in TrekSpecification.
+
     @DecimalMin(value = "0.0", message = "Minimum price must be non-negative")
     private BigDecimal minPrice;
 
     @DecimalMin(value = "0.0", message = "Maximum price must be non-negative")
     private BigDecimal maxPrice;
-
-    private String state;
-    private String location;
-    private Boolean featured;
-    private Boolean isActive;
-    private Boolean published;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startDateFrom;
@@ -51,9 +56,12 @@ public class TrekFilterRequest {
     @Min(value = 1, message = "Page size must be at least 1")
     private int size = 20;
 
-    // ── Sort ─────────────────────────────────────────────────────────────────
-    // Allowed values: price, startDate, title, durationDays
-    private String sortBy = "startDate";
+    // ── Sort ──────────────────────────────────────────────────────────────────
+    // Trek-level sortable fields: title, durationDays, createdAt
+    // Note: sorting by price or startDate requires joining to trek_departures;
+    // for now these sort by trek-level fields only. Departure-based sorting
+    // can be added in a future iteration.
+    private String sortBy = "createdAt";
 
     // asc | desc
     private String sortDir = "asc";

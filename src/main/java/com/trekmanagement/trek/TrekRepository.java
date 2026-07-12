@@ -15,6 +15,8 @@ public interface TrekRepository extends JpaRepository<Trek, UUID>, JpaSpecificat
 
     /**
      * Public: only published + active treks visible to guests.
+     * Price/date/seat filtering is handled via TrekDeparture subqueries
+     * in TrekSpecification; this method is used for single-trek lookups.
      */
     Optional<Trek> findByIdAndPublishedTrueAndIsActiveTrue(UUID id);
 
@@ -31,12 +33,4 @@ public interface TrekRepository extends JpaRepository<Trek, UUID>, JpaSpecificat
     @Modifying
     @Query("UPDATE Trek t SET t.featured = :featured WHERE t.id = :id")
     void updateFeaturedStatus(@Param("id") UUID id, @Param("featured") boolean featured);
-
-    @Modifying
-    @Query("UPDATE Trek t SET t.availableSeats = t.availableSeats - :count WHERE t.id = :id AND t.availableSeats >= :count")
-    int decrementAvailableSeats(@Param("id") UUID id, @Param("count") int count);
-
-    @Modifying
-    @Query("UPDATE Trek t SET t.availableSeats = t.availableSeats + :count WHERE t.id = :id")
-    void incrementAvailableSeats(@Param("id") UUID id, @Param("count") int count);
 }

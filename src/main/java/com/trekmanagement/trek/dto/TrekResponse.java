@@ -30,24 +30,47 @@ public class TrekResponse {
     private final String summitPoint;
     private final BigDecimal latitude;
     private final BigDecimal longitude;
-    private final BigDecimal price;
-    private final BigDecimal discountPrice;
-    private final Integer totalSeats;
-    private final Integer availableSeats;
-    private final LocalDate startDate;
-    private final LocalDate endDate;
+
+    /**
+     * pickupPoint is displayed as "Meeting Point" in the User Dashboard
+     * upcoming trek widget. No separate meetingPoint field needed.
+     */
     private final String pickupPoint;
     private final String dropPoint;
+
     private final String coverImageUrl;
     private final String itineraryPdfUrl;
     private final String included;
     private final String excluded;
     private final String thingsToCarry;
     private final String cancellationPolicy;
+
     private final boolean featured;
     private final boolean published;
     private final boolean active;
+
     private final List<TrekImageResponse> images;
+
+    /**
+     * All departures for this trek, ordered by startDate ASC.
+     * Public endpoint returns only OPEN future departures.
+     * Admin endpoint returns all departures regardless of status.
+     */
+    private final List<DepartureResponse> departures;
+
+    /**
+     * Lowest effective price across active OPEN departures.
+     * effectivePrice = discountPrice ?? price.
+     * Null when no active departures exist.
+     */
+    private final BigDecimal lowestPrice;
+
+    /**
+     * startDate of the nearest upcoming OPEN departure.
+     * Null when no active future departures exist.
+     */
+    private final LocalDate nextDepartureDate;
+
     private final Instant createdAt;
     private final Instant updatedAt;
 }
