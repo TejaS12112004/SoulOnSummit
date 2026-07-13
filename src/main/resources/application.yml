@@ -76,8 +76,8 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 20MB
-      max-request-size: 25MB
+      max-file-size: 25MB
+      max-request-size: 30MB
 
 # ── Server ────────────────────────────────────────────────────────────────────
 server:
@@ -157,8 +157,17 @@ app:
       bucket-images: trek-images
       bucket-itineraries: itineraries
       bucket-invoices: invoices
-      bucket-gallery: gallery
+      bucket-gallery: gallery          # kept as-is — will later hold more than trek gallery images
+      bucket-avatars: avatars
+      bucket-blog-images: blog-images
       signed-url-expiry-seconds: 3600
+
+  # Storage module's own validation policy (separate from Supabase connection/bucket config above)
+  storage:
+    max-image-size: 10485760   # 10 MB
+    max-pdf-size: 26214400     # 25 MB
+    allowed-image-mime-types: image/jpeg,image/png,image/webp
+    allowed-pdf-mime-types: application/pdf
 
   # Mail sender identity
   mail:

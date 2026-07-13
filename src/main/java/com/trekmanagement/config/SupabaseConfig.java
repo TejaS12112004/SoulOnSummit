@@ -24,6 +24,8 @@ public class SupabaseConfig {
         private String bucketItineraries;
         private String bucketInvoices;
         private String bucketGallery;
+        private String bucketAvatars;
+        private String bucketBlogImages;
         private long signedUrlExpirySeconds;
     }
 
