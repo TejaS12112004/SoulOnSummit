@@ -117,4 +117,29 @@ public class Trek extends BaseEntity {
     )
     @OrderBy("startDate ASC")
     private List<TrekDeparture> departures = new ArrayList<>();
+
+    /**
+     * FAQs shown on the Trek Details page, ordered by displayOrder ASC.
+     */
+    @OneToMany(
+            mappedBy = "trek",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @OrderBy("displayOrder ASC")
+    private List<Faq> faqs = new ArrayList<>();
+
+    /**
+     * Day-wise itinerary for this trek, ordered by displayOrder ASC.
+     * The itinerary is a reusable template shared by every departure.
+     */
+    @OneToMany(
+            mappedBy = "trek",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @OrderBy("displayOrder ASC")
+    private List<TrekItineraryDay> itineraryDays = new ArrayList<>();
 }

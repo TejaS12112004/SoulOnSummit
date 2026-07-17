@@ -5,6 +5,7 @@ import com.trekmanagement.common.exception.ConflictException;
 import com.trekmanagement.common.exception.ResourceNotFoundException;
 import com.trekmanagement.common.exception.ValidationException;
 import com.trekmanagement.trek.dto.*;
+import com.trekmanagement.trek.ItineraryDayMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +36,8 @@ public class TrekServiceImpl implements TrekService {
     private final TrekDepartureRepository departureRepository;
     private final TrekMapper trekMapper;
     private final TrekDepartureMapper departureMapper;
+    private final FaqMapper faqMapper;
+    private final ItineraryDayMapper itineraryDayMapper;
 
     // ── Admin operations ─────────────────────────────────────────────────────
 
@@ -231,6 +234,8 @@ public class TrekServiceImpl implements TrekService {
                 .published(trek.isPublished())
                 .active(trek.isActive())
                 .images(trekMapper.toImageResponseList(trek.getImages()))
+                .faqs(faqMapper.toResponseList(trek.getFaqs()))
+                .itineraryDays(itineraryDayMapper.toResponseList(trek.getItineraryDays()))
                 .departures(departureResponses)
                 .lowestPrice(lowestPrice)
                 .nextDepartureDate(nextDepartDate)
