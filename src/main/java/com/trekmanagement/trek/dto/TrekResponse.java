@@ -2,6 +2,7 @@ package com.trekmanagement.trek.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.trekmanagement.trek.TrekDifficulty;
+import com.trekmanagement.trek.dto.HighlightResponse;
 import com.trekmanagement.trek.dto.ItineraryDayResponse;
 import lombok.Builder;
 import lombok.Getter;
@@ -55,6 +56,8 @@ public class TrekResponse {
     private final List<FaqResponse> faqs;
 
     private final List<ItineraryDayResponse> itineraryDays;
+
+    private final List<HighlightResponse> highlights;
 
     /**
      * All departures for this trek, ordered by startDate ASC.

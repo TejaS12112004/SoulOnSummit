@@ -142,4 +142,17 @@ public class Trek extends BaseEntity {
     )
     @OrderBy("displayOrder ASC")
     private List<TrekItineraryDay> itineraryDays = new ArrayList<>();
+
+    /**
+     * Highlights shown on the Trek Details page, ordered by displayOrder ASC.
+     */
+    @OneToMany(
+            mappedBy = "trek",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @OrderBy("displayOrder ASC")
+    private List<TrekHighlight> highlights = new ArrayList<>();
 }
+

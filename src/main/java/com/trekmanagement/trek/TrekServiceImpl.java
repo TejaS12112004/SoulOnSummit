@@ -5,6 +5,7 @@ import com.trekmanagement.common.exception.ConflictException;
 import com.trekmanagement.common.exception.ResourceNotFoundException;
 import com.trekmanagement.common.exception.ValidationException;
 import com.trekmanagement.trek.dto.*;
+import com.trekmanagement.trek.HighlightMapper;
 import com.trekmanagement.trek.ItineraryDayMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,6 +39,7 @@ public class TrekServiceImpl implements TrekService {
     private final TrekDepartureMapper departureMapper;
     private final FaqMapper faqMapper;
     private final ItineraryDayMapper itineraryDayMapper;
+    private final HighlightMapper highlightMapper;
 
     // ── Admin operations ─────────────────────────────────────────────────────
 
@@ -52,7 +54,7 @@ public class TrekServiceImpl implements TrekService {
 
         Trek saved = trekRepository.save(trek);
         // Newly created trek has no departures — return response with empty lists
-        return buildTrekResponse(saved, List.of(), false);
+        return buildTrekResponse(saved, List.of());
     }
 
     @Override
@@ -64,7 +66,7 @@ public class TrekServiceImpl implements TrekService {
         // Load current departures for the response
         List<TrekDeparture> departures =
                 departureRepository.findByTrekIdOrderByStartDateAsc(trekId);
-        return buildTrekResponse(saved, departures, false);
+        return buildTrekResponse(saved, departures);
     }
 
     @Override
@@ -131,7 +133,7 @@ public class TrekServiceImpl implements TrekService {
                 .orElseThrow(() -> new ResourceNotFoundException("Trek", trekId));
         List<TrekDeparture> departures =
                 departureRepository.findByTrekIdOrderByStartDateAsc(trekId);
-        return buildTrekResponse(trek, departures, false);
+        return buildTrekResponse(trek, departures);
     }
 
     @Override
@@ -156,7 +158,7 @@ public class TrekServiceImpl implements TrekService {
                 departureRepository
                         .findByTrekIdAndStatusAndIsActiveTrueAndStartDateAfterOrderByStartDateAsc(
                                 trekId, DepartureStatus.OPEN, LocalDate.now());
-        return buildTrekResponse(trek, departures, true);
+        return buildTrekResponse(trek, departures);
     }
 
     @Override
@@ -193,14 +195,10 @@ public class TrekServiceImpl implements TrekService {
     /**
      * Builds a full TrekResponse including the embedded departures list
      * and derived fields (lowestPrice, nextDepartureDate).
-     *
-     * @param publicView when true, only OPEN future departures are included
-     *                   (already pre-filtered by callers; this flag drives
-     *                   derived field computation to match).
+     * Callers are responsible for pre-filtering the departures list
+     * (e.g. public endpoints pass only OPEN future departures).
      */
-    private TrekResponse buildTrekResponse(Trek trek,
-                                            List<TrekDeparture> departures,
-                                            boolean publicView) {
+    private TrekResponse buildTrekResponse(Trek trek, List<TrekDeparture> departures) {
         List<DepartureResponse> departureResponses =
                 departureMapper.toResponseList(departures);
 
@@ -236,6 +234,7 @@ public class TrekServiceImpl implements TrekService {
                 .images(trekMapper.toImageResponseList(trek.getImages()))
                 .faqs(faqMapper.toResponseList(trek.getFaqs()))
                 .itineraryDays(itineraryDayMapper.toResponseList(trek.getItineraryDays()))
+                .highlights(highlightMapper.toResponseList(trek.getHighlights()))
                 .departures(departureResponses)
                 .lowestPrice(lowestPrice)
                 .nextDepartureDate(nextDepartDate)
@@ -297,23 +296,23 @@ public class TrekServiceImpl implements TrekService {
     }
 
     private void applyCreateFields(Trek trek, CreateTrekRequest req) {
-        trek.setTitle(req.getTitle());
-        trek.setSubtitle(req.getSubtitle());
-        trek.setDescription(req.getDescription());
-        trek.setLocation(req.getLocation());
-        trek.setState(req.getState());
-        trek.setCountry(StringUtils.hasText(req.getCountry()) ? req.getCountry() : "India");
+        trek.setTitle(req.getTitle().trim());
+        trek.setSubtitle(req.getSubtitle() != null ? req.getSubtitle().trim() : null);
+        trek.setDescription(req.getDescription().trim());
+        trek.setLocation(req.getLocation().trim());
+        trek.setState(req.getState() != null ? req.getState().trim() : null);
+        trek.setCountry(StringUtils.hasText(req.getCountry()) ? req.getCountry().trim() : "India");
         trek.setDifficulty(req.getDifficulty());
         trek.setDurationDays(req.getDurationDays());
         trek.setDistanceKm(req.getDistanceKm());
         trek.setMaxAltitude(req.getMaxAltitude());
-        trek.setSummitPoint(req.getSummitPoint());
+        trek.setSummitPoint(req.getSummitPoint() != null ? req.getSummitPoint().trim() : null);
         trek.setLatitude(req.getLatitude());
         trek.setLongitude(req.getLongitude());
-        trek.setPickupPoint(req.getPickupPoint());
-        trek.setDropPoint(req.getDropPoint());
-        trek.setCoverImageUrl(req.getCoverImageUrl());
-        trek.setItineraryPdfUrl(req.getItineraryPdfUrl());
+        trek.setPickupPoint(req.getPickupPoint() != null ? req.getPickupPoint().trim() : null);
+        trek.setDropPoint(req.getDropPoint() != null ? req.getDropPoint().trim() : null);
+        trek.setCoverImageUrl(req.getCoverImageUrl() != null ? req.getCoverImageUrl().trim() : null);
+        trek.setItineraryPdfUrl(req.getItineraryPdfUrl() != null ? req.getItineraryPdfUrl().trim() : null);
         trek.setIncluded(req.getIncluded());
         trek.setExcluded(req.getExcluded());
         trek.setThingsToCarry(req.getThingsToCarry());
@@ -321,23 +320,23 @@ public class TrekServiceImpl implements TrekService {
     }
 
     private void applyUpdateFields(Trek trek, UpdateTrekRequest req) {
-        if (StringUtils.hasText(req.getTitle()))        trek.setTitle(req.getTitle());
-        if (req.getSubtitle()       != null)            trek.setSubtitle(req.getSubtitle());
-        if (StringUtils.hasText(req.getDescription()))  trek.setDescription(req.getDescription());
-        if (StringUtils.hasText(req.getLocation()))     trek.setLocation(req.getLocation());
-        if (req.getState()          != null)            trek.setState(req.getState());
-        if (StringUtils.hasText(req.getCountry()))      trek.setCountry(req.getCountry());
+        if (StringUtils.hasText(req.getTitle()))        trek.setTitle(req.getTitle().trim());
+        if (req.getSubtitle()       != null)            trek.setSubtitle(req.getSubtitle().trim());
+        if (StringUtils.hasText(req.getDescription()))  trek.setDescription(req.getDescription().trim());
+        if (StringUtils.hasText(req.getLocation()))     trek.setLocation(req.getLocation().trim());
+        if (req.getState()          != null)            trek.setState(req.getState().trim());
+        if (StringUtils.hasText(req.getCountry()))      trek.setCountry(req.getCountry().trim());
         if (req.getDifficulty()     != null)            trek.setDifficulty(req.getDifficulty());
         if (req.getDurationDays()   != null)            trek.setDurationDays(req.getDurationDays());
         if (req.getDistanceKm()     != null)            trek.setDistanceKm(req.getDistanceKm());
         if (req.getMaxAltitude()    != null)            trek.setMaxAltitude(req.getMaxAltitude());
-        if (req.getSummitPoint()    != null)            trek.setSummitPoint(req.getSummitPoint());
+        if (req.getSummitPoint()    != null)            trek.setSummitPoint(req.getSummitPoint().trim());
         if (req.getLatitude()       != null)            trek.setLatitude(req.getLatitude());
         if (req.getLongitude()      != null)            trek.setLongitude(req.getLongitude());
-        if (req.getPickupPoint()    != null)            trek.setPickupPoint(req.getPickupPoint());
-        if (req.getDropPoint()      != null)            trek.setDropPoint(req.getDropPoint());
-        if (req.getCoverImageUrl()  != null)            trek.setCoverImageUrl(req.getCoverImageUrl());
-        if (req.getItineraryPdfUrl() != null)           trek.setItineraryPdfUrl(req.getItineraryPdfUrl());
+        if (req.getPickupPoint()    != null)            trek.setPickupPoint(req.getPickupPoint().trim());
+        if (req.getDropPoint()      != null)            trek.setDropPoint(req.getDropPoint().trim());
+        if (req.getCoverImageUrl()  != null)            trek.setCoverImageUrl(req.getCoverImageUrl().trim());
+        if (req.getItineraryPdfUrl() != null)           trek.setItineraryPdfUrl(req.getItineraryPdfUrl().trim());
         if (req.getIncluded()       != null)            trek.setIncluded(req.getIncluded());
         if (req.getExcluded()       != null)            trek.setExcluded(req.getExcluded());
         if (req.getThingsToCarry()  != null)            trek.setThingsToCarry(req.getThingsToCarry());

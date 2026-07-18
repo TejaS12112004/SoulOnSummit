@@ -12,8 +12,8 @@ import java.util.List;
  * MapStruct mapper for Trek → response DTOs.
  *
  * All fields that require business logic or lazy-loaded collections
- * (departures, faqs, itinerary, lowestPrice, nextDepartureDate) are
- * explicitly ignored here. TrekServiceImpl is the single place where
+ * (departures, faqs, itineraryDays, highlights, lowestPrice, nextDepartureDate)
+ * are explicitly ignored here. TrekServiceImpl is the single place where
  * a full TrekResponse is assembled — this mapper must not duplicate
  * that responsibility.
  *
@@ -28,6 +28,7 @@ public interface TrekMapper {
     @Mapping(target = "nextDepartureDate", ignore = true)
     @Mapping(target = "faqs",             ignore = true)
     @Mapping(target = "itineraryDays",         ignore = true)
+    @Mapping(target = "highlights",        ignore = true)
     TrekResponse toResponse(Trek trek);
 
     @Mapping(target = "lowestPrice",                 ignore = true)
