@@ -6,6 +6,9 @@ import com.trekmanagement.common.exception.ResourceNotFoundException;
 import com.trekmanagement.common.exception.ValidationException;
 import com.trekmanagement.trek.dto.*;
 import com.trekmanagement.trek.HighlightMapper;
+import com.trekmanagement.trek.InclusionMapper;
+import com.trekmanagement.trek.ExclusionMapper;
+import com.trekmanagement.trek.PackingItemMapper;
 import com.trekmanagement.trek.ItineraryDayMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -40,6 +43,23 @@ public class TrekServiceImpl implements TrekService {
     private final FaqMapper faqMapper;
     private final ItineraryDayMapper itineraryDayMapper;
     private final HighlightMapper highlightMapper;
+    private final InclusionMapper inclusionMapper;
+    private final ExclusionMapper exclusionMapper;
+    private final PackingItemMapper packingItemMapper;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TrekSummaryResponse> getFeaturedTreks() {
+        TrekFilterRequest filter = new TrekFilterRequest();
+        filter.setFeatured(true);
+        filter.setPublished(true);
+        filter.setIsActive(true);
+        
+        Specification<Trek> spec = TrekSpecification.fromFilter(filter, true);
+        return trekRepository.findAll(spec).stream()
+                .map(trekMapper::toSummaryResponse)
+                .toList();
+    }
 
     // ── Admin operations ─────────────────────────────────────────────────────
 
@@ -235,6 +255,9 @@ public class TrekServiceImpl implements TrekService {
                 .faqs(faqMapper.toResponseList(trek.getFaqs()))
                 .itineraryDays(itineraryDayMapper.toResponseList(trek.getItineraryDays()))
                 .highlights(highlightMapper.toResponseList(trek.getHighlights()))
+                .inclusions(inclusionMapper.toResponseList(trek.getInclusions()))
+                .exclusions(exclusionMapper.toResponseList(trek.getExclusions()))
+                .packingItems(packingItemMapper.toResponseList(trek.getPackingItems()))
                 .departures(departureResponses)
                 .lowestPrice(lowestPrice)
                 .nextDepartureDate(nextDepartDate)

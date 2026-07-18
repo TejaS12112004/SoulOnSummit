@@ -75,4 +75,9 @@ public interface TrekDepartureRepository extends JpaRepository<TrekDeparture, UU
     @Modifying
     @Query("UPDATE TrekDeparture d SET d.isActive = false WHERE d.trek.id = :trekId")
     void deactivateAllByTrekId(@Param("trekId") UUID trekId);
+
+    @Query("SELECT d FROM TrekDeparture d WHERE d.trek.id = :trekId AND d.status = 'OPEN' AND d.startDate >= :today ORDER BY d.startDate ASC")
+    List<TrekDeparture> findOpenUpcomingDepartures(@Param("trekId") UUID trekId, @Param("today") LocalDate today);
+
+    long countByStartDateAfter(LocalDate date);
 }

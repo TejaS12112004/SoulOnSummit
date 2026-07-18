@@ -112,6 +112,32 @@ public class AuthServiceImpl implements AuthService {
         log.info("Email verified for user: {}", user.getEmail());
     }
 
+    @Override
+    @Transactional
+    public void resendVerification(ResendVerificationRequest request) {
+        String email = request.getEmail().toLowerCase().strip();
+        
+        // Return silently if user not found to prevent email enumeration
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null || user.isEmailVerified()) {
+            return;
+        }
+
+        // Delete any existing tokens to keep only one active
+        emailVerificationTokenRepository.deleteAllByUserId(user.getId());
+
+        String verificationToken = generateSecureToken();
+        EmailVerificationToken evToken = new EmailVerificationToken(
+                user,
+                verificationToken,
+                DateTimeUtils.nowPlusHours(24)
+        );
+        emailVerificationTokenRepository.save(evToken);
+
+        sendVerificationEmailAsync(user.getEmail(), user.getFirstName(), verificationToken);
+        log.info("Resent verification email for user: {}", user.getEmail());
+    }
+
     // ── Flow 3: Login ────────────────────────────────────────────────────────
 
     @Override

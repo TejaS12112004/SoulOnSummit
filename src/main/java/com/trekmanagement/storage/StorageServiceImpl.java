@@ -89,6 +89,36 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public UploadResponse uploadInvoicePdf(String bookingReference, byte[] pdfBytes) {
+        String uploader = currentUploader();
+        long startTime = System.currentTimeMillis();
+
+        if (pdfBytes == null || pdfBytes.length == 0) {
+            throw new ValidationException("Invoice PDF must not be empty");
+        }
+
+        String bucket = supabaseConfig.getStorage().getBucketInvoices();
+        String contentType = "application/pdf";
+        String fileName = UUID.randomUUID() + ".pdf";
+        String path = bookingReference + "/" + fileName;
+
+        String publicUrl = supabaseStorageClient.upload(bucket, path, pdfBytes, contentType);
+
+        long durationMs = System.currentTimeMillis() - startTime;
+        log.info("File uploaded — uploader={}, bucket={}, path={}, size={} bytes, duration={}ms",
+                uploader, bucket, path, pdfBytes.length, durationMs);
+
+        return UploadResponse.builder()
+                .bucket(bucket)
+                .path(path)
+                .publicUrl(publicUrl)
+                .fileName(fileName)
+                .contentType(contentType)
+                .size((long) pdfBytes.length)
+                .build();
+    }
+
+    @Override
     public DeleteFileResponse deleteFile(String bucket, String path) {
         String uploader = currentUploader();
         supabaseStorageClient.delete(bucket, path);

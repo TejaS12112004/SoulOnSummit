@@ -190,6 +190,11 @@ app:
   booking:
     cancellation-window-hours: 48      # Customer can cancel up to 48h before trek start
     invoice-url-expiry-seconds: 3600
+    expiry-check-interval: 300000
+
+  # Invoice generation
+  invoice:
+    gst-rate: 18
 
 ---
 # ── Dev profile ───────────────────────────────────────────────────────────────

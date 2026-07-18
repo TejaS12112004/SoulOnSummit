@@ -29,6 +29,9 @@ public interface TrekMapper {
     @Mapping(target = "faqs",             ignore = true)
     @Mapping(target = "itineraryDays",         ignore = true)
     @Mapping(target = "highlights",        ignore = true)
+    @Mapping(target = "inclusions",        ignore = true)
+    @Mapping(target = "exclusions",        ignore = true)
+    @Mapping(target = "packingItems",      ignore = true)
     TrekResponse toResponse(Trek trek);
 
     @Mapping(target = "lowestPrice",                 ignore = true)

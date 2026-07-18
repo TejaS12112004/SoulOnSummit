@@ -16,6 +16,11 @@ public interface AuthService {
     void verifyEmail(String token);
 
     /**
+     * Flow 2b: Resend verification email if lost or expired.
+     */
+    void resendVerification(ResendVerificationRequest request);
+
+    /**
      * Flow 3: Authenticate user, issue access + refresh tokens.
      * Requires email_verified = true.
      */

@@ -86,6 +86,9 @@ public class SecurityConfig {
                 // Public gallery viewing (GET only)
                 .requestMatchers(HttpMethod.GET, "/api/v1/gallery/**").permitAll()
 
+                // Webhooks (public, verified via signature internally)
+                .requestMatchers("/api/v1/webhooks/**").permitAll()
+
                 // Actuator health (public)
                 .requestMatchers("/actuator/health").permitAll()
 

@@ -14,5 +14,7 @@ public interface StorageService {
 
     UploadResponse uploadTrekItinerary(UUID trekId, MultipartFile file);
 
+    UploadResponse uploadInvoicePdf(String bookingReference, byte[] pdfBytes);
+
     DeleteFileResponse deleteFile(String bucket, String path);
 }

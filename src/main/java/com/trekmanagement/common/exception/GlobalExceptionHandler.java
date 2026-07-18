@@ -1,6 +1,6 @@
 package com.trekmanagement.common.exception;
 
-import com.trekmanagement.common.dto.ErrorResponse;
+import com.trekmanagement.common.dto.ApiErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,180 +23,176 @@ public class GlobalExceptionHandler {
 
     // ── Validation: @Valid bean errors ──────────────────────────────────────
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<ErrorResponse.FieldError> fieldErrors = ex.getBindingResult()
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        List<ApiErrorResponse.FieldError> fieldErrors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(fe -> new ErrorResponse.FieldError(
+                .map(fe -> new ApiErrorResponse.FieldError(
                         fe.getField(),
                         fe.getRejectedValue(),
                         fe.getDefaultMessage()))
                 .toList();
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.withFieldErrors(
-                        HttpStatus.BAD_REQUEST.value(),
+                .status(HttpStatus.UNPROCESSABLE_ENTITY) // 422 for validation
+                .body(ApiErrorResponse.withFieldErrors(
                         "Validation Failed",
-                        "Request contains invalid fields",
+                        "VALIDATION_FAILED",
                         fieldErrors));
     }
 
     // ── Validation: @Validated path/query param errors ──────────────────────
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
-        List<ErrorResponse.FieldError> fieldErrors = ex.getConstraintViolations()
+    public ResponseEntity<ApiErrorResponse> handleConstraintViolation(ConstraintViolationException ex) {
+        List<ApiErrorResponse.FieldError> fieldErrors = ex.getConstraintViolations()
                 .stream()
-                .map(cv -> new ErrorResponse.FieldError(
+                .map(cv -> new ApiErrorResponse.FieldError(
                         cv.getPropertyPath().toString(),
                         cv.getInvalidValue(),
                         cv.getMessage()))
                 .toList();
 
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.withFieldErrors(
-                        HttpStatus.BAD_REQUEST.value(),
+                .status(HttpStatus.UNPROCESSABLE_ENTITY) // 422 for validation
+                .body(ApiErrorResponse.withFieldErrors(
                         "Validation Failed",
-                        "Request parameters are invalid",
+                        "VALIDATION_FAILED",
                         fieldErrors));
     }
 
     // ── Malformed JSON ───────────────────────────────────────────────────────
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+    public ResponseEntity<ApiErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(400, "Bad Request", "Malformed or unreadable request body"));
+                .body(ApiErrorResponse.of("Malformed or unreadable request body", "BAD_REQUEST"));
     }
 
     // ── Type mismatch (UUID/enum in path) ────────────────────────────────────
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<ApiErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         String message = String.format("Parameter '%s' has invalid value: '%s'", ex.getName(), ex.getValue());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(400, "Bad Request", message));
+                .body(ApiErrorResponse.of(message, "BAD_REQUEST"));
     }
 
     // ── Domain exceptions ────────────────────────────────────────────────────
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) {
+    public ResponseEntity<ApiErrorResponse> handleNotFound(ResourceNotFoundException ex) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse.of(404, "Not Found", ex.getMessage()));
+                .body(ApiErrorResponse.of(ex.getMessage(), "NOT_FOUND"));
     }
 
     @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<ErrorResponse> handleConflict(ConflictException ex) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ErrorResponse.of(409, "Conflict", ex.getMessage()));
+    public ResponseEntity<ApiErrorResponse> handleConflict(ConflictException ex) {
+        log.warn("Conflict error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiErrorResponse.of(ex.getMessage(), "CONFLICT"));
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<ErrorResponse> handleValidation(ValidationException ex) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(400, "Bad Request", ex.getMessage()));
+    public ResponseEntity<ApiErrorResponse> handleValidationException(ValidationException ex) {
+        log.warn("Validation error: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY) // 422
+                .body(ApiErrorResponse.of(ex.getMessage(), "VALIDATION_FAILED"));
     }
 
     @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ErrorResponse> handleUnauthorized(UnauthorizedException ex) {
+    public ResponseEntity<ApiErrorResponse> handleUnauthorized(UnauthorizedException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.of(401, "Unauthorized", ex.getMessage()));
+                .body(ApiErrorResponse.of(ex.getMessage(), "UNAUTHORIZED"));
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException ex) {
+    public ResponseEntity<ApiErrorResponse> handleForbidden(ForbiddenException ex) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(ErrorResponse.of(403, "Forbidden", ex.getMessage()));
+                .body(ApiErrorResponse.of(ex.getMessage(), "FORBIDDEN"));
     }
 
     @ExceptionHandler(PaymentException.class)
-    public ResponseEntity<ErrorResponse> handlePayment(PaymentException ex) {
+    public ResponseEntity<ApiErrorResponse> handlePayment(PaymentException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(400, "Payment Error", ex.getMessage()));
+                .body(ApiErrorResponse.of(ex.getMessage(), "PAYMENT_FAILED"));
     }
 
     @ExceptionHandler(StorageException.class)
-    public ResponseEntity<ErrorResponse> handleStorage(StorageException ex) {
+    public ResponseEntity<ApiErrorResponse> handleStorage(StorageException ex) {
         log.error("Storage error: {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.of(500, "Storage Error", "File operation failed"));
+                .body(ApiErrorResponse.of("File operation failed", "STORAGE_ERROR"));
     }
 
     @ExceptionHandler(InvalidFileTypeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidFileType(InvalidFileTypeException ex) {
+    public ResponseEntity<ApiErrorResponse> handleInvalidFileType(InvalidFileTypeException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(400, "Invalid File Type", ex.getMessage()));
+                .body(ApiErrorResponse.of(ex.getMessage(), "INVALID_FILE_TYPE"));
     }
 
     @ExceptionHandler(FileTooLargeException.class)
-    public ResponseEntity<ErrorResponse> handleFileTooLarge(FileTooLargeException ex) {
+    public ResponseEntity<ApiErrorResponse> handleFileTooLarge(FileTooLargeException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(400, "File Too Large", ex.getMessage()));
+                .body(ApiErrorResponse.of(ex.getMessage(), "FILE_TOO_LARGE"));
     }
 
     @ExceptionHandler(FileDeleteException.class)
-    public ResponseEntity<ErrorResponse> handleFileDelete(FileDeleteException ex) {
+    public ResponseEntity<ApiErrorResponse> handleFileDelete(FileDeleteException ex) {
         log.error("File delete failed: {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_GATEWAY)
-                .body(ErrorResponse.of(502, "File Delete Failed", ex.getMessage()));
+                .body(ApiErrorResponse.of(ex.getMessage(), "FILE_DELETE_FAILED"));
     }
 
-    // Fires at the servlet layer, before the controller runs, when a multipart
-    // upload exceeds spring.servlet.multipart.max-file-size/max-request-size.
     @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
-    public ResponseEntity<ErrorResponse> handleMaxUploadSizeExceeded(
+    public ResponseEntity<ApiErrorResponse> handleMaxUploadSizeExceeded(
             org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.of(400, "File Too Large", "Uploaded file exceeds the maximum allowed size"));
+                .body(ApiErrorResponse.of("Uploaded file exceeds the maximum allowed size", "FILE_TOO_LARGE"));
     }
 
     // ── Spring Security exceptions ───────────────────────────────────────────
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
+    public ResponseEntity<ApiErrorResponse> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.of(401, "Unauthorized", "Invalid email or password"));
+                .body(ApiErrorResponse.of("Invalid email or password", "UNAUTHORIZED"));
     }
 
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<ErrorResponse> handleDisabled(DisabledException ex) {
+    public ResponseEntity<ApiErrorResponse> handleDisabled(DisabledException ex) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(ErrorResponse.of(403, "Account Disabled", "Account is disabled — contact support"));
+                .body(ApiErrorResponse.of("Account is disabled — contact support", "ACCOUNT_DISABLED"));
     }
 
     @ExceptionHandler(LockedException.class)
-    public ResponseEntity<ErrorResponse> handleLocked(LockedException ex) {
+    public ResponseEntity<ApiErrorResponse> handleLocked(LockedException ex) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(ErrorResponse.of(403, "Account Locked", "Account is temporarily locked"));
+                .body(ApiErrorResponse.of("Account is temporarily locked", "ACCOUNT_LOCKED"));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
+    public ResponseEntity<ApiErrorResponse> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
-                .body(ErrorResponse.of(403, "Forbidden", "Insufficient permissions"));
+                .body(ApiErrorResponse.of("Insufficient permissions", "FORBIDDEN"));
     }
 
     // ── Fallback ─────────────────────────────────────────────────────────────
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
+    public ResponseEntity<ApiErrorResponse> handleGeneric(Exception ex) {
         log.error("Unhandled exception: {}", ex.getMessage(), ex);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.of(500, "Internal Server Error", "An unexpected error occurred"));
+                .body(ApiErrorResponse.of("An unexpected error occurred", "INTERNAL_SERVER_ERROR"));
     }
 }

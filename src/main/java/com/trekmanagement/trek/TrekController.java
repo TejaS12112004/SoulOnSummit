@@ -93,6 +93,12 @@ public class TrekController {
         return ResponseEntity.ok(ApiResponse.success(trekService.getPublicTrekById(id)));
     }
 
+    @GetMapping("/api/v1/treks/featured")
+    @Operation(summary = "Get all featured treks")
+    public ResponseEntity<ApiResponse<List<TrekSummaryResponse>>> getFeaturedTreks() {
+        return ResponseEntity.ok(ApiResponse.success(trekService.getFeaturedTreks()));
+    }
+
     @GetMapping("/api/v1/treks/{trekId}/departures")
     @Operation(summary = "List open upcoming departures for a published trek")
     public ResponseEntity<ApiResponse<List<DepartureResponse>>> listPublicDepartures(

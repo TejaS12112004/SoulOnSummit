@@ -154,5 +154,32 @@ public class Trek extends BaseEntity {
     )
     @OrderBy("displayOrder ASC")
     private List<TrekHighlight> highlights = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "trek",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @OrderBy("displayOrder ASC")
+    private List<TrekInclusion> inclusions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "trek",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @OrderBy("displayOrder ASC")
+    private List<TrekExclusion> exclusions = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "trek",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @OrderBy("displayOrder ASC")
+    private List<TrekPackingItem> packingItems = new ArrayList<>();
 }
 

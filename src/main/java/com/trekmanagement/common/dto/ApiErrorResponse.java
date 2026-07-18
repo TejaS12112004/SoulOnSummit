@@ -2,34 +2,36 @@ package com.trekmanagement.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import org.slf4j.MDC;
 
 import java.time.Instant;
 import java.util.List;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public final class ErrorResponse {
+public final class ApiErrorResponse {
 
-    private final int status;
-    private final String error;
+    private final boolean success = false;
     private final String message;
+    private final String errorCode;
     private final Instant timestamp;
+    private final String traceId;
     private final List<FieldError> errors;
 
-    private ErrorResponse(int status, String error, String message, List<FieldError> errors) {
-        this.status = status;
-        this.error = error;
+    private ApiErrorResponse(String message, String errorCode, List<FieldError> errors) {
         this.message = message;
-        this.timestamp = Instant.now();
+        this.errorCode = errorCode;
         this.errors = errors;
+        this.timestamp = Instant.now();
+        this.traceId = MDC.get("traceId");
     }
 
-    public static ErrorResponse of(int status, String error, String message) {
-        return new ErrorResponse(status, error, message, null);
+    public static ApiErrorResponse of(String message, String errorCode) {
+        return new ApiErrorResponse(message, errorCode, null);
     }
 
-    public static ErrorResponse withFieldErrors(int status, String error, String message, List<FieldError> errors) {
-        return new ErrorResponse(status, error, message, errors);
+    public static ApiErrorResponse withFieldErrors(String message, String errorCode, List<FieldError> errors) {
+        return new ApiErrorResponse(message, errorCode, errors);
     }
 
     @Getter

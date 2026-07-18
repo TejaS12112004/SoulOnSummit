@@ -48,6 +48,20 @@ public class AuthController {
     }
 
     /**
+     * Flow 2b — POST /api/v1/auth/resend-verification
+     * Resend verification email if lost or expired.
+     */
+    @PostMapping("/resend-verification")
+    @Operation(summary = "Resend email verification link")
+    public ResponseEntity<ApiResponse<Void>> resendVerification(
+            @Valid @RequestBody ResendVerificationRequest request) {
+
+        authService.resendVerification(request);
+        return ResponseEntity.ok(ApiResponse.success(
+                "If your account exists and is unverified, a new verification link has been sent."));
+    }
+
+    /**
      * Flow 3 — POST /api/v1/auth/login
      * Authenticate user. Issues access token + refresh token.
      */
