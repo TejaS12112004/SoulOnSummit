@@ -22,6 +22,8 @@
   --radius-card: 20px;
   --radius-btn: 12px;
   --radius-pill: 9999px;
+  
+  --navbar-height: 80px;
 }
 
 * {
@@ -59,6 +61,8 @@ body {
 /* Design system utility classes */
 .font-display { font-family: var(--font-display); }
 
+.h-navbar { height: var(--navbar-height); }
+
 .text-forest { color: var(--color-forest); }
 .text-mountain { color: var(--color-mountain); }
 .text-accent { color: var(--color-accent); }
@@ -66,6 +70,7 @@ body {
 .text-muted { color: var(--color-slate-light); }
 
 .bg-forest { background-color: var(--color-forest); }
+.bg-gradient-forest { background: linear-gradient(135deg, var(--color-forest), var(--color-forest-light)); }
 .bg-mountain { background-color: var(--color-mountain); }
 .bg-beige { background-color: var(--color-beige); }
 .bg-accent { background-color: var(--color-accent); }
@@ -111,6 +116,14 @@ body {
   background: var(--color-snow);
   border-radius: var(--radius-card);
   overflow: hidden;
+}
+
+.bg-hero-overlay {
+  background: linear-gradient(to bottom, rgba(10,25,18,0.5) 0%, rgba(10,25,18,0.7) 60%, rgba(15,41,32,0.9) 100%);
+}
+
+.shadow-hero {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
 }
 
 /* Focus styles for accessibility */

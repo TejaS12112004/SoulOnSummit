@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { HTMLMotionProps } from "framer-motion"
+import type { HTMLMotionProps } from "framer-motion"
 
 export interface Trek {
   id: string
