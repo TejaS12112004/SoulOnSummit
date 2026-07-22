@@ -18,6 +18,7 @@
   --color-slate: #1C2B3A;
   --color-slate-muted: #4A5568;
   --color-slate-light: #718096;
+  --color-image-placeholder: #D1C9BC;
 
   --radius-card: 20px;
   --radius-btn: 12px;
@@ -124,6 +125,22 @@ body {
 
 .shadow-hero {
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.shadow-forest {
+  box-shadow: 0 12px 40px rgba(31,77,58,0.1);
+}
+
+.rounded-card {
+  border-radius: var(--radius-card);
+}
+
+.bg-category-overlay {
+  background: linear-gradient(to top, rgba(15,41,32,0.85) 0%, rgba(15,41,32,0.1) 60%);
+}
+
+.bg-gradient-forest-tint {
+  background: linear-gradient(135deg, #E8F4EF, #D1EAE0);
 }
 
 /* Focus styles for accessibility */
