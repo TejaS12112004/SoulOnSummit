@@ -12,10 +12,10 @@ export function Testimonials() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-24 px-6 bg-white" aria-labelledby="testimonials-title">
+    <section className="py-32 px-6 bg-white" aria-labelledby="testimonials-title">
       <div className="max-w-[1100px] mx-auto">
         <motion.div
-          className="text-center mb-14"
+          className="text-center mb-20"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -30,7 +30,7 @@ export function Testimonials() {
           <motion.h2
             variants={fadeInUp}
             id="testimonials-title"
-            className="font-display text-4xl lg:text-5xl font-bold text-slate"
+            className="font-display text-4xl lg:text-5xl font-bold text-foreground"
           >
             {TESTIMONIALS_SECTION.title}
           </motion.h2>
@@ -42,7 +42,7 @@ export function Testimonials() {
             <button
               key={testimonial.id}
               type="button"
-              className="text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-card"
+              className="text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl"
               onClick={() => setActiveIndex(i)}
               aria-pressed={i === activeIndex}
               aria-label={`View testimonial from ${testimonial.name}`}
@@ -63,7 +63,7 @@ export function Testimonials() {
               aria-label={`Go to testimonial ${i + 1}`}
               onClick={() => setActiveIndex(i)}
               className={cn(
-                "h-2 rounded-full border-none transition-all duration-300 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
+                "h-2 rounded-full border-none transition-all duration-200 ease-out cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
                 i === activeIndex ? "w-7 bg-forest" : "w-2 bg-image-placeholder"
               )}
             />

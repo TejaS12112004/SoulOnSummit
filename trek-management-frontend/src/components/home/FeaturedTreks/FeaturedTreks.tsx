@@ -11,10 +11,10 @@ export function FeaturedTreks() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-24 px-6 bg-beige" aria-labelledby="featured-treks-title">
+    <section className="py-32 px-6 bg-beige" aria-labelledby="featured-treks-title">
       <div className="container mx-auto">
         <motion.div 
-          className="text-center mb-14"
+          className="text-center mb-20"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -23,10 +23,10 @@ export function FeaturedTreks() {
           <motion.div variants={fadeInUp} className="text-accent text-[0.78rem] tracking-wider uppercase font-semibold mb-3">
             {FEATURED_TREKS_SECTION.label}
           </motion.div>
-          <motion.h2 variants={fadeInUp} id="featured-treks-title" className="font-display text-4xl lg:text-5xl font-bold text-slate">
+          <motion.h2 variants={fadeInUp} id="featured-treks-title" className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-bold text-foreground leading-[1.1]">
             {FEATURED_TREKS_SECTION.title}
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-muted mt-4 max-w-[480px] mx-auto leading-[1.7]">
+          <motion.p variants={fadeInUp} className="text-muted-foreground mt-5 max-w-[540px] mx-auto text-[1.05rem] leading-relaxed">
             {FEATURED_TREKS_SECTION.description}
           </motion.p>
         </motion.div>
@@ -37,8 +37,8 @@ export function FeaturedTreks() {
           ))}
         </div>
 
-        <div className="text-center mt-12">
-          <Button asChild className="bg-forest text-white hover:bg-forest/90 px-10 py-3.5 text-base rounded-xl h-auto">
+        <div className="text-center mt-16">
+          <Button asChild className="bg-forest text-white hover:bg-forest/90 px-12 py-4 text-[1.05rem] rounded-xl h-auto font-medium transition-transform active:scale-95">
             <Link to={FEATURED_TREKS_SECTION.viewAllLink}>
               {FEATURED_TREKS_SECTION.viewAllText}
             </Link>

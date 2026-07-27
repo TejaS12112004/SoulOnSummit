@@ -9,14 +9,14 @@ export function WhyChooseUs() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-24 px-6 bg-beige" aria-labelledby="why-choose-us-title">
+    <section className="py-32 px-6 bg-beige" aria-labelledby="why-choose-us-title">
       {/*
         max-w-[1100px] is intentional — matches the Figma layout which is narrower
         than the standard PageContainer (max-w-7xl / 1280px).
       */}
       <div className="max-w-[1100px] mx-auto">
         <motion.div
-          className="text-center mb-14"
+          className="text-center mb-20"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -31,7 +31,7 @@ export function WhyChooseUs() {
           <motion.h2
             variants={fadeInUp}
             id="why-choose-us-title"
-            className="font-display text-4xl lg:text-5xl font-bold text-slate"
+            className="font-display text-4xl lg:text-5xl font-bold text-foreground"
           >
             {WHY_CHOOSE_US_SECTION.title}
           </motion.h2>

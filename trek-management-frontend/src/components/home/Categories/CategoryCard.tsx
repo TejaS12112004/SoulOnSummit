@@ -9,7 +9,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link
       to={category.href}
-      className="group relative h-[200px] rounded-card overflow-hidden block bg-image-placeholder focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+      className="group relative h-[200px] rounded-2xl overflow-hidden block bg-image-placeholder focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       aria-label={`Explore ${category.name} treks`}
     >
       {/* Decorative background image */}

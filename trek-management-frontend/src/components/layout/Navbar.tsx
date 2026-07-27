@@ -33,7 +33,7 @@ export function Navbar() {
     <motion.header
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-200 h-navbar flex items-center",
-        solid ? "bg-white shadow-[0_2px_24px_rgba(28,43,58,0.08)]" : "bg-transparent"
+        solid ? "bg-white shadow-sm" : "bg-transparent"
       )}
       initial={false}
       role="banner"
@@ -62,7 +62,7 @@ export function Navbar() {
               </>
             )}
             <Button 
-              className="btn-primary rounded-full px-[22px] py-[10px] text-[0.88rem]"
+              className="btn-primary rounded-xl px-6 py-2.5 text-sm"
               asChild
             >
               <Link to="/treks">Book Now</Link>

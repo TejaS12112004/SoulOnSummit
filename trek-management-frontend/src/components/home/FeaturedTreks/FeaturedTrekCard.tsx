@@ -1,84 +1,84 @@
 import { Link } from 'react-router-dom';
 import { Star, MapPin, Clock3 } from 'lucide-react';
 import { cn } from '@/utils/cn';
+import { toTrekDetail } from '@/constants/routes';
 import { getDifficultyColor } from '@/utils/difficulty';
 import { formatCurrency } from '@/utils/formatters/currency';
-import type { Trek } from '@/types/trek';
+import type { HomeFeaturedTrekViewModel } from '@/types/home';
 
 interface FeaturedTrekCardProps {
-  trek: Trek;
+  trek: HomeFeaturedTrekViewModel;
 }
 
 export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
   return (
-    <div className="card group cursor-pointer hover:shadow-lg transition-shadow duration-300">
-      <Link to={`/treks/${trek.id}`} className="block focus-visible:outline-none">
-        <div className="relative h-[220px] overflow-hidden bg-image-placeholder">
+    <Link 
+      to={toTrekDetail(trek.id)} 
+      className="card flex flex-col group cursor-pointer hover:-translate-y-1.5 hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] transition-all duration-400 ease-out focus-visible:outline-none bg-card rounded-2xl overflow-hidden border border-border/40"
+    >
+      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           <img
-            src={trek.image}
-            alt={trek.name}
+            src={trek.coverImageUrl}
+            alt={trek.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" aria-hidden="true" />
-          <div className="absolute top-3.5 left-3.5">
-            <span className={cn("px-2.5 py-1 rounded text-xs font-semibold", getDifficultyColor(trek.difficulty))}>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" aria-hidden="true" />
+          <div className="absolute top-4 left-4">
+            <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase shadow-sm", getDifficultyColor(trek.difficulty))}>
               {trek.difficulty}
             </span>
           </div>
-          <div className="absolute bottom-3.5 right-3.5 bg-black/55 text-white rounded-lg px-2.5 py-1 text-[0.78rem] font-semibold">
-            {trek.maxAltitude}
+          <div className="absolute bottom-4 left-4 right-4 flex justify-end">
+            <div className="bg-black/70 backdrop-blur-md text-white rounded-lg px-3 py-1.5 text-[11px] font-bold border border-white/20 shadow-lg">
+              {trek.maxAltitude}
+            </div>
           </div>
         </div>
 
-        <div className="p-5 pb-6">
-          <h3 className="font-bold text-[1.05rem] text-slate mb-1.5 group-hover:text-forest transition-colors">
-            {trek.name}
+        <div className="p-6 flex flex-col flex-grow">
+          <h3 className="font-display font-bold text-2xl text-foreground mb-1 group-hover:text-forest transition-colors line-clamp-2">
+            {trek.title}
           </h3>
-          <div className="text-muted text-[0.82rem] mb-3.5 flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5" />
-            {trek.location}
-          </div>
-
-          <div className="flex gap-4 mb-3.5 text-[0.82rem] text-slate-600">
-            <span className="flex items-center gap-1">
-              <Clock3 className="w-3.5 h-3.5" />
-              {trek.duration}
+          
+          <div className="flex items-baseline gap-2.5 mb-4">
+            <span className="text-[1.35rem] font-bold text-accent tracking-tight">
+              {formatCurrency(trek.price)}
             </span>
-            <span className="flex items-center gap-1">
-              <Star className="w-3.5 h-3.5 fill-accent text-accent" />
-              {trek.rating} ({trek.reviewCount})
+            <span className="line-through text-muted-foreground/50 text-[0.8rem] font-medium">
+              {formatCurrency(trek.originalPrice)}
             </span>
           </div>
 
-          <div className="flex justify-between items-center py-3 border-y border-beige-dark mb-4">
-            <div>
-              <div className="text-[0.75rem] text-muted">Next Batch</div>
-              <div className="text-[0.88rem] font-semibold text-forest">{trek.nextBatch}</div>
-            </div>
-            <div className="text-right">
-              <div className="text-[0.75rem] text-muted">Seats Left</div>
-              <div className={cn("text-[0.88rem] font-semibold", trek.seatsLeft <= 5 ? "text-red-600" : "text-forest")}>
-                {trek.seatsLeft} only!
-              </div>
-            </div>
+          <div className="text-muted-foreground/75 text-[0.85rem] mb-5 flex items-center gap-2">
+            <MapPin className="w-4 h-4 text-primary/70 shrink-0" />
+            <span className="truncate">{trek.location}</span>
           </div>
 
-          <div className="flex justify-between items-center">
-            <div>
-              <span className="line-through text-gray-400 text-[0.82rem] mr-1.5">
-                {formatCurrency(trek.originalPrice)}
+          <div className="flex flex-wrap gap-x-5 gap-y-3 mb-7 text-[0.8rem] text-muted-foreground/60 font-medium">
+            <span className="flex items-center gap-1.5">
+              <Clock3 className="w-4 h-4 opacity-80" />
+              {trek.durationDays} Days
+            </span>
+            <span className="flex items-center gap-1.5">
+              <Star className="w-4 h-4 fill-accent text-accent opacity-90" />
+              <span className="text-muted-foreground/80">{trek.rating}</span> ({trek.reviewCount})
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="opacity-60">Next:</span> <span className="text-muted-foreground/80">{trek.nextBatch}</span>
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className={cn(trek.seatsLeft <= 5 ? "text-destructive/90 font-semibold" : "")}>
+                {trek.seatsLeft} seats left
               </span>
-              <span className="text-[1.15rem] font-bold text-forest">
-                {formatCurrency(trek.price)}
-              </span>
-              <span className="text-muted text-[0.78rem]">/person</span>
-            </div>
-            <div className="bg-forest text-white px-4 py-2 text-[0.85rem] rounded-lg font-medium transition-colors group-hover:bg-forest/90">
+            </span>
+          </div>
+
+          <div className="mt-auto pt-5 border-t border-border/40">
+            <div className="flex justify-center items-center w-full bg-muted/40 text-foreground/90 px-5 py-3.5 text-[0.9rem] rounded-xl font-bold transition-all duration-300 group-hover:bg-forest group-hover:text-white group-hover:shadow-md">
               View Details
             </div>
           </div>
         </div>
-      </Link>
-    </div>
+    </Link>
   );
 }

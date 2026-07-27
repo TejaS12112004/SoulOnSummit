@@ -9,10 +9,10 @@ export function Categories() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-24 px-6 bg-white" aria-labelledby="categories-title">
+    <section className="py-32 px-6 bg-white" aria-labelledby="categories-title">
       <div className="container mx-auto">
         <motion.div
-          className="text-center mb-14"
+          className="text-center mb-20"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -27,7 +27,7 @@ export function Categories() {
           <motion.h2
             variants={fadeInUp}
             id="categories-title"
-            className="font-display text-4xl lg:text-5xl font-bold text-slate"
+            className="font-display text-4xl lg:text-5xl font-bold text-foreground"
           >
             {CATEGORIES_SECTION.title}
           </motion.h2>

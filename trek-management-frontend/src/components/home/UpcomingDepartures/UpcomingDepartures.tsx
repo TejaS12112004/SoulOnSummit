@@ -9,11 +9,11 @@ export function UpcomingDepartures() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-24 px-6 bg-forest" aria-labelledby="upcoming-departures-title">
+    <section className="py-32 px-6 bg-forest" aria-labelledby="upcoming-departures-title">
       {/* max-w-[1100px] intentional — matches Figma layout narrower than PageContainer */}
       <div className="max-w-[1100px] mx-auto">
         <motion.div
-          className="text-center mb-14"
+          className="text-center mb-20"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -42,7 +42,7 @@ export function UpcomingDepartures() {
           viewport={{ once: true, margin: "-80px" }}
         >
           {UPCOMING_DEPARTURES.map((dep) => (
-            <motion.div key={dep.id} variants={fadeInUp}>
+            <motion.div key={dep.departureId} variants={fadeInUp}>
               <DepartureCard departure={dep} />
             </motion.div>
           ))}
