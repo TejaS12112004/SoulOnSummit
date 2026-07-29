@@ -8,8 +8,8 @@ const makeQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 2,      // 2 min — most trek/booking data is not real-time
-        gcTime: 1000 * 60 * 10,        // 10 min cache
+        staleTime: 1000 * 60 * 5,      // 5 min — most trek/booking data is not real-time
+        gcTime: 1000 * 60 * 15,        // 15 min cache
         retry: (failureCount, error) => {
           const apiError = error as unknown as ApiError
           // Never retry on 4xx client errors

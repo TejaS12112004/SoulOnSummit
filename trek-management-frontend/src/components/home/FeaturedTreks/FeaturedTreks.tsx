@@ -5,45 +5,110 @@ import { FEATURED_TREKS_SECTION, FEATURED_TREKS } from '@/constants/home';
 import { getStaggerContainer, getFadeInUp } from '@/constants/motion';
 import { motion, useReducedMotion } from 'framer-motion';
 
+const SECTION_BG = '#1A1A0F';
+
 export function FeaturedTreks() {
   const shouldReduceMotion = useReducedMotion();
   const staggerContainer = getStaggerContainer(shouldReduceMotion ?? false);
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-32 px-6 bg-beige" aria-labelledby="featured-treks-title">
+    <section
+      style={{ background: SECTION_BG, padding: '88px 24px 0' }}
+      aria-labelledby="featured-treks-title"
+    >
       <div className="container mx-auto">
-        <motion.div 
-          className="text-center mb-20"
+
+        {/* Section header — fully centered */}
+        <motion.div
+          style={{ textAlign: 'center', marginBottom: '56px' }}
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
         >
-          <motion.div variants={fadeInUp} className="text-accent text-[0.78rem] tracking-wider uppercase font-semibold mb-3">
+          <motion.div
+            variants={fadeInUp}
+            style={{
+              color: '#F59E0B',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-sans-custom)',
+              marginBottom: '16px',
+            }}
+          >
             {FEATURED_TREKS_SECTION.label}
           </motion.div>
-          <motion.h2 variants={fadeInUp} id="featured-treks-title" className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-bold text-foreground leading-[1.1]">
+
+          <motion.h2
+            variants={fadeInUp}
+            id="featured-treks-title"
+            style={{
+              fontFamily: 'var(--font-display-custom)',
+              fontSize: 'clamp(2.6rem, 5vw, 4rem)',
+              fontWeight: 800,
+              color: '#F0EBE0',
+              lineHeight: 1.08,
+              letterSpacing: '-0.02em',
+              marginBottom: '20px',
+            }}
+          >
             {FEATURED_TREKS_SECTION.title}
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-muted-foreground mt-5 max-w-[540px] mx-auto text-[1.05rem] leading-relaxed">
+
+          <motion.p
+            variants={fadeInUp}
+            style={{
+              color: 'rgba(240,235,224,0.5)',
+              fontSize: '1.05rem',
+              maxWidth: '500px',
+              margin: '0 auto',
+              lineHeight: 1.7,
+              fontFamily: 'var(--font-sans-custom)',
+            }}
+          >
             {FEATURED_TREKS_SECTION.description}
           </motion.p>
         </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+
+        {/* Cards grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+            gap: '20px',
+          }}
+        >
           {FEATURED_TREKS.map((trek) => (
             <FeaturedTrekCard key={trek.id} trek={trek} />
           ))}
         </div>
 
-        <div className="text-center mt-16">
-          <Button asChild className="bg-forest text-white hover:bg-forest/90 px-12 py-4 text-[1.05rem] rounded-xl h-auto font-medium transition-transform active:scale-95">
+        {/* Gap + View All button */}
+        <div style={{ textAlign: 'center', padding: '56px 0 88px' }}>
+          <Button
+            asChild
+            style={{
+              background: '#1F4D3A',
+              color: '#F0EBE0',
+              borderRadius: '9999px',
+              height: '52px',
+              paddingLeft: '44px',
+              paddingRight: '44px',
+              fontSize: '1rem',
+              fontWeight: 600,
+              fontFamily: 'var(--font-sans-custom)',
+              border: 'none',
+            }}
+          >
             <Link to={FEATURED_TREKS_SECTION.viewAllLink}>
               {FEATURED_TREKS_SECTION.viewAllText}
             </Link>
           </Button>
         </div>
+
       </div>
     </section>
   );

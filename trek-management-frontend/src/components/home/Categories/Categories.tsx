@@ -9,40 +9,68 @@ export function Categories() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-32 px-6 bg-white" aria-labelledby="categories-title">
+    <section
+      style={{ background: '#111110', padding: '88px 24px 96px' }}
+      aria-labelledby="categories-title"
+    >
       <div className="container mx-auto">
+
+        {/* Header */}
         <motion.div
-          className="text-center mb-20"
+          style={{ textAlign: 'center', marginBottom: '52px' }}
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
         >
           <motion.div
             variants={fadeInUp}
-            className="text-accent text-[0.78rem] tracking-wider uppercase font-semibold mb-3"
+            style={{
+              color: '#F59E0B',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-sans-custom)',
+              marginBottom: '14px',
+            }}
           >
             {CATEGORIES_SECTION.label}
           </motion.div>
           <motion.h2
             variants={fadeInUp}
             id="categories-title"
-            className="font-display text-4xl lg:text-5xl font-bold text-foreground"
+            style={{
+              fontFamily: 'var(--font-display-custom)',
+              fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
+              fontWeight: 700,
+              color: '#F0EBE0',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+            }}
           >
             {CATEGORIES_SECTION.title}
           </motion.h2>
         </motion.div>
 
-        {/*
-          Grid: 2-col on mobile, 3-col on sm, 6-col on lg.
-          Matches the Figma auto-fill minmax(220px, 1fr) intent
-          while being fully responsive at all tested breakpoints.
-        */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
+        {/* 5-column landscape grid */}
+        <motion.div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(5, 1fr)',
+            gap: '16px',
+          }}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+        >
           {CATEGORIES.map((cat) => (
-            <CategoryCard key={cat.href} category={cat} />
+            <motion.div key={cat.href} variants={fadeInUp}>
+              <CategoryCard category={cat} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

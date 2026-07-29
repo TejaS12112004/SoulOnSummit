@@ -9,23 +9,72 @@ export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link
       to={category.href}
-      className="group relative h-[200px] rounded-2xl overflow-hidden block bg-image-placeholder focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
       aria-label={`Explore ${category.name} treks`}
+      style={{
+        position: 'relative',
+        display: 'block',
+        height: '260px',
+        borderRadius: '18px',
+        overflow: 'hidden',
+        textDecoration: 'none',
+        background: '#1a1a18',
+      }}
     >
-      {/* Decorative background image */}
+      {/* Background image */}
       <img
         src={category.image}
         alt=""
         aria-hidden="true"
-        className="w-full h-full object-cover transition-transform duration-400 group-hover:scale-[1.08]"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          transition: 'transform 0.5s ease',
+          display: 'block',
+        }}
+        className="group-hover:[transform:scale(1.08)]"
       />
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-category-overlay" aria-hidden="true" />
-      {/* Content */}
-      <div className="absolute bottom-0 left-0 right-0 px-[18px] py-4">
-        <div className="text-2xl mb-1" aria-hidden="true">{category.icon}</div>
-        <div className="text-white font-bold text-base">{category.name}</div>
-        <div className="text-white/65 text-[0.78rem]">{category.count} treks</div>
+
+      {/* Gradient overlay — heavier at bottom */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)',
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Content — bottom left */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          padding: '16px 18px 18px',
+        }}
+      >
+        <div style={{ fontSize: '1.4rem', marginBottom: '4px', lineHeight: 1 }} aria-hidden="true">
+          {category.icon}
+        </div>
+        <div style={{
+          color: '#FFFFFF',
+          fontWeight: 700,
+          fontSize: '1.05rem',
+          fontFamily: 'var(--font-sans-custom)',
+          lineHeight: 1.2,
+          marginBottom: '3px',
+        }}>
+          {category.name}
+        </div>
+        <div style={{
+          color: 'rgba(255,255,255,0.6)',
+          fontSize: '0.78rem',
+          fontFamily: 'var(--font-sans-custom)',
+        }}>
+          {category.count} treks
+        </div>
       </div>
     </Link>
   );

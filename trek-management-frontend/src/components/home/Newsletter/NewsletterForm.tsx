@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { NEWSLETTER_SECTION } from '@/constants/home';
-import { cn } from '@/utils/cn';
 
 export function NewsletterForm() {
   const [email, setEmail] = useState('');
@@ -14,58 +13,72 @@ export function NewsletterForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      setError('Please enter your email address.');
-      return;
-    }
-    if (!validateEmail(email)) {
-      setError('Please enter a valid email address.');
-      return;
-    }
+    if (!email.trim()) { setError('Please enter your email address.'); return; }
+    if (!validateEmail(email)) { setError('Please enter a valid email address.'); return; }
     setError('');
-    // Placeholder — will connect to POST /api/v1/newsletter/subscribe
-    setEmail('');          // reset field before showing success
+    setEmail('');
     setSubscribed(true);
   };
 
   if (subscribed) {
     return (
-      <div className="bg-accent/15 border border-accent/30 rounded-xl px-6 py-4 text-accent font-semibold text-center">
+      <div style={{
+        background: 'rgba(110,231,183,0.12)',
+        border: '1px solid rgba(110,231,183,0.3)',
+        borderRadius: '12px',
+        padding: '16px 24px',
+        color: '#6EE7B7',
+        fontWeight: 600,
+        textAlign: 'center',
+        fontFamily: 'var(--font-sans-custom)',
+      }}>
         ✓ {NEWSLETTER_SECTION.successMessage}
       </div>
     );
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      noValidate
-      aria-label="Newsletter subscription form"
-    >
-      <div className="flex gap-3 max-w-[460px] mx-auto flex-wrap">
-        <div className="flex-1 min-w-[200px]">
+    <form onSubmit={handleSubmit} noValidate aria-label="Newsletter subscription form">
+      {/* Email input and Subscribe button side by side */}
+      <div style={{
+        display: 'flex',
+        gap: '12px',
+        maxWidth: '520px',
+        margin: '0 auto',
+      }}>
+        <div style={{ flex: 1 }}>
           <Input
             type="email"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (error) setError('');
-            }}
+            onChange={(e) => { setEmail(e.target.value); if (error) setError(''); }}
             placeholder={NEWSLETTER_SECTION.placeholder}
             aria-label="Email address"
-            aria-describedby={error ? "newsletter-error" : undefined}
+            aria-describedby={error ? 'newsletter-error' : undefined}
             aria-invalid={!!error}
-            className={cn(
-              "h-12 rounded-xl border-white/10 bg-white/10 text-white placeholder:text-white/45",
-              "focus-visible:border-accent/60 focus-visible:ring-accent/30 focus-visible:ring-2 focus-visible:outline-none",
-              "text-base px-4"
-            )}
+            style={{
+              height: '52px',
+              borderRadius: '12px',
+              border: '1px solid rgba(240,235,224,0.12)',
+              background: 'rgba(240,235,224,0.06)',
+              color: '#F0EBE0',
+              fontSize: '0.95rem',
+              fontFamily: 'var(--font-sans-custom)',
+              padding: '0 18px',
+              width: '100%',
+            }}
+            className="placeholder:text-white/40 focus-visible:ring-0 focus-visible:border-white/25"
           />
           {error && (
             <p
               id="newsletter-error"
               role="alert"
-              className="text-accent text-[0.78rem] mt-1.5 text-left"
+              style={{
+                color: '#FCA5A5',
+                fontSize: '0.78rem',
+                marginTop: '6px',
+                textAlign: 'left',
+                fontFamily: 'var(--font-sans-custom)',
+              }}
             >
               {error}
             </p>
@@ -73,7 +86,20 @@ export function NewsletterForm() {
         </div>
         <Button
           type="submit"
-          className="btn-primary px-7 py-3 h-auto rounded-xl shrink-0 text-base"
+          style={{
+            background: '#F59E0B',
+            color: '#1C2B3A',
+            borderRadius: '12px',
+            height: '52px',
+            paddingLeft: '28px',
+            paddingRight: '28px',
+            fontSize: '0.95rem',
+            fontWeight: 700,
+            fontFamily: 'var(--font-sans-custom)',
+            border: 'none',
+            flexShrink: 0,
+            cursor: 'pointer',
+          }}
         >
           {NEWSLETTER_SECTION.submitLabel}
         </Button>

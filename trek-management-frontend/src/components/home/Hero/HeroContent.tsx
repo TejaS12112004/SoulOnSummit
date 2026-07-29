@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { Mountain, Play } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { HeroSearch } from './HeroSearch';
@@ -31,58 +32,151 @@ export function HeroContent({
   const staggerContainer = getStaggerContainer(shouldReduceMotion ?? false);
 
   return (
-    <div className="relative text-center px-6 w-full max-w-[900px] mx-auto z-10">
-      <motion.div 
+    <div
+      className="relative text-center px-6 w-full max-w-[1000px] mx-auto z-10"
+      style={{ marginTop: '0px' }}
+    >
+      <motion.div
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
         className="flex flex-col items-center"
       >
+        {/* Label */}
         {label && (
-          <motion.div variants={fadeInUp} className="text-accent mb-6 text-[0.78rem] font-semibold">
+          <motion.div
+            variants={fadeInUp}
+            className="mb-5 flex items-center gap-2"
+            style={{
+              color: '#F59E0B',
+              fontSize: '0.68rem',
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-sans-custom)',
+            }}
+          >
+            <span style={{ fontSize: '0.55rem' }}>✦</span>
             {label}
+            <span style={{ fontSize: '0.55rem' }}>✦</span>
           </motion.div>
         )}
-        
-        <motion.h1 
-          variants={fadeInUp} 
-          className="font-display text-[clamp(2.4rem,6vw,4.5rem)] font-bold text-white leading-[1.15] mb-6 tracking-[-0.02em]"
+
+        {/* Main headline — sized to fit one line at normal desktop widths */}
+        <motion.h1
+          variants={fadeInUp}
+          style={{
+            fontFamily: 'var(--font-display-custom)',
+            fontSize: 'clamp(2rem, 4.2vw, 4rem)',
+            fontWeight: 800,
+            color: '#FFFFFF',
+            lineHeight: 1.08,
+            letterSpacing: '-0.02em',
+            marginBottom: titleHighlight ? '0' : '0.6em',
+          }}
         >
           {title}
           {titleHighlight && (
-            <>
-              <br />
-              <span className="italic text-accent">{titleHighlight}</span>
-            </>
+            <span
+              style={{
+                display: 'block',
+                fontStyle: 'italic',
+                color: '#F59E0B',
+                fontSize: 'clamp(1.8rem, 3.8vw, 3.6rem)',
+                fontWeight: 700,
+                lineHeight: 1.12,
+                marginTop: '0.04em',
+                marginBottom: '0.45em',
+              }}
+            >
+              {titleHighlight}
+            </span>
           )}
         </motion.h1>
-        
-        <motion.p 
-          variants={fadeInUp} 
-          className="text-[clamp(1rem,2vw,1.2rem)] text-white/75 mb-10 max-w-[560px] mx-auto leading-[1.7]"
+
+        {/* Subtitle */}
+        <motion.p
+          variants={fadeInUp}
+          style={{
+            fontSize: 'clamp(0.95rem, 1.4vw, 1.1rem)',
+            color: 'rgba(255,255,255,0.88)',
+            marginBottom: '2.2rem',
+            maxWidth: '580px',
+            lineHeight: 1.75,
+            fontWeight: 400,
+            fontFamily: 'var(--font-sans-custom)',
+          }}
         >
           {subtitle}
         </motion.p>
 
-        <motion.div variants={fadeInUp} className="w-full mb-8">
-          <HeroSearch 
-            placeholder={searchPlaceholder} 
-            onSearch={handleSearch} 
-          />
+        {/* Search bar */}
+        <motion.div
+          variants={fadeInUp}
+          style={{ marginBottom: '1.4rem', display: 'flex', justifyContent: 'center', width: '100%' }}
+        >
+          <HeroSearch placeholder={searchPlaceholder} onSearch={handleSearch} />
         </motion.div>
 
         {/* CTA Buttons */}
-        <motion.div variants={fadeInUp} className="flex gap-4 justify-center flex-wrap">
-          <Button asChild className="btn-primary px-8 py-[14px] text-base h-auto rounded-xl">
-            <Link to={primaryCTA.href}>{primaryCTA.label}</Link>
+        <motion.div
+          variants={fadeInUp}
+          className="flex gap-4 justify-center flex-wrap items-center"
+          style={{ marginTop: '0.4rem' }}
+        >
+          <Button
+            asChild
+            style={{
+              background: '#F59E0B',
+              color: '#1C2B3A',
+              borderRadius: '9999px',
+              height: '52px',
+              minWidth: '182px',
+              fontSize: '0.95rem',
+              fontWeight: 700,
+              fontFamily: 'var(--font-sans-custom)',
+              border: 'none',
+              boxShadow: '0 4px 20px rgba(245,158,11,0.35)',
+              gap: '10px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingLeft: '26px',
+              paddingRight: '26px',
+            }}
+          >
+            <Link to={primaryCTA.href}>
+              <Mountain className="w-[16px] h-[16px]" style={{ opacity: 0.8 }} />
+              {primaryCTA.label}
+            </Link>
           </Button>
+
           {secondaryCTA && (
-            <Button 
-              asChild 
-              variant="ghost" 
-              className="text-white hover:bg-white/10 hover:text-white px-8 py-[14px] text-base h-auto rounded-xl"
+            <Button
+              asChild
+              style={{
+                background: 'rgba(255,255,255,0.04)',
+                color: '#FFFFFF',
+                borderRadius: '9999px',
+                height: '52px',
+                minWidth: '182px',
+                fontSize: '0.95rem',
+                fontWeight: 700,
+                fontFamily: 'var(--font-sans-custom)',
+                border: '1.5px solid rgba(255,255,255,0.3)',
+                gap: '10px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingLeft: '26px',
+                paddingRight: '26px',
+                backdropFilter: 'blur(4px)',
+              }}
             >
-              <Link to={secondaryCTA.href}>{secondaryCTA.label}</Link>
+              <Link to={secondaryCTA.href}>
+                <Play className="w-[14px] h-[14px]" style={{ fill: 'white', opacity: 0.9 }} />
+                {secondaryCTA.label}
+              </Link>
             </Button>
           )}
         </motion.div>

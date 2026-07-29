@@ -9,24 +9,48 @@ export function GalleryImage({ image }: GalleryImageProps) {
   const content = (
     <>
       <img
-        src={`https://images.unsplash.com/${image.id}?w=400&h=400&fit=crop&auto=format`}
+        src={image.url}
         alt={image.alt}
         loading="lazy"
         decoding="async"
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.08]"
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+          transition: 'transform 0.5s ease',
+          display: 'block',
+        }}
+        className="group-hover:[transform:scale(1.08)]"
       />
-      {/* Hover overlay — opacity-0 by default, visible on group-hover */}
+      {/* Hover overlay with heart */}
       <div
-        className="absolute inset-0 bg-forest-dark/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 ease-out"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'rgba(0,0,0,0.35)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: 0,
+          transition: 'opacity 0.2s ease',
+        }}
+        className="group-hover:opacity-100"
         aria-hidden="true"
       >
-        <Heart className="w-8 h-8 text-white" />
+        <Heart style={{ width: '28px', height: '28px', color: '#FFFFFF' }} />
       </div>
     </>
   );
 
-  // If href is provided, wrap in an anchor for Instagram deep-link integration.
-  // Otherwise render a plain div — no cursor-pointer on a non-interactive element.
+  const sharedStyle: React.CSSProperties = {
+    position: 'relative',
+    aspectRatio: '1 / 1',
+    borderRadius: '16px',
+    overflow: 'hidden',
+    background: '#1a1a18',
+    display: 'block',
+  };
+
   if (image.href) {
     return (
       <a
@@ -34,7 +58,8 @@ export function GalleryImage({ image }: GalleryImageProps) {
         target="_blank"
         rel="noopener noreferrer"
         aria-label={image.alt}
-        className="group aspect-square rounded-2xl overflow-hidden bg-image-placeholder relative block"
+        className="group"
+        style={sharedStyle}
       >
         {content}
       </a>
@@ -42,7 +67,7 @@ export function GalleryImage({ image }: GalleryImageProps) {
   }
 
   return (
-    <div className="group aspect-square rounded-2xl overflow-hidden bg-image-placeholder relative">
+    <div className="group" style={sharedStyle}>
       {content}
     </div>
   );

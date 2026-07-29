@@ -10,7 +10,9 @@ export interface PaginationProps {
   onPageSizeChange?: (size: number) => void
 }
 
-export function Pagination({ 
+import { memo } from 'react'
+
+export const Pagination = memo(function Pagination({ 
   currentPage, 
   totalPages, 
   onPageChange,
@@ -66,6 +68,7 @@ export function Pagination({
               key={pageNum}
               variant={currentPage === pageNum ? 'default' : 'ghost'}
               onClick={() => onPageChange(pageNum)}
+              aria-current={currentPage === pageNum ? 'page' : undefined}
               className="w-10 h-10 rounded-xl"
             >
               {pageNum + 1}
@@ -108,4 +111,4 @@ export function Pagination({
       )}
     </div>
   )
-}
+})

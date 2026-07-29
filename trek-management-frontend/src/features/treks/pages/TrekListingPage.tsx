@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Filter } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { toTrekDetail } from '@/constants/routes'
+import { QueryErrorState } from '@/components/ui'
 
 export default function TrekListingPage() {
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ export default function TrekListingPage() {
     return () => clearTimeout(timer)
   }, [filters])
 
-  const { data, isLoading, isError } = useTreks(debouncedFilters)
+  const { data, isLoading, isError, error, refetch } = useTreks(debouncedFilters)
 
   const treks = data?.content || []
   const totalCount = data?.totalElements || 0
@@ -89,9 +90,7 @@ export default function TrekListingPage() {
             />
 
             {isError ? (
-              <div className="p-8 text-center bg-destructive/10 text-destructive rounded-2xl border border-destructive/20">
-                Failed to load treks. Please try again later.
-              </div>
+              <QueryErrorState error={error} onRetry={refetch} />
             ) : (
               <motion.div
                 initial={{ opacity: 0 }}

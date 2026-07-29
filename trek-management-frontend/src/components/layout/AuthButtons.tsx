@@ -29,11 +29,11 @@ export function RegisterButton({ isScrolled = true, onClick }: AuthButtonProps) 
   return (
     <Button
       asChild
-      variant={isScrolled ? "outline" : "default"}
+      variant="outline"
       onClick={onClick}
       className={cn(
-        "hidden lg:inline-flex",
-        !isScrolled && "bg-white text-forest hover:bg-white/90 border-transparent shadow-none"
+        "hidden lg:inline-flex rounded-full bg-transparent transition-colors",
+        isScrolled ? "border-forest/30 text-forest hover:bg-forest/5" : "border-white/30 text-white hover:bg-white/10 hover:text-white"
       )}
     >
       <Link to="/register">

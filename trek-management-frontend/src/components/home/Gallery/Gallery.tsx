@@ -9,42 +9,79 @@ export function Gallery() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-24 bg-beige" aria-labelledby="gallery-title">
-      <div className="max-w-7xl mx-auto px-6">
+    <section
+      style={{ background: '#0F0F0E', padding: '88px 24px 96px' }}
+      aria-labelledby="gallery-title"
+    >
+      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+
+        {/* Header */}
         <motion.div
-          className="text-center mb-10"
+          style={{ textAlign: 'center', marginBottom: '48px' }}
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
         >
           <motion.div
             variants={fadeInUp}
-            className="text-accent text-[0.78rem] tracking-wider uppercase font-semibold mb-3"
+            style={{
+              color: '#F59E0B',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-sans-custom)',
+              marginBottom: '14px',
+            }}
           >
             {GALLERY_SECTION.label}
           </motion.div>
           <motion.h2
             variants={fadeInUp}
             id="gallery-title"
-            className="font-display text-4xl lg:text-5xl font-bold text-white"
+            style={{
+              fontFamily: 'var(--font-display-custom)',
+              fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
+              fontWeight: 700,
+              color: '#F0EBE0',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+              marginBottom: '12px',
+            }}
           >
             {GALLERY_SECTION.title}
           </motion.h2>
-          <motion.p variants={fadeInUp} className="text-muted mt-3 text-[0.9rem]">
+          <motion.p
+            variants={fadeInUp}
+            style={{
+              color: 'rgba(240,235,224,0.45)',
+              fontSize: '0.95rem',
+              fontFamily: 'var(--font-sans-custom)',
+            }}
+          >
             {GALLERY_SECTION.description}
           </motion.p>
         </motion.div>
 
-        {/*
-          Grid: responsive, matching Figma's auto-fill minmax(180px, 1fr).
-          2-col on 320px, 3-col on sm, 4-col on lg automatically.
-        */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {GALLERY_IMAGES.map((img: { id: string; url: string; alt: string }) => (
-            <GalleryImage key={img.id} image={img} />
+        {/* 6-image single-row horizontal grid */}
+        <motion.div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(6, 1fr)',
+            gap: '12px',
+          }}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-60px' }}
+        >
+          {GALLERY_IMAGES.map((img) => (
+            <motion.div key={img.id} variants={fadeInUp}>
+              <GalleryImage image={img} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

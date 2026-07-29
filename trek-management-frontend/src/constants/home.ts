@@ -8,15 +8,19 @@ import {
 } from 'lucide-react';
 
 export const HERO_DATA: HeroProps = {
-  label: "✨ Premium Trekking Experiences ✨",
+  label: "PREMIUM TREKKING EXPERIENCES",
   title: "Every Summit Has a Story.",
   titleHighlight: "Begin Yours.",
   subtitle: "Hand-crafted Himalayan adventures led by certified experts. Safety, soul, and summit — all in one journey.",
   backgroundImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&auto=format",
   scrollIndicatorText: "Scroll to explore",
   primaryCTA: {
-    label: "Explore Treks",
+    label: "View All Treks",
     href: "/treks"
+  },
+  secondaryCTA: {
+    label: "Watch Video",
+    href: "#"
   }
 };
 
@@ -94,46 +98,39 @@ export const CATEGORIES_SECTION = {
 
 export const CATEGORIES: Category[] = [
   {
-    name: "High Altitude",
-    image: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800",
+    name: "Himalayan Treks",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=800",
     icon: "🏔️",
-    count: 34,
-    href: "/treks?category=high-altitude"
+    count: 45,
+    href: "/treks?category=himalayan"
   },
   {
-    name: "Winter Treks",
-    image: "https://images.unsplash.com/photo-1491555103944-7c647fd857e6?auto=format&fit=crop&q=80&w=800",
-    icon: "❄️",
-    count: 18,
-    href: "/treks?category=winter"
+    name: "Weekend Treks",
+    image: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800",
+    icon: "🎒",
+    count: 38,
+    href: "/treks?category=weekend"
   },
   {
-    name: "Valley Walks",
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800",
-    icon: "🏞️",
+    name: "Backpacking",
+    image: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=800",
+    icon: "🎽",
     count: 22,
-    href: "/treks?category=valley"
+    href: "/treks?category=backpacking"
   },
   {
-    name: "Glacier Trek",
-    image: "https://images.unsplash.com/photo-1611843467160-25afb8df1074?auto=format&fit=crop&q=80&w=800",
-    icon: "🧊",
-    count: 11,
-    href: "/treks?category=glacier"
+    name: "Camping",
+    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800",
+    icon: "🔥",
+    count: 31,
+    href: "/treks?category=camping"
   },
   {
-    name: "Pilgrimage",
-    image: "https://images.unsplash.com/photo-1604608672516-5fb6e48d8a28?auto=format&fit=crop&q=80&w=800",
-    icon: "🛕",
-    count: 9,
-    href: "/treks?category=pilgrimage"
-  },
-  {
-    name: "Wildlife",
-    image: "https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&q=80&w=800",
-    icon: "🦅",
-    count: 7,
-    href: "/treks?category=wildlife"
+    name: "International Trips",
+    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=800",
+    icon: "✈️",
+    count: 15,
+    href: "/treks?category=international"
   }
 ];
 
@@ -147,33 +144,39 @@ export const WHY_CHOOSE_US_SECTION = {
 export const WHY_CHOOSE_US_FEATURES: Feature[] = [
   {
     icon: Compass,
-    title: "Expert-Led Expeditions",
-    desc: "Every trek is led by certified Himalayan guides with 10+ years of high-altitude experience and wilderness first-aid training."
+    emoji: "🧭",
+    title: "Certified Trek Leaders",
+    desc: "All our guides hold NIMAS & Wilderness First Responder certifications."
   },
   {
     icon: ShieldCheck,
-    title: "Safety First, Always",
-    desc: "We carry satellite communicators, emergency oxygen, and a dedicated rescue protocol on every expedition above 4,000m."
+    emoji: "🛡️",
+    title: "Safety First",
+    desc: "Comprehensive safety protocols and risk management on every trek."
   },
   {
     icon: Leaf,
-    title: "Leave No Trace",
-    desc: "Our treks follow strict LNT principles. We pack out all waste and actively restore trails in partnership with local communities."
+    emoji: "🩺",
+    title: "Medical Support",
+    desc: "Trained medical personnel and first-aid kits on all expeditions."
   },
   {
     icon: Backpack,
-    title: "All-Inclusive Packages",
-    desc: "Permits, accommodation, meals, transport, and equipment are bundled so you can focus entirely on the experience."
+    emoji: "🌿",
+    title: "Eco Friendly",
+    desc: "Leave no trace principles — we love the mountains, so we protect them."
   },
   {
     icon: MapPin,
-    title: "Small Group Sizes",
-    desc: "We cap groups at 12 trekkers to preserve trail quality, enable personalised attention, and minimise ecological impact."
+    emoji: "👥",
+    title: "Small Groups",
+    desc: "Maximum 12 trekkers per batch for a personal, immersive experience."
   },
   {
     icon: MessageCircle,
-    title: "24/7 Support",
-    desc: "From booking to summit, our operations team is always reachable. You're never alone on the mountain."
+    emoji: "💰",
+    title: "Best Price",
+    desc: "Transparent pricing, no hidden costs. Best price guarantee."
   }
 ];
 
@@ -242,61 +245,61 @@ export const TESTIMONIALS_SECTION = {
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: "1",
-    name: "Priya Sharma",
+    name: "Arjun Sharma",
     location: "Mumbai",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
     rating: 5,
-    text: "The Kashmir Great Lakes trek was life-changing. The guides were professional, the camping spots were stunning, and the safety protocols gave me complete confidence.",
-    trek: "Kashmir Great Lakes",
-    date: "June 2026"
+    text: "Absolutely life-changing experience! The guides were incredibly knowledgeable and the entire trip was perfectly organized. Standing at the summit with 360° views of the Himalayas is something I'll cherish forever.",
+    trek: "Kedarkantha Summit Trek",
+    date: "December 2024"
   },
   {
     id: "2",
-    name: "Rahul Mehta",
-    location: "Bangalore",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
+    name: "Priya Nair",
+    location: "Bengaluru",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=200",
     rating: 5,
-    text: "Reaching Everest Base Camp with Soul On Summit was the highlight of my decade. Immaculate organisation and the team's passion for the mountains is truly infectious.",
-    trek: "Everest Base Camp",
-    date: "October 2025"
+    text: "Soul On Summit made my dream trek a reality. The attention to detail, safety protocols, and the warmth of the team made it exceptional. The Valley of Flowers was beyond imagination!",
+    trek: "Valley of Flowers",
+    date: "July 2024"
   },
   {
     id: "3",
-    name: "Ananya Iyer",
-    location: "Chennai",
-    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
+    name: "Rohan Gupta",
+    location: "Delhi",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
     rating: 5,
-    text: "Valley of Flowers was a dream I had for years. Soul On Summit made it completely accessible, even for a first-time trekker like me. Highly recommended.",
-    trek: "Valley of Flowers",
-    date: "July 2026"
+    text: "The best trekking company I've ever used. Professional guides, excellent food, quality tents, and an itinerary that was both challenging and enjoyable. Already booked my next trek!",
+    trek: "Hampta Pass Crossing",
+    date: "August 2024"
   },
   {
     id: "4",
-    name: "Vikram Nair",
-    location: "Delhi",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
+    name: "Sneha Patel",
+    location: "Ahmedabad",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200",
     rating: 5,
-    text: "The small group size made all the difference. I felt like a guest, not a customer. The Roopkund circuit was breathtaking and every meal was surprisingly excellent.",
-    trek: "Roopkund Trek",
-    date: "September 2025"
+    text: "Perfect first trek! The team at Soul On Summit took great care of us first-timers. The moonlit camping at Triund was magical — stars so close you could almost touch them.",
+    trek: "Triund Moonlight Trek",
+    date: "October 2024"
   }
 ];
 
 // 🏔️ Sprint 3: Gallery 🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️
 
 export const GALLERY_SECTION = {
-  label: "Visual Journey",
-  title: "Moments Captured",
-  description: "A glimpse into the stunning landscapes and experiences that await you.",
+  label: "@SOULONSUMMIT",
+  title: "Life on the Trail",
+  description: "Follow our adventures on Instagram",
 };
 
 export const GALLERY_IMAGES = [
-  { id: "1", url: "https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&q=80&w=800", alt: "Gallery Image 1" },
-  { id: "2", url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800", alt: "Gallery Image 2" },
-  { id: "3", url: "https://images.unsplash.com/photo-1454496522488-7a8e488e8606?auto=format&fit=crop&q=80&w=800", alt: "Gallery Image 3" },
-  { id: "4", url: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=800", alt: "Gallery Image 4" },
-  { id: "5", url: "https://images.unsplash.com/photo-1611843467160-25afb8df1074?auto=format&fit=crop&q=80&w=800", alt: "Gallery Image 5" },
-  { id: "6", url: "https://images.unsplash.com/photo-1491555103944-7c647fd857e6?auto=format&fit=crop&q=80&w=800", alt: "Gallery Image 6" },
+  { id: "1", url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&q=80&w=600", alt: "Mountain panorama view" },
+  { id: "2", url: "https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80&w=600", alt: "Trekker on mountain trail" },
+  { id: "3", url: "https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&q=80&w=600", alt: "Backpacker by alpine lake" },
+  { id: "4", url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=600", alt: "Dramatic mountain sunset" },
+  { id: "5", url: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=600", alt: "Snow capped peaks" },
+  { id: "6", url: "https://images.unsplash.com/photo-1586348943529-beaae6c28db9?auto=format&fit=crop&q=80&w=600", alt: "Misty forest mountain trail" },
 ];
 
 // 🏔️ Sprint 3: Newsletter 🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️

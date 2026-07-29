@@ -10,6 +10,7 @@
  */
 
 import type { TrekFilterParams } from '@/types/api'
+import type { AdminFilters } from '@/features/admin/types'
 
 export const queryKeys = {
   // ── Auth ──────────────────────────────────────────────────────────
@@ -55,8 +56,32 @@ export const queryKeys = {
     byId: (id: string) => ['bookings', id] as const,
   },
 
-  // ── Gallery ───────────────────────────────────────────────────────
+  // 🔸 Gallery ──────────────────────────────────────────────────────────────────
   gallery: {
     all: () => ['gallery'] as const,
   },
+
+  // 🔸 Admin ────────────────────────────────────────────────────────────────────
+  admin: {
+    dashboard:       () => ['admin', 'dashboard'] as const,
+    dashboardCharts: () => ['admin', 'dashboard', 'charts'] as const,
+    
+    treks: {
+      all:     () => ['admin', 'treks'] as const,
+      list:    (filters: AdminFilters) => ['admin', 'treks', 'list', filters] as const,
+      byId:    (id: string) => ['admin', 'treks', id] as const,
+    },
+
+    departures: {
+      all:     () => ['admin', 'departures'] as const,
+      byTrek:  (trekId: string) => ['admin', 'treks', trekId, 'departures'] as const,
+      byId:    (trekId: string, depId: string) => ['admin', 'treks', trekId, 'departures', depId] as const,
+    },
+
+    bookings: {
+      all:     () => ['admin', 'bookings'] as const,
+      list:    (filters: AdminFilters) => ['admin', 'bookings', 'list', filters] as const,
+      byId:    (id: string) => ['admin', 'bookings', id] as const,
+    }
+  }
 } as const

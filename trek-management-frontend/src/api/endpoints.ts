@@ -64,4 +64,35 @@ export const ENDPOINTS = {
     CREATE:     '/reviews',
     BY_TREK:    (trekId: string) => `/treks/${trekId}/reviews`,
   },
+
+  ADMIN: {
+    DASHBOARD: {
+      METRICS: '/admin/dashboard',
+      CHARTS: '/admin/dashboard/charts',
+    },
+    TREKS: {
+      ALL: '/admin/treks',
+      BY_ID: (id: string) => `/admin/treks/${id}`,
+      CREATE: '/admin/treks',
+      UPDATE: (id: string) => `/admin/treks/${id}`,
+      DELETE: (id: string) => `/admin/treks/${id}`,
+      PUBLISH: (id: string) => `/admin/treks/${id}/publish`,
+      UNPUBLISH: (id: string) => `/admin/treks/${id}/unpublish`,
+      FEATURE: (id: string) => `/admin/treks/${id}/feature`,
+      DEPARTURES: {
+        ALL: (trekId: string) => `/admin/treks/${trekId}/departures`,
+        BY_ID: (trekId: string, depId: string) => `/admin/treks/${trekId}/departures/${depId}`,
+        CREATE: (trekId: string) => `/admin/treks/${trekId}/departures`,
+        UPDATE: (trekId: string, depId: string) => `/admin/treks/${trekId}/departures/${depId}`,
+        DELETE: (trekId: string, depId: string) => `/admin/treks/${trekId}/departures/${depId}`,
+        STATUS: (trekId: string, depId: string) => `/admin/treks/${trekId}/departures/${depId}/status`,
+        DUPLICATE: (trekId: string, depId: string) => `/admin/treks/${trekId}/departures/${depId}/duplicate`,
+      }
+    },
+    BOOKINGS: {
+      ALL: '/admin/bookings',
+      BY_ID: (id: string) => `/admin/bookings/${id}`,
+      UPDATE: (id: string) => `/admin/bookings/${id}`,
+    }
+  }
 } as const

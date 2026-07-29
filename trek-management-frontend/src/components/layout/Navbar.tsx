@@ -32,26 +32,34 @@ export function Navbar() {
   return (
     <motion.header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-200 h-navbar flex items-center",
-        solid ? "bg-white shadow-sm" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 flex items-center",
+        solid ? "bg-white shadow-sm h-navbar" : "h-[72px]"
       )}
+      style={!solid ? {
+        background: 'rgba(10, 16, 24, 0.35)',
+        backdropFilter: 'blur(2px)',
+      } : undefined}
       initial={false}
       role="banner"
     >
-      <div className="container mx-auto px-6 flex items-center justify-between h-full">
-        {/* Left side: Logo */}
+      {/* Full-width relative container for absolute centering trick */}
+      <div className="w-full px-6 relative flex items-center justify-between h-full">
+
+        {/* LEFT — Logo (natural flow) */}
         <Logo isScrolled={solid} />
 
-        {/* Center: Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8" aria-label="Primary">
+        {/* CENTER — Nav links absolutely centered on the full bar width */}
+        <nav
+          className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
+          aria-label="Primary"
+        >
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.href} href={item.href} label={item.label} isScrolled={solid} />
           ))}
         </nav>
 
-        {/* Right side: Auth & CTA & Mobile Trigger */}
-        <div className="flex items-center gap-3">
-          {/* Desktop Auth / Action Buttons */}
+        {/* RIGHT — Auth buttons pinned to the right */}
+        <div className="ml-auto flex items-center gap-3">
           <div className="hidden lg:flex items-center gap-3">
             {isAuthenticated ? (
               <UserDropdown />
@@ -61,9 +69,20 @@ export function Navbar() {
                 <RegisterButton isScrolled={solid} />
               </>
             )}
-            <Button 
-              className="btn-primary rounded-xl px-6 py-2.5 text-sm"
+            <Button
               asChild
+              style={{
+                background: '#F59E0B',
+                color: '#1C2B3A',
+                borderRadius: '10px',
+                height: '38px',
+                paddingLeft: '20px',
+                paddingRight: '20px',
+                fontSize: '0.875rem',
+                fontWeight: 700,
+                fontFamily: 'var(--font-sans-custom)',
+                border: 'none',
+              }}
             >
               <Link to="/treks">Book Now</Link>
             </Button>

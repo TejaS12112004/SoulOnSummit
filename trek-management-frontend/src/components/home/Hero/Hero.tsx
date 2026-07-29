@@ -22,12 +22,16 @@ export interface HeroProps {
 
 export function Hero(props: HeroProps) {
   return (
-    <section className="relative min-h-[100dvh] flex items-center justify-center overflow-hidden w-full" aria-label="Hero">
-      <HeroBackground 
-        imageUrl={props.backgroundImage} 
-        altText={props.imageAlt} 
+    <section
+      className="relative flex items-center justify-center overflow-hidden w-full"
+      style={{ minHeight: '100dvh' }}
+      aria-label="Hero"
+    >
+      <HeroBackground
+        imageUrl={props.backgroundImage}
+        altText={props.imageAlt}
       />
-      
+
       <HeroContent {...props} />
 
       <HeroScrollIndicator text={props.scrollIndicatorText} />

@@ -61,6 +61,8 @@ export function TrekCard({
             <img
               src={trek.coverImage}
               alt={`Cover for ${trek.title}`}
+              loading="lazy"
+              decoding="async"
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
           ) : (

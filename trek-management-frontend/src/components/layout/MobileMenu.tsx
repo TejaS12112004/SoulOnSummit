@@ -77,7 +77,7 @@ export function MobileMenu({ isScrolled = true }: MobileMenuProps) {
           )}
           
           <Button 
-            className="w-full py-6 text-base btn-primary rounded-xl"
+            className="w-full py-6 text-base inline-flex items-center justify-center font-medium transition-colors bg-accent hover:bg-accent/90 text-primary-foreground rounded-xl"
             asChild
           >
             <Link to="/treks" onClick={() => setOpen(false)}>Book Now</Link>

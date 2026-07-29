@@ -47,13 +47,44 @@ apiClient.interceptors.response.use(
       }
     }
 
-    // Normalize error so callers always get a consistent shape
+    // Network errors, timeouts, etc (no response)
+    if (!error.response) {
+      const isTimeout = error.code === 'ECONNABORTED' || error.message.toLowerCase().includes('timeout')
+      const isOffline = !navigator.onLine
+      
+      const message = isOffline 
+        ? 'No internet connection.' 
+        : isTimeout 
+          ? 'The request timed out. Please try again.' 
+          : 'Something went wrong.'
+
+      const apiError: ApiError = {
+        success: false,
+        message,
+        errors: undefined,
+        status: 0,
+      }
+      return Promise.reject(apiError)
+    }
+
+    // 5xx Server Errors
+    if (status && status >= 500) {
+      const apiError: ApiError = {
+        success: false,
+        message: 'Our servers are temporarily unavailable. Please try again shortly.',
+        errors: undefined,
+        status,
+      }
+      return Promise.reject(apiError)
+    }
+
+    // Normalize error so callers always get a consistent shape for 400, 401, 403, 404
     const apiError: ApiError = {
       success: false,
       message:
         error.response?.data?.message ??
         error.message ??
-        'An unexpected error occurred',
+        'Something went wrong.',
       errors: error.response?.data?.errors,
       status: error.response?.status,
     }

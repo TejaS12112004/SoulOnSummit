@@ -4,6 +4,7 @@ import { Toaster } from 'sonner'
 import { QueryProvider } from '@/providers/QueryProvider'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { AppRouter } from '@/routes/AppRouter'
+import { OfflineBanner } from '@/components/ui'
 import '@/styles/globals.css'
 
 const root = document.getElementById('root')
@@ -24,6 +25,7 @@ createRoot(root).render(
             },
           }}
         />
+        <OfflineBanner />
       </AuthProvider>
     </QueryProvider>
   </StrictMode>,

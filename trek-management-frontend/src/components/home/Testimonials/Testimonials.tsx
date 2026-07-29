@@ -3,72 +3,111 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { TestimonialCard } from './TestimonialCard';
 import { TESTIMONIALS_SECTION, TESTIMONIALS } from '@/constants/home';
 import { getFadeInUp, getStaggerContainer } from '@/constants/motion';
-import { cn } from '@/utils/cn';
+
+// Show 3 per page
+const PER_PAGE = 3;
 
 export function Testimonials() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [page, setPage] = useState(0);
   const shouldReduceMotion = useReducedMotion();
   const staggerContainer = getStaggerContainer(shouldReduceMotion ?? false);
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
+  const totalPages = Math.ceil(TESTIMONIALS.length / PER_PAGE);
+  const visible = TESTIMONIALS.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
+
   return (
-    <section className="py-32 px-6 bg-white" aria-labelledby="testimonials-title">
-      <div className="max-w-[1100px] mx-auto">
+    <section
+      style={{ background: '#0F0F0E', padding: '88px 24px 96px' }}
+      aria-labelledby="testimonials-title"
+    >
+      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+
+        {/* Header */}
         <motion.div
-          className="text-center mb-20"
+          style={{ textAlign: 'center', marginBottom: '56px' }}
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
         >
           <motion.div
             variants={fadeInUp}
-            className="text-accent text-[0.78rem] tracking-wider uppercase font-semibold mb-3"
+            style={{
+              color: '#F59E0B',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-sans-custom)',
+              marginBottom: '14px',
+            }}
           >
             {TESTIMONIALS_SECTION.label}
           </motion.div>
           <motion.h2
             variants={fadeInUp}
             id="testimonials-title"
-            className="font-display text-4xl lg:text-5xl font-bold text-foreground"
+            style={{
+              fontFamily: 'var(--font-display-custom)',
+              fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
+              fontWeight: 700,
+              color: '#F0EBE0',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+            }}
           >
             {TESTIMONIALS_SECTION.title}
           </motion.h2>
         </motion.div>
 
-        {/* Card grid — active card highlighted with forest bg */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TESTIMONIALS.map((testimonial, i) => (
-            <button
+        {/* 3-col grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '16px',
+            marginBottom: '40px',
+          }}
+        >
+          {visible.map((testimonial, i) => (
+            <TestimonialCard
               key={testimonial.id}
-              type="button"
-              className="text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl"
-              onClick={() => setActiveIndex(i)}
-              aria-pressed={i === activeIndex}
-              aria-label={`View testimonial from ${testimonial.name}`}
-            >
-              <TestimonialCard testimonial={testimonial} isActive={i === activeIndex} />
-            </button>
+              testimonial={testimonial}
+              isActive={i === 1} // middle card highlighted
+            />
           ))}
         </div>
 
         {/* Dot pagination */}
-        <div className="flex justify-center gap-2 mt-8" role="tablist" aria-label="Testimonial navigation">
-          {TESTIMONIALS.map((t, i) => (
-            <button
-              key={t.id}
-              type="button"
-              role="tab"
-              aria-selected={i === activeIndex}
-              aria-label={`Go to testimonial ${i + 1}`}
-              onClick={() => setActiveIndex(i)}
-              className={cn(
-                "h-2 rounded-full border-none transition-all duration-200 ease-out cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
-                i === activeIndex ? "w-7 bg-forest" : "w-2 bg-image-placeholder"
-              )}
-            />
-          ))}
-        </div>
+        {totalPages > 1 && (
+          <div
+            style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}
+            role="tablist"
+            aria-label="Testimonial pages"
+          >
+            {Array.from({ length: totalPages }).map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                role="tab"
+                aria-selected={i === page}
+                aria-label={`Page ${i + 1}`}
+                onClick={() => setPage(i)}
+                style={{
+                  height: '8px',
+                  width: i === page ? '28px' : '8px',
+                  borderRadius: '9999px',
+                  background: i === page ? '#2D6A50' : 'rgba(240,235,224,0.2)',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  padding: 0,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

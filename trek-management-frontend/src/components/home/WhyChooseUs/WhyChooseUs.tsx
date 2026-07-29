@@ -9,39 +9,68 @@ export function WhyChooseUs() {
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
 
   return (
-    <section className="py-32 px-6 bg-beige" aria-labelledby="why-choose-us-title">
-      {/*
-        max-w-[1100px] is intentional — matches the Figma layout which is narrower
-        than the standard PageContainer (max-w-7xl / 1280px).
-      */}
-      <div className="max-w-[1100px] mx-auto">
+    <section
+      style={{ background: '#1C1A0E', padding: '88px 24px 96px' }}
+      aria-labelledby="why-choose-us-title"
+    >
+      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+
+        {/* Header */}
         <motion.div
-          className="text-center mb-20"
+          style={{ textAlign: 'center', marginBottom: '56px' }}
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
+          viewport={{ once: true, margin: '-100px' }}
         >
           <motion.div
             variants={fadeInUp}
-            className="text-accent text-[0.78rem] tracking-wider uppercase font-semibold mb-3"
+            style={{
+              color: '#F59E0B',
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              fontFamily: 'var(--font-sans-custom)',
+              marginBottom: '14px',
+            }}
           >
             {WHY_CHOOSE_US_SECTION.label}
           </motion.div>
           <motion.h2
             variants={fadeInUp}
             id="why-choose-us-title"
-            className="font-display text-4xl lg:text-5xl font-bold text-foreground"
+            style={{
+              fontFamily: 'var(--font-display-custom)',
+              fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
+              fontWeight: 700,
+              color: '#F0EBE0',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+            }}
           >
             {WHY_CHOOSE_US_SECTION.title}
           </motion.h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 3-col grid, 2 rows */}
+        <motion.div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: '16px',
+          }}
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+        >
           {WHY_CHOOSE_US_FEATURES.map((feature) => (
-            <FeatureCard key={feature.title} feature={feature} />
+            <motion.div key={feature.title} variants={fadeInUp}>
+              <FeatureCard feature={feature} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

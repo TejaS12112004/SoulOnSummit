@@ -1,5 +1,4 @@
 import { Star } from 'lucide-react';
-import { cn } from '@/utils/cn';
 import type { Testimonial } from '@/types/testimonial';
 
 interface TestimonialCardProps {
@@ -8,54 +7,96 @@ interface TestimonialCardProps {
 }
 
 export function TestimonialCard({ testimonial, isActive }: TestimonialCardProps) {
+  // Reference: middle (active) = dark forest green, others = dark warm brown
+  const bg = isActive ? '#1F4D3A' : '#1E1A10';
+  const borderColor = isActive ? 'rgba(46,102,80,0.6)' : 'rgba(240,235,224,0.06)';
+
   return (
     <div
-      className={cn(
-        "rounded-2xl p-7 border transition-colors duration-200 ease-out",
-        isActive
-          ? "bg-forest border-transparent"
-          : "bg-beige border-beige-dark"
-      )}
+      style={{
+        background: bg,
+        border: `1px solid ${borderColor}`,
+        borderRadius: '16px',
+        padding: '28px',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        transition: 'transform 0.2s ease',
+      }}
     >
-      {/* Star rating */}
-      <div className="flex gap-0.5 mb-4" aria-label={`${testimonial.rating} out of 5 stars`}>
+      {/* Stars */}
+      <div
+        style={{ display: 'flex', gap: '3px', marginBottom: '18px' }}
+        aria-label={`${testimonial.rating} out of 5 stars`}
+      >
         {Array.from({ length: testimonial.rating }).map((_, idx) => (
-          <Star key={idx} className="w-4 h-4 fill-accent text-accent" aria-hidden="true" />
+          <Star
+            key={idx}
+            style={{ width: '16px', height: '16px', fill: '#F59E0B', color: '#F59E0B' }}
+            aria-hidden="true"
+          />
         ))}
       </div>
 
-      {/* Review text */}
-      <p className={cn(
-        "text-[0.9rem] leading-[1.75] italic mb-5",
-        isActive ? "text-white/85" : "text-white-muted"
-      )}>
+      {/* Quote */}
+      <p
+        style={{
+          fontSize: '0.9rem',
+          lineHeight: 1.75,
+          fontStyle: 'italic',
+          color: isActive ? 'rgba(240,235,224,0.88)' : 'rgba(240,235,224,0.7)',
+          fontFamily: 'var(--font-sans-custom)',
+          flexGrow: 1,
+          marginBottom: '22px',
+        }}
+      >
         &ldquo;{testimonial.text}&rdquo;
       </p>
 
-      {/* Avatar + author */}
-      <div className="flex items-center gap-3">
+      {/* Avatar + name + location */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '14px' }}>
         <img
           src={testimonial.avatar}
           alt={testimonial.name}
           loading="lazy"
           decoding="async"
-          className="w-11 h-11 rounded-full object-cover border-2 border-accent shrink-0"
+          style={{
+            width: '44px',
+            height: '44px',
+            borderRadius: '9999px',
+            objectFit: 'cover',
+            border: '2px solid rgba(245,158,11,0.5)',
+            flexShrink: 0,
+          }}
         />
         <div>
-          <div className={cn("font-bold text-[0.9rem]", isActive ? "text-white" : "text-white")}>
+          <div style={{
+            fontWeight: 700,
+            fontSize: '0.9rem',
+            color: '#F0EBE0',
+            fontFamily: 'var(--font-sans-custom)',
+            marginBottom: '2px',
+          }}>
             {testimonial.name}
           </div>
-          <div className={cn("text-[0.78rem]", isActive ? "text-white/55" : "text-muted")}>
+          <div style={{
+            fontSize: '0.78rem',
+            color: isActive ? 'rgba(240,235,224,0.55)' : 'rgba(240,235,224,0.4)',
+            fontFamily: 'var(--font-sans-custom)',
+          }}>
             {testimonial.location} · {testimonial.date}
           </div>
         </div>
       </div>
 
-      {/* Trek label */}
-      <div className={cn(
-        "mt-3.5 pt-3.5 border-t text-[0.75rem]",
-        isActive ? "border-white/12 text-white/45" : "border-beige-dark text-gray-400"
-      )}>
+      {/* Divider + trek */}
+      <div style={{
+        borderTop: `1px solid ${isActive ? 'rgba(240,235,224,0.15)' : 'rgba(240,235,224,0.08)'}`,
+        paddingTop: '14px',
+        fontSize: '0.75rem',
+        color: isActive ? 'rgba(240,235,224,0.5)' : 'rgba(240,235,224,0.3)',
+        fontFamily: 'var(--font-sans-custom)',
+      }}>
         Trekked: {testimonial.trek}
       </div>
     </div>

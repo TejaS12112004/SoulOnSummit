@@ -10,6 +10,7 @@ export function Spinner({ size = 24, className, ...props }: SpinnerProps) {
   return (
     <div
       role="status"
+      aria-live="polite"
       aria-label="Loading"
       className={cn("flex items-center justify-center", className)}
       {...props}

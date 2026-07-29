@@ -1,13 +1,14 @@
 import { lazy, Suspense } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
+import { SkipLink } from '@/components/ui/SkipLink'
+import { RouteFocusHandler } from '@/components/ui/RouteFocusHandler'
 import { ROUTES } from '@/constants/routes'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
-import { PublicLayout } from '@/layouts/PublicLayout'
-import { AuthLayout } from '@/layouts/AuthLayout'
-import { UserLayout } from '@/layouts/UserLayout'
-import { AdminLayout } from '@/layouts/AdminLayout'
-
+const PublicLayout = lazy(() => import('@/layouts/PublicLayout').then(m => ({ default: m.PublicLayout })))
+const AuthLayout = lazy(() => import('@/layouts/AuthLayout').then(m => ({ default: m.AuthLayout })))
+const UserLayout = lazy(() => import('@/layouts/UserLayout').then(m => ({ default: m.UserLayout })))
+const AdminLayout = lazy(() => import('@/layouts/AdminLayout').then(m => ({ default: m.AdminLayout })))
 // Public pages
 const HomePage = lazy(() => import('@/features/home/pages/HomePage'))
 const TrekListingPage = lazy(() => import('@/features/treks/pages/TrekListingPage'))
@@ -34,6 +35,9 @@ const AdminDeparturesPage = lazy(() => import('@/features/admin/pages/AdminDepar
 const AdminBookingsPage = lazy(() => import('@/features/admin/pages/AdminBookingsPage'))
 const AdminBookingDetailPage = lazy(() => import('@/features/admin/pages/AdminBookingDetailPage'))
 
+// Error pages
+const NotFoundPage = lazy(() => import('@/features/home/pages/NotFoundPage'))
+
 // Minimal loading fallback — replaced with skeleton later
 function PageLoader() {
   return (
@@ -46,6 +50,8 @@ function PageLoader() {
 export function AppRouter() {
   return (
     <BrowserRouter>
+      <RouteFocusHandler />
+      <SkipLink />
       <ErrorBoundary>
         <Suspense fallback={<PageLoader />}>
           <Routes>
@@ -90,7 +96,7 @@ export function AppRouter() {
           </Route>
 
           {/* ── Catch-all ────────────────────────────────────────────────── */}
-          <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </ErrorBoundary>

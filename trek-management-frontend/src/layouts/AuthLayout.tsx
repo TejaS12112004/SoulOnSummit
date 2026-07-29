@@ -19,9 +19,9 @@ export function AuthLayout() {
         }}
       />
 
-      <div className="relative z-10 w-full max-w-md mx-auto px-4 py-16">
+      <main id="main-content" tabIndex={-1} className="relative z-10 w-full max-w-md mx-auto px-4 py-16 focus:outline-none">
         <Outlet />
-      </div>
+      </main>
     </div>
   )
 }

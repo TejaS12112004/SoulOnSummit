@@ -161,7 +161,7 @@ body {
   background: linear-gradient(to bottom, rgba(10,25,18,0.5) 0%, rgba(10,25,18,0.7) 60%, rgba(15,41,32,0.9) 100%);
 }
 .bg-category-overlay {
-  background: linear-gradient(to top, rgba(15,41,32,0.85) 0%, rgba(15,41,32,0.1) 60%);
+  background: linear-gradient(to top, rgba(10,10,10,0.9) 0%, rgba(10,10,10,0.15) 55%, rgba(10,10,10,0) 75%);
 }
 .bg-gradient-forest-tint {
   background: linear-gradient(135deg, #E8F4EF, #D1EAE0);
@@ -175,3 +175,13 @@ body {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+

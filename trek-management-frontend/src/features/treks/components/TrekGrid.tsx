@@ -2,6 +2,8 @@ import { TrekCard } from '@/components/ui/TrekCard'
 import { CardSkeleton } from '@/components/ui/CardSkeleton'
 import type { Trek } from '@/components/ui/TrekCard'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { SearchX } from 'lucide-react'
 
 interface TrekGridProps {
   treks: Trek[]
@@ -23,25 +25,16 @@ export function TrekGrid({ treks, isLoading, onClearFilters, onViewDetails }: Tr
 
   if (treks.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center border border-dashed border-border rounded-2xl bg-card/50">
-        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
-        <h3 className="text-xl font-bold text-foreground mb-2">No treks found</h3>
-        <p className="text-muted-foreground max-w-md mb-6">
-          We couldn't find any treks matching your current filters. Try adjusting your search criteria or clearing your filters.
-        </p>
-        {onClearFilters && (
-          <Button
-            onClick={onClearFilters}
-            variant="default"
-          >
+      <EmptyState
+        icon={<SearchX />}
+        title="No treks found"
+        description="We couldn't find any treks matching your current filters. Try adjusting your search criteria or clearing your filters."
+        primaryAction={onClearFilters ? (
+          <Button onClick={onClearFilters}>
             Clear Filters
           </Button>
-        )}
-      </div>
+        ) : undefined}
+      />
     )
   }
 
