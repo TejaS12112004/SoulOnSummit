@@ -6,6 +6,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { AppRouter } from '@/routes/AppRouter'
 import { OfflineBanner } from '@/components/ui'
 import '@/styles/globals.css'
+import '@/index.css'
 
 const root = document.getElementById('root')
 if (!root) throw new Error('Root element not found')

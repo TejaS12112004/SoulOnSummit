@@ -15,9 +15,5 @@ public class AuthResponse {
     private final String tokenType;
     private final long expiresIn;          // seconds
     private final String refreshToken;     // opaque UUID string
-    private final UUID userId;
-    private final String email;
-    private final String role;
-    private final String firstName;
-    private final String lastName;
+    private final UserAuthDto user;
 }

@@ -5,7 +5,7 @@ import { FEATURED_TREKS_SECTION, FEATURED_TREKS } from '@/constants/home';
 import { getStaggerContainer, getFadeInUp } from '@/constants/motion';
 import { motion, useReducedMotion } from 'framer-motion';
 
-const SECTION_BG = '#1A1A0F';
+// Removed hardcoded background
 
 export function FeaturedTreks() {
   const shouldReduceMotion = useReducedMotion();
@@ -14,7 +14,7 @@ export function FeaturedTreks() {
 
   return (
     <section
-      style={{ background: SECTION_BG, padding: '88px 24px 0' }}
+      className="bg-background py-24 px-6"
       aria-labelledby="featured-treks-title"
     >
       <div className="container mx-auto">
@@ -49,11 +49,11 @@ export function FeaturedTreks() {
               fontFamily: 'var(--font-display-custom)',
               fontSize: 'clamp(2.6rem, 5vw, 4rem)',
               fontWeight: 800,
-              color: '#F0EBE0',
               lineHeight: 1.08,
               letterSpacing: '-0.02em',
               marginBottom: '20px',
             }}
+            className="text-foreground"
           >
             {FEATURED_TREKS_SECTION.title}
           </motion.h2>
@@ -61,13 +61,13 @@ export function FeaturedTreks() {
           <motion.p
             variants={fadeInUp}
             style={{
-              color: 'rgba(240,235,224,0.5)',
               fontSize: '1.05rem',
               maxWidth: '500px',
               margin: '0 auto',
               lineHeight: 1.7,
               fontFamily: 'var(--font-sans-custom)',
             }}
+            className="text-muted-foreground"
           >
             {FEATURED_TREKS_SECTION.description}
           </motion.p>
@@ -92,7 +92,7 @@ export function FeaturedTreks() {
             asChild
             style={{
               background: '#1F4D3A',
-              color: '#F0EBE0',
+              color: '#FFFFFF',
               borderRadius: '9999px',
               height: '52px',
               paddingLeft: '44px',
@@ -102,6 +102,7 @@ export function FeaturedTreks() {
               fontFamily: 'var(--font-sans-custom)',
               border: 'none',
             }}
+            className="hover:bg-[#163629] transition-colors shadow-md"
           >
             <Link to={FEATURED_TREKS_SECTION.viewAllLink}>
               {FEATURED_TREKS_SECTION.viewAllText}

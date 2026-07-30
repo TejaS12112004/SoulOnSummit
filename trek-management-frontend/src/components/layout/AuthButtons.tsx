@@ -14,8 +14,8 @@ export function LoginButton({ isScrolled = true, onClick }: AuthButtonProps) {
       variant="ghost"
       onClick={onClick}
       className={cn(
-        "hidden lg:inline-flex",
-        isScrolled ? "text-muted hover:text-foreground" : "text-white/90 hover:text-white hover:bg-white/10"
+        "hidden lg:inline-flex rounded-[10px] font-bold text-[14px] px-6 h-[42px]",
+        isScrolled ? "text-gray-900 hover:bg-gray-100" : "text-white hover:text-white hover:bg-white/10"
       )}
     >
       <Link to="/login">
@@ -25,20 +25,3 @@ export function LoginButton({ isScrolled = true, onClick }: AuthButtonProps) {
   );
 }
 
-export function RegisterButton({ isScrolled = true, onClick }: AuthButtonProps) {
-  return (
-    <Button
-      asChild
-      variant="outline"
-      onClick={onClick}
-      className={cn(
-        "hidden lg:inline-flex rounded-full bg-transparent transition-colors",
-        isScrolled ? "border-forest/30 text-forest hover:bg-forest/5" : "border-white/30 text-white hover:bg-white/10 hover:text-white"
-      )}
-    >
-      <Link to="/register">
-        Register
-      </Link>
-    </Button>
-  );
-}

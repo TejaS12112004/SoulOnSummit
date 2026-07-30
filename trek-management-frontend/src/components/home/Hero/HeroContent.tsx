@@ -129,7 +129,7 @@ export function HeroContent({
             style={{
               background: '#F59E0B',
               color: '#1C2B3A',
-              borderRadius: '9999px',
+              borderRadius: '10px',
               height: '52px',
               minWidth: '182px',
               fontSize: '0.95rem',
@@ -146,7 +146,7 @@ export function HeroContent({
             }}
           >
             <Link to={primaryCTA.href}>
-              <Mountain className="w-[16px] h-[16px]" style={{ opacity: 0.8 }} />
+              <span className="text-[16px] mr-1 opacity-90">⛰️</span>
               {primaryCTA.label}
             </Link>
           </Button>
@@ -157,7 +157,7 @@ export function HeroContent({
               style={{
                 background: 'rgba(255,255,255,0.04)',
                 color: '#FFFFFF',
-                borderRadius: '9999px',
+                borderRadius: '10px',
                 height: '52px',
                 minWidth: '182px',
                 fontSize: '0.95rem',
@@ -174,7 +174,7 @@ export function HeroContent({
               }}
             >
               <Link to={secondaryCTA.href}>
-                <Play className="w-[14px] h-[14px]" style={{ fill: 'white', opacity: 0.9 }} />
+                <span className="text-[12px] mr-1">▶</span>
                 {secondaryCTA.label}
               </Link>
             </Button>

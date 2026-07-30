@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Star, MapPin, Clock3 } from 'lucide-react';
+import { cn } from '@/utils/cn';
 import { toTrekDetail } from '@/constants/routes';
 import { formatCurrency } from '@/utils/formatters/currency';
 import type { HomeFeaturedTrekViewModel } from '@/types/home';
@@ -9,9 +10,7 @@ interface FeaturedTrekCardProps {
   trek: HomeFeaturedTrekViewModel;
 }
 
-// Card dark bg matches reference ~#262514
-const CARD_BG = '#262514';
-const CARD_BG_HOVER = '#2E2C18';
+// Removed hardcoded background
 
 function DifficultyBadge({ difficulty }: { difficulty: TrekDifficulty }) {
   const styles: Record<TrekDifficulty, { bg: string; color: string }> = {
@@ -47,27 +46,7 @@ export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
   return (
     <Link
       to={toTrekDetail(trek.id)}
-      className="group"
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        background: CARD_BG,
-        borderRadius: '16px',
-        overflow: 'hidden',
-        textDecoration: 'none',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease',
-        boxShadow: '0 4px 24px rgba(0,0,0,0.35)',
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
-        (e.currentTarget as HTMLElement).style.background = CARD_BG_HOVER;
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 16px 48px rgba(0,0,0,0.5)';
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-        (e.currentTarget as HTMLElement).style.background = CARD_BG;
-        (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 24px rgba(0,0,0,0.35)';
-      }}
+      className="group flex flex-col bg-card rounded-[16px] overflow-hidden transition-all duration-300 shadow-sm hover:shadow-xl border border-border hover:-translate-y-1"
     >
       {/* Image */}
       <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: '#1A1A0F' }}>
@@ -104,11 +83,11 @@ export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
             position: 'absolute',
             bottom: '12px',
             right: '12px',
-            background: 'rgba(10,10,5,0.75)',
+            background: 'rgba(255,255,255,0.85)',
             backdropFilter: 'blur(6px)',
             borderRadius: '8px',
             padding: '4px 10px',
-            color: '#F0EBE0',
+            color: '#1A1A0F',
             fontSize: '0.75rem',
             fontWeight: 600,
             fontFamily: 'var(--font-sans-custom)',
@@ -127,10 +106,10 @@ export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
             fontFamily: 'var(--font-display-custom)',
             fontSize: '1.25rem',
             fontWeight: 700,
-            color: '#F0EBE0',
             lineHeight: 1.25,
             marginBottom: '4px',
           }}
+          className="text-foreground"
         >
           {trek.title}
         </h3>
@@ -140,7 +119,7 @@ export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
           <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#F59E0B', fontFamily: 'var(--font-sans-custom)' }}>
             {formatCurrency(trek.price)}
           </span>
-          <span style={{ fontSize: '0.8rem', color: 'rgba(240,235,224,0.4)', textDecoration: 'line-through', fontFamily: 'var(--font-sans-custom)' }}>
+          <span className="text-[0.8rem] text-muted-foreground line-through font-sans">
             {formatCurrency(trek.originalPrice)}
           </span>
         </div>
@@ -148,42 +127,42 @@ export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
         {/* Location */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
           <MapPin style={{ width: '13px', height: '13px', color: '#F87171', flexShrink: 0 }} />
-          <span style={{ fontSize: '0.82rem', color: 'rgba(240,235,224,0.6)', fontFamily: 'var(--font-sans-custom)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span className="text-[0.82rem] text-muted-foreground font-sans overflow-hidden text-ellipsis whitespace-nowrap">
             {trek.location}
           </span>
         </div>
 
         {/* Duration + Rating */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '14px' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: 'rgba(240,235,224,0.55)', fontFamily: 'var(--font-sans-custom)' }}>
+          <span className="flex items-center gap-[5px] text-[0.8rem] text-muted-foreground font-sans">
             <Clock3 style={{ width: '13px', height: '13px' }} />
             {trek.durationDays} Days
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', color: 'rgba(240,235,224,0.55)', fontFamily: 'var(--font-sans-custom)' }}>
+          <span className="flex items-center gap-[4px] text-[0.8rem] text-muted-foreground font-sans">
             <Star style={{ width: '12px', height: '12px', fill: '#F59E0B', color: '#F59E0B' }} />
-            <span style={{ color: 'rgba(240,235,224,0.8)', fontWeight: 600 }}>{trek.rating}</span>
+            <span className="text-foreground font-semibold">{trek.rating}</span>
             <span>({trek.reviewCount})</span>
           </span>
         </div>
 
         {/* Divider */}
-        <div style={{ borderTop: '1px solid rgba(240,235,224,0.08)', marginBottom: '14px' }} />
+        <div className="border-t border-border mb-[14px]" />
 
         {/* Next Batch + Seats Left */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
           <div>
-            <div style={{ fontSize: '0.7rem', color: 'rgba(240,235,224,0.4)', fontFamily: 'var(--font-sans-custom)', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <div className="text-[0.7rem] text-muted-foreground font-sans mb-[2px] uppercase tracking-wider">
               Next Batch
             </div>
-            <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#F0EBE0', fontFamily: 'var(--font-sans-custom)' }}>
+            <div className="text-[0.88rem] font-bold text-foreground font-sans">
               {trek.nextBatch}
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.7rem', color: 'rgba(240,235,224,0.4)', fontFamily: 'var(--font-sans-custom)', marginBottom: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            <div className="text-[0.7rem] text-muted-foreground font-sans mb-[2px] uppercase tracking-wider">
               Seats Left
             </div>
-            <div style={{ fontSize: '0.88rem', fontWeight: 700, color: isLowSeats ? '#F87171' : '#F0EBE0', fontFamily: 'var(--font-sans-custom)' }}>
+            <div className={cn("text-[0.88rem] font-bold font-sans", isLowSeats ? 'text-red-500' : 'text-foreground')}>
               {trek.seatsLeft} only!
             </div>
           </div>

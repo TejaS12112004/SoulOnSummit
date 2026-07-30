@@ -12,6 +12,7 @@ import type { AuthState, LoginRequest, User } from '@/types/auth'
 
 interface AuthContextValue extends AuthState {
   login: (data: LoginRequest) => Promise<void>
+  register: (data: RegisterRequest) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -78,6 +79,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
+  const register = useCallback(async (data: RegisterRequest) => {
+    setLoading(true)
+    try {
+      await authService.register(data)
+      // Automatically login after successful registration
+      await login({ email: data.email, password: data.password })
+    } finally {
+      setLoading(false)
+    }
+  }, [login])
+
   const logout = useCallback(async () => {
     setLoading(true)
     try {
@@ -107,9 +119,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       isAdmin,
       loading,
       login,
+      register,
       logout,
     }),
-    [user, accessToken, refreshToken, isAuthenticated, isAdmin, loading, login, logout],
+    [user, accessToken, refreshToken, isAuthenticated, isAdmin, loading, login, register, logout],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

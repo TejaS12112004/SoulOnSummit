@@ -10,7 +10,7 @@ export function Categories() {
 
   return (
     <section
-      style={{ background: '#111110', padding: '88px 24px 96px' }}
+      className="bg-muted py-24 px-6"
       aria-labelledby="categories-title"
     >
       <div className="container mx-auto">
@@ -44,10 +44,10 @@ export function Categories() {
               fontFamily: 'var(--font-display-custom)',
               fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
               fontWeight: 700,
-              color: '#F0EBE0',
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
             }}
+            className="text-foreground"
           >
             {CATEGORIES_SECTION.title}
           </motion.h2>

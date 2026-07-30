@@ -8,7 +8,7 @@ import { cn } from '@/utils/cn';
 import { NAV_ITEMS } from '@/constants/navigation';
 import { Logo } from './Logo';
 import { NavLink } from './NavLink';
-import { LoginButton, RegisterButton } from './AuthButtons';
+import { LoginButton } from './AuthButtons';
 import { useAuth } from '@/hooks/useAuth';
 import { UserDropdown } from './UserDropdown';
 
@@ -72,7 +72,6 @@ export function MobileMenu({ isScrolled = true }: MobileMenuProps) {
           ) : (
             <div className="flex flex-col gap-3 w-full">
               <LoginButton isScrolled={true} onClick={() => setOpen(false)} />
-              <RegisterButton isScrolled={true} onClick={() => setOpen(false)} />
             </div>
           )}
           

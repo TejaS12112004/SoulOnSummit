@@ -1,40 +1,38 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import type { SortDir } from '@/types/api'
+import { ChevronDown, SlidersHorizontal } from 'lucide-react'
 
 interface TrekToolbarProps {
-  totalCount: number
-  sortBy: string
-  sortDir: SortDir
-  onSortChange: (sortBy: string, sortDir: SortDir) => void
+  isFiltersVisible: boolean;
+  onToggleFilters: () => void;
 }
 
-export function TrekToolbar({ totalCount, sortBy, sortDir, onSortChange }: TrekToolbarProps) {
-  const currentSortValue = `${sortBy}-${sortDir}`
-
+export function TrekToolbar({ isFiltersVisible, onToggleFilters }: TrekToolbarProps) {
   return (
-    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-      <div className="text-base text-muted-foreground">
-        Showing <span className="font-bold text-foreground">{totalCount}</span> {totalCount === 1 ? 'trek' : 'treks'}
+    <div className="flex items-center justify-between w-full" style={{ marginBottom: '24px' }}>
+      <div className="flex items-center gap-6">
+        <button 
+          onClick={onToggleFilters}
+          className="flex items-center gap-2 text-[13px] font-bold text-[#1C2B3A] bg-white border border-[#E2E8F0] rounded-[8px] hover:bg-gray-50 transition-colors shadow-sm"
+          style={{ padding: '8px 12px' }}
+        >
+          <SlidersHorizontal className="w-4 h-4 text-[#475569]" />
+          {isFiltersVisible ? 'Hide Filters' : 'Show Filters'}
+        </button>
+        <div className="text-[13px] text-[#475569]">
+          Showing <span className="font-bold text-[#1C2B3A]">6</span> of <span className="font-bold text-[#1C2B3A]">8</span> treks
+        </div>
       </div>
       
-      <div className="flex items-center gap-2">
-        <Select 
-          value={currentSortValue} 
-          onValueChange={(val) => {
-            const [newSortBy, newSortDir] = (val || 'createdAt-desc').split('-')
-            onSortChange(newSortBy, newSortDir as SortDir)
-          }}
+      <div className="relative">
+        <select 
+          className="appearance-none bg-white border border-[#E2E8F0] rounded-[8px] text-[13px] font-medium text-[#1C2B3A] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#1F4D3A]/20 focus:border-[#1F4D3A] transition-all cursor-pointer"
+          style={{ padding: '8px 32px 8px 16px' }}
         >
-          <SelectTrigger className="w-[180px] bg-muted border-border text-foreground h-10 rounded-xl focus:ring-2 focus:ring-ring focus:ring-offset-0">
-            <SelectValue placeholder="Most Popular" />
-          </SelectTrigger>
-          <SelectContent className="bg-popover border-border text-popover-foreground">
-            <SelectItem value="createdAt-desc" className="focus:bg-muted focus:text-foreground">Most Popular</SelectItem>
-            <SelectItem value="durationDays-asc" className="focus:bg-muted focus:text-foreground">Duration (Short to Long)</SelectItem>
-            <SelectItem value="durationDays-desc" className="focus:bg-muted focus:text-foreground">Duration (Long to Short)</SelectItem>
-            <SelectItem value="title-asc" className="focus:bg-muted focus:text-foreground">Name (A-Z)</SelectItem>
-          </SelectContent>
-        </Select>
+          <option value="popular">Most Popular</option>
+          <option value="price_low">Price: Low to High</option>
+          <option value="price_high">Price: High to Low</option>
+          <option value="duration">Duration: Short to Long</option>
+        </select>
+        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#475569] pointer-events-none" />
       </div>
     </div>
   )

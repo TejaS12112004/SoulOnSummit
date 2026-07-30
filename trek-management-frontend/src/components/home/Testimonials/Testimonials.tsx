@@ -18,7 +18,7 @@ export function Testimonials() {
 
   return (
     <section
-      style={{ background: '#0F0F0E', padding: '88px 24px 96px' }}
+      className="bg-muted py-24 px-6"
       aria-labelledby="testimonials-title"
     >
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
@@ -52,10 +52,10 @@ export function Testimonials() {
               fontFamily: 'var(--font-display-custom)',
               fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
               fontWeight: 700,
-              color: '#F0EBE0',
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
             }}
+            className="text-foreground"
           >
             {TESTIMONIALS_SECTION.title}
           </motion.h2>
@@ -98,7 +98,7 @@ export function Testimonials() {
                   height: '8px',
                   width: i === page ? '28px' : '8px',
                   borderRadius: '9999px',
-                  background: i === page ? '#2D6A50' : 'rgba(240,235,224,0.2)',
+                  background: i === page ? '#1F4D3A' : 'hsl(var(--border))',
                   border: 'none',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',

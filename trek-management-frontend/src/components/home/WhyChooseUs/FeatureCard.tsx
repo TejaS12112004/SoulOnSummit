@@ -9,22 +9,7 @@ export function FeatureCard({ feature }: FeatureCardProps) {
 
   return (
     <div
-      style={{
-        background: '#141410',
-        borderRadius: '16px',
-        padding: '28px 28px 32px',
-        border: '1px solid rgba(240,235,224,0.06)',
-        transition: 'border-color 0.2s ease, transform 0.2s ease',
-        cursor: 'default',
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(240,235,224,0.14)';
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = 'rgba(240,235,224,0.06)';
-        (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
-      }}
+      className="bg-card rounded-[16px] p-7 pb-8 border border-border transition-all duration-200 cursor-default hover:border-primary/50 hover:-translate-y-1 shadow-sm hover:shadow-md"
     >
       {/* Icon in dark forest-green rounded square */}
       <div
@@ -53,11 +38,11 @@ export function FeatureCard({ feature }: FeatureCardProps) {
         style={{
           fontWeight: 700,
           fontSize: '1rem',
-          color: '#F0EBE0',
           fontFamily: 'var(--font-sans-custom)',
           marginBottom: '10px',
           lineHeight: 1.3,
         }}
+        className="text-foreground"
       >
         {feature.title}
       </h3>
@@ -65,12 +50,12 @@ export function FeatureCard({ feature }: FeatureCardProps) {
       {/* Description */}
       <p
         style={{
-          color: 'rgba(240,235,224,0.45)',
           fontSize: '0.875rem',
           fontFamily: 'var(--font-sans-custom)',
           lineHeight: 1.7,
           margin: 0,
         }}
+        className="text-muted-foreground"
       >
         {feature.desc}
       </p>

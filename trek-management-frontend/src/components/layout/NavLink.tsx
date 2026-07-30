@@ -17,10 +17,10 @@ export function NavLink({ href, label, onClick, className, isScrolled = true }: 
       onClick={onClick}
       className={({ isActive }) =>
         cn(
-          'relative px-2 py-1 font-sans text-[0.95rem] font-medium transition-colors duration-200 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'relative px-2 py-1 font-sans text-[14px] font-bold transition-colors duration-200 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           isActive
-            ? (isScrolled ? 'text-forest' : 'text-white')
-            : (isScrolled ? 'text-muted hover:text-forest' : 'text-white/90 hover:text-white'),
+            ? (isScrolled ? 'text-[#1F4D3A]' : 'text-white')
+            : (isScrolled ? 'text-gray-600 hover:text-[#1F4D3A]' : 'text-white/90 hover:text-white'),
           className
         )
       }

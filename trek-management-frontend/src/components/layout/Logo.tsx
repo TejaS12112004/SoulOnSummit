@@ -13,14 +13,13 @@ export function Logo({ onClick, className, isScrolled = true }: LogoProps) {
       to="/" 
       onClick={onClick} 
       className={cn("flex items-center gap-[10px] rounded-xl outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 hover:opacity-90 transition-opacity duration-200", className)} 
-      aria-label="Soul On Summit Home"
+      aria-label="The Soul On Summit Home"
     >
-      <div className="w-[42px] h-[42px] rounded-xl flex items-center justify-center shrink-0 bg-gradient-forest">
-        <svg width="24" height="24" viewBox="0 0 20 20" fill="none">
-          <path d="M2 16L8 6l4 6 3-4 3 4H2z" fill="white" opacity="0.9" />
-          <circle cx="10" cy="3" r="2" className="fill-accent" />
-        </svg>
-      </div>
+      <img 
+        src="/logo.jpeg" 
+        alt="The Soul On Summit Logo" 
+        className="w-[42px] h-[42px] rounded-full object-cover shrink-0 border border-white/20 shadow-sm"
+      />
       <div className="flex flex-col">
         <div
           className={cn(
@@ -28,7 +27,7 @@ export function Logo({ onClick, className, isScrolled = true }: LogoProps) {
             isScrolled ? "text-forest" : "text-white"
           )}
         >
-          Soul On Summit
+          The Soul On Summit
         </div>
         <div
           className={cn(
@@ -36,7 +35,7 @@ export function Logo({ onClick, className, isScrolled = true }: LogoProps) {
             isScrolled ? "text-accent" : "text-white/90"
           )}
         >
-          Adventure Travel
+          Adventure Trek
         </div>
       </div>
     </Link>

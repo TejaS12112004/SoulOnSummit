@@ -6,9 +6,12 @@ interface HeroBackgroundProps {
 export function HeroBackground({ imageUrl, altText = "" }: HeroBackgroundProps) {
   return (
     <>
-      <img
-        src={imageUrl}
-        alt={altText}
+      <video
+        src="/hero-video.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
         className="absolute inset-0 w-full h-full object-cover"
       />
       {/* Primary overlay — darkens evenly, slight cool tint like the reference */}

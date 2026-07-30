@@ -7,9 +7,9 @@ interface TestimonialCardProps {
 }
 
 export function TestimonialCard({ testimonial, isActive }: TestimonialCardProps) {
-  // Reference: middle (active) = dark forest green, others = dark warm brown
-  const bg = isActive ? '#1F4D3A' : '#1E1A10';
-  const borderColor = isActive ? 'rgba(46,102,80,0.6)' : 'rgba(240,235,224,0.06)';
+  // Reference: middle (active) = dark forest green, others = light bg-card
+  const bg = isActive ? '#1F4D3A' : 'hsl(var(--card))';
+  const borderColor = isActive ? 'rgba(46,102,80,0.6)' : 'hsl(var(--border))';
 
   return (
     <div
@@ -44,7 +44,7 @@ export function TestimonialCard({ testimonial, isActive }: TestimonialCardProps)
           fontSize: '0.9rem',
           lineHeight: 1.75,
           fontStyle: 'italic',
-          color: isActive ? 'rgba(240,235,224,0.88)' : 'rgba(240,235,224,0.7)',
+          color: isActive ? 'rgba(240,235,224,0.88)' : 'hsl(var(--muted-foreground))',
           fontFamily: 'var(--font-sans-custom)',
           flexGrow: 1,
           marginBottom: '22px',
@@ -73,7 +73,7 @@ export function TestimonialCard({ testimonial, isActive }: TestimonialCardProps)
           <div style={{
             fontWeight: 700,
             fontSize: '0.9rem',
-            color: '#F0EBE0',
+            color: isActive ? '#F0EBE0' : 'hsl(var(--foreground))',
             fontFamily: 'var(--font-sans-custom)',
             marginBottom: '2px',
           }}>
@@ -81,7 +81,7 @@ export function TestimonialCard({ testimonial, isActive }: TestimonialCardProps)
           </div>
           <div style={{
             fontSize: '0.78rem',
-            color: isActive ? 'rgba(240,235,224,0.55)' : 'rgba(240,235,224,0.4)',
+            color: isActive ? 'rgba(240,235,224,0.55)' : 'hsl(var(--muted-foreground))',
             fontFamily: 'var(--font-sans-custom)',
           }}>
             {testimonial.location} · {testimonial.date}
@@ -91,10 +91,10 @@ export function TestimonialCard({ testimonial, isActive }: TestimonialCardProps)
 
       {/* Divider + trek */}
       <div style={{
-        borderTop: `1px solid ${isActive ? 'rgba(240,235,224,0.15)' : 'rgba(240,235,224,0.08)'}`,
+        borderTop: `1px solid ${isActive ? 'rgba(240,235,224,0.15)' : 'hsl(var(--border))'}`,
         paddingTop: '14px',
         fontSize: '0.75rem',
-        color: isActive ? 'rgba(240,235,224,0.5)' : 'rgba(240,235,224,0.3)',
+        color: isActive ? 'rgba(240,235,224,0.5)' : 'hsl(var(--muted-foreground))',
         fontFamily: 'var(--font-sans-custom)',
       }}>
         Trekked: {testimonial.trek}

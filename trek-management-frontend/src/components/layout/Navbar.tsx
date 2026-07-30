@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Logo } from './Logo';
 import { NavLink } from './NavLink';
 import { MobileMenu } from './MobileMenu';
-import { LoginButton, RegisterButton } from './AuthButtons';
+import { LoginButton } from './AuthButtons';
 import { UserDropdown } from './UserDropdown';
 import { NAV_ITEMS } from '@/constants/navigation';
 import { NAVBAR_SCROLL_THRESHOLD } from '@/constants/layout';
@@ -36,21 +36,22 @@ export function Navbar() {
         solid ? "bg-white shadow-sm h-navbar" : "h-[72px]"
       )}
       style={!solid ? {
-        background: 'rgba(10, 16, 24, 0.35)',
-        backdropFilter: 'blur(2px)',
+        background: 'transparent',
       } : undefined}
       initial={false}
       role="banner"
     >
-      {/* Full-width relative container for absolute centering trick */}
-      <div className="w-full px-6 relative flex items-center justify-between h-full">
+      {/* Container aligned with the page max-width */}
+      <div className="max-w-[1300px] w-full mx-auto px-6 lg:px-12 flex items-center justify-between h-full gap-8">
 
         {/* LEFT — Logo (natural flow) */}
-        <Logo isScrolled={solid} />
+        <div className="shrink-0">
+          <Logo isScrolled={solid} />
+        </div>
 
-        {/* CENTER — Nav links absolutely centered on the full bar width */}
+        {/* CENTER — Nav links centered with flex-1 */}
         <nav
-          className="hidden lg:flex items-center gap-6 absolute left-1/2 -translate-x-1/2"
+          className="hidden lg:flex flex-1 justify-center items-center gap-8"
           aria-label="Primary"
         >
           {NAV_ITEMS.map((item) => (
@@ -59,14 +60,13 @@ export function Navbar() {
         </nav>
 
         {/* RIGHT — Auth buttons pinned to the right */}
-        <div className="ml-auto flex items-center gap-3">
+        <div className="flex items-center gap-3 shrink-0">
           <div className="hidden lg:flex items-center gap-3">
             {isAuthenticated ? (
               <UserDropdown />
             ) : (
               <>
                 <LoginButton isScrolled={solid} />
-                <RegisterButton isScrolled={solid} />
               </>
             )}
             <Button
@@ -75,9 +75,9 @@ export function Navbar() {
                 background: '#F59E0B',
                 color: '#1C2B3A',
                 borderRadius: '10px',
-                height: '38px',
-                paddingLeft: '20px',
-                paddingRight: '20px',
+                height: '42px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
                 fontSize: '0.875rem',
                 fontWeight: 700,
                 fontFamily: 'var(--font-sans-custom)',

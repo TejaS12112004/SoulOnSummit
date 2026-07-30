@@ -110,8 +110,12 @@ export interface TrekSummaryResponse {
   featured: boolean;
   published: boolean;
   lowestPrice: number | null;
+  originalPrice: number | null;
   nextDepartureDate: string | null;
   nextDepartureAvailableSeats: number | null;
+  maxAltitude: number | null;
+  rating: number | null;
+  reviewCount: number | null;
 }
 
 export interface TrekImageResponseDto {

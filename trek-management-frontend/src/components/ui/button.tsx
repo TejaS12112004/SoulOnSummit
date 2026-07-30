@@ -54,6 +54,7 @@ function Button({
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
       render={asChild && React.isValidElement(children) ? children : undefined}
+      nativeButton={props.nativeButton ?? !asChild}
       {...props}
     >
       {!asChild && children}

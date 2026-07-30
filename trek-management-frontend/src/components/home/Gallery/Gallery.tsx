@@ -10,7 +10,7 @@ export function Gallery() {
 
   return (
     <section
-      style={{ background: '#0F0F0E', padding: '88px 24px 96px' }}
+      className="bg-background py-24 px-6"
       aria-labelledby="gallery-title"
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -44,21 +44,21 @@ export function Gallery() {
               fontFamily: 'var(--font-display-custom)',
               fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
               fontWeight: 700,
-              color: '#F0EBE0',
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
               marginBottom: '12px',
             }}
+            className="text-foreground"
           >
             {GALLERY_SECTION.title}
           </motion.h2>
           <motion.p
             variants={fadeInUp}
             style={{
-              color: 'rgba(240,235,224,0.45)',
               fontSize: '0.95rem',
               fontFamily: 'var(--font-sans-custom)',
             }}
+            className="text-muted-foreground"
           >
             {GALLERY_SECTION.description}
           </motion.p>

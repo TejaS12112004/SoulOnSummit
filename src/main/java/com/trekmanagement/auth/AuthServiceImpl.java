@@ -297,16 +297,22 @@ public class AuthServiceImpl implements AuthService {
         );
         refreshTokenRepository.save(refreshToken);
 
+        UserAuthDto userDto = UserAuthDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .roles(java.util.List.of(user.getRole().getName()))
+                .emailVerified(user.isEmailVerified())
+                .createdAt(user.getCreatedAt())
+                .build();
+
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .tokenType("Bearer")
                 .expiresIn(jwtConfig.getAccessTokenExpiryMs() / 1000)
                 .refreshToken(rawRefreshToken)
-                .userId(user.getId())
-                .email(user.getEmail())
-                .role(user.getRole().getName())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
+                .user(userDto)
                 .build();
     }
 

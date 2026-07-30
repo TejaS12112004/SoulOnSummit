@@ -10,7 +10,7 @@ export function WhyChooseUs() {
 
   return (
     <section
-      style={{ background: '#1C1A0E', padding: '88px 24px 96px' }}
+      className="bg-background py-24 px-6"
       aria-labelledby="why-choose-us-title"
     >
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
@@ -44,10 +44,10 @@ export function WhyChooseUs() {
               fontFamily: 'var(--font-display-custom)',
               fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
               fontWeight: 700,
-              color: '#F0EBE0',
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
             }}
+            className="text-foreground"
           >
             {WHY_CHOOSE_US_SECTION.title}
           </motion.h2>
