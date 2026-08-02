@@ -1,0 +1,8 @@
+target
+.git
+.idea
+.env
+trek-management-frontend
+trek-management-frontend_zip
+docs
+*.log
