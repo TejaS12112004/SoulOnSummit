@@ -18,7 +18,8 @@ export function Testimonials() {
 
   return (
     <section
-      className="bg-muted py-24 px-6"
+      className="bg-muted"
+      style={{ padding: '96px 24px' }}
       aria-labelledby="testimonials-title"
     >
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>

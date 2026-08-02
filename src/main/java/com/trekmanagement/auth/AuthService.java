@@ -26,6 +26,8 @@ public interface AuthService {
      */
     AuthResponse login(LoginRequest request);
 
+    AuthResponse exchangeOAuth2Code(String code);
+
     /**
      * Flow 5: Rotate refresh token — invalidate old, issue new access + refresh pair.
      */

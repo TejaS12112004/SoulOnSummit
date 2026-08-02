@@ -19,8 +19,8 @@ export function NavLink({ href, label, onClick, className, isScrolled = true }: 
         cn(
           'relative px-2 py-1 font-sans text-[14px] font-bold transition-colors duration-200 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           isActive
-            ? (isScrolled ? 'text-[#1F4D3A]' : 'text-white')
-            : (isScrolled ? 'text-gray-600 hover:text-[#1F4D3A]' : 'text-white/90 hover:text-white'),
+            ? (isScrolled ? 'text-[#1F4D3A] dark:text-white' : 'text-white')
+            : (isScrolled ? 'text-gray-600 dark:text-gray-300 hover:text-[#1F4D3A] dark:hover:text-white' : 'text-white/90 hover:text-white'),
           className
         )
       }
@@ -31,7 +31,7 @@ export function NavLink({ href, label, onClick, className, isScrolled = true }: 
           {isActive && (
             <motion.div
               layoutId="nav-active-indicator"
-              className={cn("absolute -bottom-1 left-0 right-0 h-[2px] rounded-full", isScrolled ? "bg-forest" : "bg-white")}
+              className={cn("absolute -bottom-1 left-0 right-0 h-[2px] rounded-full", isScrolled ? "bg-forest dark:bg-white" : "bg-white")}
               initial={false}
               transition={{
                 type: 'spring',

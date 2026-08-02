@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,6 +19,10 @@ public class BookingResponse {
     private UUID id;
     private String bookingReference;
     private UUID departureId;
+    private String trekTitle;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private String location;
     private BookingStatus status;
     private PaymentStatus paymentStatus;
     private BookingSource bookingSource;

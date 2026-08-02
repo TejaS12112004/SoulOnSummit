@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Mountain, Play } from 'lucide-react';
+
 import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { HeroSearch } from './HeroSearch';

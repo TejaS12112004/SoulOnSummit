@@ -1,7 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { ROUTES } from '@/constants/routes'
-import AccessDeniedPage from '@/features/auth/pages/AccessDeniedPage'
+const AccessDeniedPage = () => <div className="p-8 text-center"><h1 className="text-2xl font-bold text-red-600">Access Denied</h1><p className="mt-2 text-gray-600">You do not have permission to view this page.</p></div>;
 import { Spinner } from '@/components/ui'
 
 type GuardType = 'authenticated' | 'admin' | 'guest'

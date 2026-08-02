@@ -10,7 +10,8 @@ export function WhyChooseUs() {
 
   return (
     <section
-      className="bg-background py-24 px-6"
+      className="bg-background"
+      style={{ padding: '96px 24px' }}
       aria-labelledby="why-choose-us-title"
     >
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>

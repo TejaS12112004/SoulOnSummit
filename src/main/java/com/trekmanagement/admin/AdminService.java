@@ -1,9 +1,7 @@
 package com.trekmanagement.admin;
 
-import com.trekmanagement.admin.dto.DashboardChartsResponse;
-import com.trekmanagement.admin.dto.DashboardMetricsResponse;
+import com.trekmanagement.admin.dto.DashboardResponse;
 
 public interface AdminService {
-    DashboardMetricsResponse getDashboardMetrics();
-    DashboardChartsResponse getDashboardCharts();
+    DashboardResponse getDashboardData();
 }

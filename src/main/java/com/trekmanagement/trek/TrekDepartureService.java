@@ -1,8 +1,10 @@
 package com.trekmanagement.trek;
 
+import com.trekmanagement.common.dto.PageResponse;
 import com.trekmanagement.trek.dto.CreateDepartureRequest;
 import com.trekmanagement.trek.dto.DepartureResponse;
 import com.trekmanagement.trek.dto.UpdateDepartureRequest;
+import com.trekmanagement.trek.dto.UpcomingDepartureResponse;
 
 import java.util.List;
 import java.util.UUID;
@@ -39,4 +41,11 @@ public interface TrekDepartureService {
      * Used by the public trek detail batch selector.
      */
     List<DepartureResponse> listPublicDepartures(UUID trekId);
+
+    /**
+     * Returns ALL publicly visible upcoming departures across ALL published, active treks.
+     * Paginated, ordered by startDate ASC.
+     * Used by the public Upcoming Batches page (/batches).
+     */
+    PageResponse<UpcomingDepartureResponse> listPublicUpcoming(int page, int size);
 }

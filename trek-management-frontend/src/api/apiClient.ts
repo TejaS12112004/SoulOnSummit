@@ -9,6 +9,20 @@ export const STORAGE_KEYS = {
   USER: 'trek_user',
 } as const
 
+let isRefreshing = false;
+let failedQueue: Array<{ resolve: (token: string) => void, reject: (err: any) => void }> = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token as string);
+    }
+  });
+  failedQueue = [];
+};
+
 const apiClient: AxiosInstance = axios.create({
   baseURL: env.apiBaseUrl,
   timeout: 15_000,
@@ -36,12 +50,70 @@ apiClient.interceptors.response.use(
   async (error: AxiosError<ApiError>) => {
     const status = error.response?.status
 
-    // 401 — token expired or invalid: clear session, redirect to login
+    // 401 — token expired or invalid: attempt refresh
     if (status === 401) {
+      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+      
+      // If we're already trying to refresh, queue the request
+      if (isRefreshing) {
+        return new Promise(function(resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        }).then(token => {
+          originalRequest.headers.Authorization = 'Bearer ' + token;
+          return apiClient(originalRequest);
+        }).catch(err => {
+          return Promise.reject(err);
+        });
+      }
+
+      // If we haven't retried yet and there's a refresh token available
+      if (!originalRequest._retry) {
+        originalRequest._retry = true;
+        isRefreshing = true;
+
+        const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+        if (refreshToken) {
+          try {
+            // Call refresh endpoint natively to avoid interceptor loops
+            const response = await axios.post(`${env.apiBaseUrl}/auth/refresh`, { refreshToken }, {
+              headers: { 'Content-Type': 'application/json' }
+            });
+            
+            const newAccessToken = response.data.data.accessToken;
+            const newRefreshToken = response.data.data.refreshToken;
+            const newUser = response.data.data.user;
+
+            localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, newAccessToken);
+            localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+            localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(newUser));
+
+            window.dispatchEvent(new Event('session_refreshed'));
+
+            processQueue(null, newAccessToken);
+            
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            return apiClient(originalRequest);
+            
+          } catch (refreshError) {
+            processQueue(refreshError, null);
+            // Refresh failed, clear session and log out
+            localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+            localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+            localStorage.removeItem(STORAGE_KEYS.USER);
+            if (!window.location.pathname.includes('/login')) {
+              window.location.href = '/login';
+            }
+            return Promise.reject(refreshError);
+          } finally {
+            isRefreshing = false;
+          }
+        }
+      }
+
+      // If no refresh token or retry already happened, clear session
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN)
       localStorage.removeItem(STORAGE_KEYS.USER)
-      // Avoid circular import by using window.location directly
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login'
       }

@@ -69,6 +69,36 @@ public class StorageController {
                 .body(ApiResponse.success("Itinerary PDF uploaded successfully", response));
     }
 
+    @PostMapping(value = "/api/v1/admin/storage/blogs/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload a blog image (Admin)")
+    public ResponseEntity<ApiResponse<UploadResponse>> uploadBlogImage(
+            @NotNull(message = "File is required") @RequestParam("file") MultipartFile file) {
+
+        UploadResponse response = storageService.uploadBlogImage(file);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Blog image uploaded successfully", response));
+    }
+
+    @PostMapping(value = "/api/v1/admin/storage/settings/logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload site logo (Admin)")
+    public ResponseEntity<ApiResponse<UploadResponse>> uploadSiteLogo(
+            @NotNull(message = "File is required") @RequestParam("file") MultipartFile file) {
+
+        UploadResponse response = storageService.uploadSiteLogo(file);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Logo uploaded successfully", response));
+    }
+
+    @PostMapping(value = "/api/v1/admin/storage/settings/favicon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Upload site favicon (Admin)")
+    public ResponseEntity<ApiResponse<UploadResponse>> uploadSiteFavicon(
+            @NotNull(message = "File is required") @RequestParam("file") MultipartFile file) {
+
+        UploadResponse response = storageService.uploadSiteFavicon(file);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("Favicon uploaded successfully", response));
+    }
+
     @DeleteMapping("/api/v1/admin/storage")
     @Operation(summary = "Delete a file by bucket + path (Admin)")
     public ResponseEntity<ApiResponse<DeleteFileResponse>> deleteFile(

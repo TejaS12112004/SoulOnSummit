@@ -32,8 +32,11 @@ public class User extends BaseEntity {
     @Column(name = "phone", unique = true, length = 20)
     private String phone;
 
-    @Column(name = "password_hash", nullable = false, length = 255)
+    @Column(name = "password_hash", length = 255)
     private String passwordHash;
+
+    @Column(name = "provider_id", length = 255)
+    private String providerId;
 
     @Column(name = "profile_image_url")
     private String profileImageUrl;
@@ -76,4 +79,13 @@ public class User extends BaseEntity {
 
     @Column(name = "last_login")
     private Instant lastLogin;
+
+    @Column(name = "notify_booking_updates")
+    private boolean notifyBookingUpdates = true;
+
+    @Column(name = "notify_upcoming_treks")
+    private boolean notifyUpcomingTreks = true;
+
+    @Column(name = "notify_promotions")
+    private boolean notifyPromotions = false;
 }

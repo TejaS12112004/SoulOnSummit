@@ -3,6 +3,9 @@ export const ROUTES = {
   HOME: '/',
   TREKS: '/treks',
   TREK_DETAIL: '/treks/:id',
+  BATCHES: '/batches',
+  ABOUT: '/about',
+  CONTACT: '/contact',
 
   // Auth
   LOGIN: '/login',
@@ -28,6 +31,7 @@ export const ROUTES = {
 
 // Helpers for dynamic segments
 export const toTrekDetail = (id: string) => `/treks/${id}`
+export const toBatches = () => '/batches'
 export const toBookingNew = () => ROUTES.BOOKING_NEW
 export const toBookingSummary = (id: string) => ROUTES.BOOKING_SUMMARY.replace(':id', id)
 export const toAdminTrekDetail = (id: string) => `/admin/treks/${id}`

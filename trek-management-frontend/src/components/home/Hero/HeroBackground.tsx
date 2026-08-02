@@ -3,7 +3,7 @@ interface HeroBackgroundProps {
   altText?: string;
 }
 
-export function HeroBackground({ imageUrl, altText = "" }: HeroBackgroundProps) {
+export function HeroBackground(_props: HeroBackgroundProps) {
   return (
     <>
       <video

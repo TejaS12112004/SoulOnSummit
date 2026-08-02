@@ -1,0 +1,4 @@
+ALTER TABLE users
+ADD COLUMN notify_booking_updates BOOLEAN DEFAULT TRUE,
+ADD COLUMN notify_upcoming_treks BOOLEAN DEFAULT TRUE,
+ADD COLUMN notify_promotions BOOLEAN DEFAULT FALSE;

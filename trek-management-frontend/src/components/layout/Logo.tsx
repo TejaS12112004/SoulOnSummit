@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { cn } from '@/utils/cn';
+import { usePublicSettings } from '@/contexts/PublicSettingsContext';
 
 interface LogoProps {
   onClick?: () => void;
@@ -8,6 +9,10 @@ interface LogoProps {
 }
 
 export function Logo({ onClick, className, isScrolled = true }: LogoProps) {
+  const { settings } = usePublicSettings();
+  const companyName = settings?.companyName || 'The Soul On Summit';
+  const logoUrl = settings?.logoUrl || '/logo.jpeg';
+  
   return (
     <Link 
       to="/" 
@@ -16,18 +21,18 @@ export function Logo({ onClick, className, isScrolled = true }: LogoProps) {
       aria-label="The Soul On Summit Home"
     >
       <img 
-        src="/logo.jpeg" 
-        alt="The Soul On Summit Logo" 
+        src={logoUrl} 
+        alt={`${companyName} Logo`} 
         className="w-[42px] h-[42px] rounded-full object-cover shrink-0 border border-white/20 shadow-sm"
       />
       <div className="flex flex-col">
         <div
           className={cn(
             "font-display font-bold text-[1.2rem] leading-[1.1] tracking-[-0.01em] transition-colors duration-200 ease-out",
-            isScrolled ? "text-forest" : "text-white"
+            isScrolled ? "text-forest dark:text-white" : "text-white"
           )}
         >
-          The Soul On Summit
+          {companyName}
         </div>
         <div
           className={cn(

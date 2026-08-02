@@ -57,6 +57,14 @@ const bookingService = {
     apiClient
       .post<ApiResponse<null>>(ENDPOINTS.BOOKINGS.CANCEL(id))
       .then(() => undefined),
+
+  /**
+   * Verify Razorpay Payment Signature
+   */
+  verifyPayment: (data: import('@/types/api').VerifyPaymentRequestDto): Promise<void> =>
+    apiClient
+      .post<ApiResponse<void>>(ENDPOINTS.PAYMENTS.VERIFY, data)
+      .then(() => undefined),
 }
 
 export default bookingService

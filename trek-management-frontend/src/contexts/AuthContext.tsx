@@ -8,12 +8,14 @@ import {
 } from 'react'
 import { STORAGE_KEYS } from '@/api/apiClient'
 import authService from '@/services/authService'
-import type { AuthState, LoginRequest, User } from '@/types/auth'
+import type { AuthState, LoginRequest, RegisterRequest, User } from '@/types/auth'
 
 interface AuthContextValue extends AuthState {
-  login: (data: LoginRequest) => Promise<void>
-  register: (data: RegisterRequest) => Promise<void>
+  login: (data: LoginRequest) => Promise<User>
+  register: (data: RegisterRequest) => Promise<User>
   logout: () => Promise<void>
+  refreshUser: () => Promise<void>
+  establishSession: (user: User, accessToken: string, refreshToken: string) => void
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -58,33 +60,46 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [refreshToken, setRefreshToken] = useState<string | null>(stored.refreshToken)
   const [loading, setLoading] = useState(false)
 
-  // Validate stored session on mount (ensure token not stale)
+  // Listen for refresh events from apiClient to sync React state
   useEffect(() => {
-    if (!stored.accessToken) return
-    // No extra validation call needed; invalid token will trigger 401 interceptor
-    // which clears storage and redirects to /login automatically
-  }, [stored.accessToken])
+    const handleStorageChange = () => {
+      const stored = loadFromStorage();
+      if (stored.accessToken !== accessToken) {
+        setAccessToken(stored.accessToken);
+        setRefreshToken(stored.refreshToken);
+        setUser(stored.user);
+      }
+    };
 
-  const login = useCallback(async (data: LoginRequest) => {
+    window.addEventListener('session_refreshed', handleStorageChange);
+    return () => window.removeEventListener('session_refreshed', handleStorageChange);
+  }, [accessToken]);
+
+  const establishSession = useCallback((u: User, at: string, rt: string) => {
+    persistSession(u, at, rt)
+    setUser(u)
+    setAccessToken(at)
+    setRefreshToken(rt)
+  }, [])
+
+  const login = useCallback(async (data: LoginRequest): Promise<User> => {
     setLoading(true)
     try {
       const response = await authService.login(data)
       const { accessToken: at, refreshToken: rt, user: u } = response.data
-      persistSession(u, at, rt)
-      setUser(u)
-      setAccessToken(at)
-      setRefreshToken(rt)
+      establishSession(u, at, rt)
+      return u
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [establishSession])
 
-  const register = useCallback(async (data: RegisterRequest) => {
+  const register = useCallback(async (data: RegisterRequest): Promise<User> => {
     setLoading(true)
     try {
       await authService.register(data)
       // Automatically login after successful registration
-      await login({ email: data.email, password: data.password })
+      return await login({ email: data.email, password: data.password })
     } finally {
       setLoading(false)
     }
@@ -107,6 +122,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [refreshToken])
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const userService = (await import('@/services/userService')).default;
+      const updatedUser = await userService.getProfile();
+      // Need to cast to User because UserResponse lacks 'roles' which is on User from AuthState. 
+      // Assuming 'roles' is available or merging it.
+      const newUser = { ...user, ...updatedUser } as User;
+      setUser(newUser);
+      if (accessToken && refreshToken) {
+        persistSession(newUser, accessToken, refreshToken);
+      }
+    } catch (err) {
+      console.error('Failed to refresh user profile', err);
+    }
+  }, [user, accessToken, refreshToken]);
+
   const isAuthenticated = !!user && !!accessToken
   const isAdmin = isAuthenticated && (user?.roles.includes('ROLE_ADMIN') ?? false)
 
@@ -121,8 +152,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       login,
       register,
       logout,
+      refreshUser,
+      establishSession,
     }),
-    [user, accessToken, refreshToken, isAuthenticated, isAdmin, loading, login, register, logout],
+    [user, accessToken, refreshToken, isAuthenticated, isAdmin, loading, login, register, logout, refreshUser, establishSession],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

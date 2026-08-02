@@ -28,6 +28,12 @@ public class UserResponse {
     private final String state;
     private final String country;
     private final String postalCode;
+    
+    // Preferences
+    private final boolean notifyBookingUpdates;
+    private final boolean notifyUpcomingTreks;
+    private final boolean notifyPromotions;
+
     private final String role;
     private final boolean emailVerified;
     private final Instant lastLogin;

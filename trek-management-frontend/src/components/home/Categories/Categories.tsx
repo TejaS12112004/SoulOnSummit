@@ -10,7 +10,8 @@ export function Categories() {
 
   return (
     <section
-      className="bg-muted py-24 px-6"
+      className="bg-muted"
+      style={{ padding: '96px 24px' }}
       aria-labelledby="categories-title"
     >
       <div className="container mx-auto">

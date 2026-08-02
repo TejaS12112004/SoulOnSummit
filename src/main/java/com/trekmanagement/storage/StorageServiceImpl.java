@@ -89,6 +89,50 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
+    public UploadResponse uploadUserAvatar(UUID userId, MultipartFile file) {
+        return uploadInternal(
+                supabaseConfig.getStorage().getBucketAvatars(),
+                userId.toString(),
+                file,
+                storageProperties.getAllowedImageMimeTypes(),
+                storageProperties.getMaxImageSize());
+    }
+
+    @Override
+    public UploadResponse uploadBlogImage(MultipartFile file) {
+        // Blogs might not have an ID yet, so we use a UUID folder or just root
+        String folder = UUID.randomUUID().toString();
+        return uploadInternal(
+                supabaseConfig.getStorage().getBucketBlogImages(),
+                folder,
+                file,
+                storageProperties.getAllowedImageMimeTypes(),
+                storageProperties.getMaxImageSize());
+    }
+
+    @Override
+    public UploadResponse uploadSiteLogo(MultipartFile file) {
+        String path = "branding/logo-" + UUID.randomUUID().toString().substring(0, 8);
+        return uploadInternal(
+                supabaseConfig.getStorage().getBucketImages(),
+                path,
+                file,
+                storageProperties.getAllowedImageMimeTypes(),
+                storageProperties.getMaxImageSize());
+    }
+
+    @Override
+    public UploadResponse uploadSiteFavicon(MultipartFile file) {
+        String path = "branding/favicon-" + UUID.randomUUID().toString().substring(0, 8);
+        return uploadInternal(
+                supabaseConfig.getStorage().getBucketImages(),
+                path,
+                file,
+                storageProperties.getAllowedImageMimeTypes(),
+                storageProperties.getMaxImageSize());
+    }
+
+    @Override
     public UploadResponse uploadInvoicePdf(String bookingReference, byte[] pdfBytes) {
         String uploader = currentUploader();
         long startTime = System.currentTimeMillis();

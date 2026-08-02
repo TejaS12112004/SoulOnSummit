@@ -52,6 +52,25 @@ export interface TrekFilterParams extends PaginationParams {
   startDateTo?: string
 }
 
+export interface AdminUserFilterParams extends PaginationParams {
+  search?: string
+}
+
+export interface AdminPaymentFilterParams extends PaginationParams {
+  search?: string
+}
+
+export interface AdminReviewFilterParams extends PaginationParams {
+  search?: string;
+  status?: 'ALL' | 'PENDING' | 'APPROVED';
+  featured?: boolean;
+}
+
+export interface AdminBlogFilterParams extends PaginationParams {
+  search?: string;
+  published?: boolean;
+}
+
 // ----------------------------------------------------------------------------
 // HOME DTOs
 // ----------------------------------------------------------------------------
@@ -93,6 +112,28 @@ export interface HomeUpcomingDepartureResponse {
   totalSeats: number | null;
   status: string;
   featured: boolean;
+}
+
+/** Matches backend UpcomingDepartureResponse — used by /batches page */
+export interface UpcomingBatchResponse {
+  departureId: string;
+  trekId: string;
+  trekTitle: string;
+  location: string;
+  state: string | null;
+  difficulty: TrekDifficulty;
+  durationDays: number;
+  coverImageUrl: string | null;
+  startDate: string;       // LocalDate → ISO string "YYYY-MM-DD"
+  endDate: string;
+  registrationDeadline: string;
+  price: number;
+  discountPrice: number | null;
+  totalSeats: number;
+  availableSeats: number;
+  status: 'OPEN' | 'CANCELLED' | 'COMPLETED';
+  fillingFast: boolean;
+  soldOut: boolean;
 }
 
 // ----------------------------------------------------------------------------
@@ -225,6 +266,140 @@ export interface TrekResponseDto {
 // ----------------------------------------------------------------------------
 // BOOKING DTOs
 // ----------------------------------------------------------------------------
+export type BookingStatus = 'PENDING_PAYMENT' | 'CONFIRMED' | 'CANCELLED' | 'EXPIRED' | 'COMPLETED' | 'REFUNDED';
+export type PaymentStatus = 'PENDING' | 'SUCCESS' | 'FAILED' | 'REFUNDED';
+export type BookingSource = 'WEBSITE' | 'MANUAL';
+
+export interface AdminUserResponse {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  role: string;
+  emailVerified: boolean;
+  active: boolean;
+  createdAt: string;
+  lastLogin?: string;
+  authMethod: string;
+}
+
+export interface AdminPaymentResponse {
+  id: string;
+  razorpayOrderId: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  paymentMethod?: string;
+  paidAt?: string;
+  bookingReference: string;
+  userName: string;
+  userEmail: string;
+  trekTitle: string;
+  invoiceUrl?: string;
+}
+
+export interface AdminReviewResponse {
+  id: string;
+  rating: number;
+  title?: string;
+  body?: string;
+  approved: boolean;
+  featured: boolean;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    profileImageUrl?: string;
+  };
+  trek: {
+    id: string;
+    title: string;
+  };
+}
+
+export interface AdminBlogResponse {
+  id: string;
+  title: string;
+  slug: string;
+  summary?: string;
+  body: string;
+  featuredImage?: string;
+  published: boolean;
+  publishedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+    profileImageUrl?: string;
+  };
+}
+
+export interface BlogRequest {
+  title: string;
+  slug?: string;
+  summary?: string;
+  body: string;
+  featuredImage?: string;
+}
+
+export interface PublicSiteSettingsResponse {
+  companyName: string;
+  supportEmail: string;
+  supportPhone: string;
+  businessAddress: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  youtubeUrl?: string;
+  twitterUrl?: string;
+  defaultMetaTitle?: string;
+  defaultMetaDescription?: string;
+  logoUrl?: string;
+  faviconUrl?: string;
+}
+
+export interface AdminSiteSettingsResponse extends PublicSiteSettingsResponse {
+  updatedAt: string;
+}
+
+export interface SiteSettingsRequest {
+  companyName: string;
+  supportEmail: string;
+  supportPhone: string;
+  businessAddress: string;
+  instagramUrl?: string;
+  facebookUrl?: string;
+  youtubeUrl?: string;
+  twitterUrl?: string;
+  defaultMetaTitle?: string;
+  defaultMetaDescription?: string;
+  logoUrl?: string;
+  faviconUrl?: string;
+}
+
+export interface AdminBookingResponse {
+  id: string;
+  bookingReference: string;
+  userEmail: string;
+  userName: string;
+  trekTitle: string;
+  startDate: string;
+  status: BookingStatus;
+  paymentStatus: PaymentStatus;
+  bookingSource: BookingSource;
+  totalParticipants: number;
+  totalAmount: number;
+  bookedAt: string;
+}
+
+export interface UpdateBookingAdminRequest {
+  status: BookingStatus;
+  specialRequests?: string;
+}
+
 export interface ParticipantResponseDto {
   id?: string;
   fullName: string;
@@ -248,9 +423,9 @@ export interface BookingResponseDto {
   difficulty: TrekDifficulty;
   durationDays: number;
   location: string;
-  status: string;
-  paymentStatus: string;
-  bookingSource: string;
+  status: BookingStatus;
+  paymentStatus: PaymentStatus;
+  bookingSource: BookingSource;
   totalParticipants: number;
   subtotal: number;
   discountAmount: number;
@@ -268,10 +443,12 @@ export interface BookingSummaryResponseDto {
   trekTitle: string;
   startDate: string;
   endDate: string;
-  status: string;
-  paymentStatus: string;
+  status: BookingStatus;
+  paymentStatus: PaymentStatus;
   totalAmount: number;
   bookedAt: string;
+  trekImageUrl?: string;
+  totalParticipants?: number;
 }
 
 export interface CreateBookingRequestDto {
@@ -284,4 +461,10 @@ export interface CreateBookingResponseDto {
   bookingId: string;
   bookingReference: string;
   razorpayOrderId: string;
+}
+
+export interface VerifyPaymentRequestDto {
+  razorpayOrderId: string;
+  razorpayPaymentId: string;
+  razorpaySignature: string;
 }

@@ -1,5 +1,8 @@
 package com.trekmanagement.config;
 
+import com.trekmanagement.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.trekmanagement.security.oauth2.OAuth2AuthenticationFailureHandler;
+import com.trekmanagement.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import com.trekmanagement.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +28,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +37,9 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Value("${app.cors.allowed-origins}")
     private String allowedOrigins;
@@ -75,7 +80,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 // Public auth endpoints
-                .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/v1/auth/**", "/oauth2/**").permitAll()
 
                 // Public trek browsing (GET only)
                 .requestMatchers(HttpMethod.GET, "/api/v1/treks/**").permitAll()
@@ -86,8 +91,8 @@ public class SecurityConfig {
                 // Public gallery viewing (GET only)
                 .requestMatchers(HttpMethod.GET, "/api/v1/gallery/**").permitAll()
 
-                // Webhooks (public, verified via signature internally)
-                .requestMatchers("/api/v1/webhooks/**").permitAll()
+                // Webhooks & Payment Verification (verified cryptographically via signature)
+                .requestMatchers("/api/v1/webhooks/**", "/api/v1/payments/verify").permitAll()
 
                 // Actuator health (public)
                 .requestMatchers("/actuator/health").permitAll()
@@ -100,6 +105,28 @@ public class SecurityConfig {
 
                 // All other endpoints — authenticated users
                 .anyRequest().authenticated()
+            )
+
+            // Exception Handling — Return 401 for unauthorized API requests instead of 302 redirect
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setContentType("application/json");
+                    response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("{\"success\":false,\"message\":\"Unauthorized\",\"status\":401}");
+                })
+            )
+
+            // OAuth2 Login configuration
+            .oauth2Login(oauth2 -> oauth2
+                .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+                    .baseUri("/oauth2/authorization")
+                    .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                )
+                .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
+                    .baseUri("/oauth2/callback/*")
+                )
+                .successHandler(oAuth2AuthenticationSuccessHandler)
+                .failureHandler(oAuth2AuthenticationFailureHandler)
             )
 
             // JWT filter — before UsernamePasswordAuthenticationFilter
@@ -119,7 +146,7 @@ public class SecurityConfig {
         configuration.setMaxAge(maxAge);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/api/**", configuration);
         return source;
     }
 

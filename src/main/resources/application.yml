@@ -2,15 +2,30 @@ spring:
   application:
     name: trek-management-system
 
+  config:
+    import: optional:file:.env
+
   profiles:
     active: ${APP_ENV:dev}
 
   # ── DataSource ──────────────────────────────────────────────────────────────
   datasource:
-    url: jdbc:postgresql://aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres
-    username: postgres.lcrjlyazydrkhuwsfwor
-    password: teJas@664598
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/trek_management}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:test-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:test-client-secret}
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - email
+              - profile
     hikari:
       pool-name: TrekHikariPool
       minimum-idle: 5
@@ -126,6 +141,7 @@ springdoc:
 
 # ── Application-specific ──────────────────────────────────────────────────────
 app:
+  frontend-url: ${FRONTEND_URL}
 
   # JWT
   jwt:

@@ -1,13 +1,15 @@
+
 import { Link } from 'react-router-dom';
-import { Star, MapPin, Clock3 } from 'lucide-react';
+import { Star, MapPin, Clock3, Heart } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { toTrekDetail } from '@/constants/routes';
 import { formatCurrency } from '@/utils/formatters/currency';
-import type { HomeFeaturedTrekViewModel } from '@/types/home';
+import { useWishlist } from '@/hooks/useWishlist';
+import type { TrekSummaryResponse } from '@/types/api';
 import type { TrekDifficulty } from '@/types/difficulty';
 
 interface FeaturedTrekCardProps {
-  trek: HomeFeaturedTrekViewModel;
+  trek: TrekSummaryResponse;
 }
 
 // Removed hardcoded background
@@ -41,7 +43,8 @@ function DifficultyBadge({ difficulty }: { difficulty: TrekDifficulty }) {
 }
 
 export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
-  const isLowSeats = trek.seatsLeft <= 5;
+  const isLowSeats = trek.nextDepartureAvailableSeats !== null && trek.nextDepartureAvailableSeats <= 5;
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   return (
     <Link
@@ -78,50 +81,68 @@ export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
           <DifficultyBadge difficulty={trek.difficulty} />
         </div>
         {/* Altitude badge — bottom right */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '12px',
-            right: '12px',
-            background: 'rgba(255,255,255,0.85)',
-            backdropFilter: 'blur(6px)',
-            borderRadius: '8px',
-            padding: '4px 10px',
-            color: '#1A1A0F',
-            fontSize: '0.75rem',
-            fontWeight: 600,
-            fontFamily: 'var(--font-sans-custom)',
-          }}
-        >
-          {trek.maxAltitude.toLocaleString()} ft
-        </div>
+        {trek.maxAltitude !== null && trek.maxAltitude > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '12px',
+              right: '12px',
+              background: 'rgba(255,255,255,0.85)',
+              backdropFilter: 'blur(6px)',
+              borderRadius: '8px',
+              padding: '4px 10px',
+              color: '#1A1A0F',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              fontFamily: 'var(--font-sans-custom)',
+            }}
+          >
+            {trek.maxAltitude.toLocaleString()} ft
+          </div>
+        )}
       </div>
 
       {/* Card body */}
       <div style={{ padding: '20px 20px 20px', display: 'flex', flexDirection: 'column', gap: '0', flexGrow: 1 }}>
 
-        {/* Title */}
-        <h3
-          style={{
-            fontFamily: 'var(--font-display-custom)',
-            fontSize: '1.25rem',
-            fontWeight: 700,
-            lineHeight: 1.25,
-            marginBottom: '4px',
-          }}
-          className="text-foreground"
-        >
-          {trek.title}
-        </h3>
+        {/* Title & Wishlist */}
+        <div className="flex items-start justify-between" style={{ marginBottom: '12px', gap: '12px' }}>
+          <h3
+            style={{
+              fontFamily: 'var(--font-display-custom)',
+              fontSize: '1.25rem',
+              fontWeight: 700,
+              lineHeight: 1.25,
+            }}
+            className="text-foreground line-clamp-1"
+          >
+            {trek.title}
+          </h3>
+          <button 
+            type="button"
+            onClick={(e) => { 
+              e.preventDefault(); 
+              e.stopPropagation();
+              toggleWishlist(trek.id); 
+            }}
+            className="transition-colors group/heart"
+            style={{ padding: '2px', flexShrink: 0 }}
+            aria-label={isInWishlist(trek.id) ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <Heart className={`w-[24px] h-[24px] transition-colors ${isInWishlist(trek.id) ? 'fill-[#EF4444] text-[#EF4444]' : 'text-gray-300 group-hover/heart:text-[#EF4444]'}`} />
+          </button>
+        </div>
 
         {/* Price row */}
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '10px' }}>
           <span style={{ fontSize: '1.3rem', fontWeight: 700, color: '#F59E0B', fontFamily: 'var(--font-sans-custom)' }}>
-            {formatCurrency(trek.price)}
+            {trek.lowestPrice != null ? formatCurrency(trek.lowestPrice) : 'TBA'}
           </span>
-          <span className="text-[0.8rem] text-muted-foreground line-through font-sans">
-            {formatCurrency(trek.originalPrice)}
-          </span>
+          {trek.originalPrice && (
+            <span className="text-[0.8rem] text-muted-foreground line-through font-sans">
+              {formatCurrency(trek.originalPrice)}
+            </span>
+          )}
         </div>
 
         {/* Location */}
@@ -138,35 +159,43 @@ export function FeaturedTrekCard({ trek }: FeaturedTrekCardProps) {
             <Clock3 style={{ width: '13px', height: '13px' }} />
             {trek.durationDays} Days
           </span>
-          <span className="flex items-center gap-[4px] text-[0.8rem] text-muted-foreground font-sans">
-            <Star style={{ width: '12px', height: '12px', fill: '#F59E0B', color: '#F59E0B' }} />
-            <span className="text-foreground font-semibold">{trek.rating}</span>
-            <span>({trek.reviewCount})</span>
-          </span>
+          {trek.rating !== null && (
+            <span className="flex items-center gap-[4px] text-[0.8rem] text-muted-foreground font-sans">
+              <Star style={{ width: '12px', height: '12px', fill: '#F59E0B', color: '#F59E0B' }} />
+              <span className="text-foreground font-semibold">{trek.rating}</span>
+              {trek.reviewCount !== null && <span>({trek.reviewCount})</span>}
+            </span>
+          )}
         </div>
 
         {/* Divider */}
         <div className="border-t border-border mb-[14px]" />
 
         {/* Next Batch + Seats Left */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-          <div>
-            <div className="text-[0.7rem] text-muted-foreground font-sans mb-[2px] uppercase tracking-wider">
-              Next Batch
-            </div>
-            <div className="text-[0.88rem] font-bold text-foreground font-sans">
-              {trek.nextBatch}
-            </div>
+        {(trek.nextDepartureDate || trek.nextDepartureAvailableSeats !== null) && (
+          <div style={{ display: 'flex', justifySelf: 'flex-end', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+            {trek.nextDepartureDate && (
+              <div>
+                <div className="text-[0.7rem] text-muted-foreground font-sans mb-[2px] uppercase tracking-wider">
+                  Next Batch
+                </div>
+                <div className="text-[0.88rem] font-bold text-foreground font-sans">
+                  {trek.nextDepartureDate}
+                </div>
+              </div>
+            )}
+            {trek.nextDepartureAvailableSeats !== null && (
+              <div style={{ textAlign: 'right' }}>
+                <div className="text-[0.7rem] text-muted-foreground font-sans mb-[2px] uppercase tracking-wider">
+                  Seats Left
+                </div>
+                <div className={cn("text-[0.88rem] font-bold font-sans", isLowSeats ? 'text-red-500' : 'text-foreground')}>
+                  {trek.nextDepartureAvailableSeats} only!
+                </div>
+              </div>
+            )}
           </div>
-          <div style={{ textAlign: 'right' }}>
-            <div className="text-[0.7rem] text-muted-foreground font-sans mb-[2px] uppercase tracking-wider">
-              Seats Left
-            </div>
-            <div className={cn("text-[0.88rem] font-bold font-sans", isLowSeats ? 'text-red-500' : 'text-foreground')}>
-              {trek.seatsLeft} only!
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* View Details button */}
         <div

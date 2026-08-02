@@ -23,7 +23,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
@@ -42,12 +46,16 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final EmailVerificationTokenRepository emailVerificationTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final OAuth2CodeRepository oAuth2CodeRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtConfig jwtConfig;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JavaMailSender mailSender;
     private final MailConfig mailConfig;
+    
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     // ── Flow 1: Registration ─────────────────────────────────────────────────
 
@@ -161,6 +169,10 @@ public class AuthServiceImpl implements AuthService {
             throw new UnauthorizedException("Email not verified — please check your inbox");
         }
 
+        if (user.getPasswordHash() == null) {
+            throw new UnauthorizedException("This account uses Google Login. Please sign in with Google.");
+        }
+
         // Delegate to Spring Security (BCrypt comparison)
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -214,6 +226,40 @@ public class AuthServiceImpl implements AuthService {
         return buildAuthResponse(user);
     }
 
+    // ── Flow 5b: OAuth2 Code Exchange ────────────────────────────────────────
+
+    @Override
+    @Transactional
+    public AuthResponse exchangeOAuth2Code(String code) {
+        // Find code and verify expiry using SHA-256
+        String codeHash = hashToken(code);
+        OAuth2Code storedCode = oAuth2CodeRepository.findByCodeHash(codeHash)
+                .orElseThrow(() -> new UnauthorizedException("Invalid authorization code."));
+
+        if (DateTimeUtils.isExpired(storedCode.getExpiresAt())) {
+            oAuth2CodeRepository.consumeCodeById(storedCode.getId()); // Safely delete if expired
+            throw new UnauthorizedException("Authorization code has expired. Please log in again.");
+        }
+
+        User user = storedCode.getUser();
+
+        if (!user.isActive()) {
+            throw new UnauthorizedException("Account is disabled — contact support");
+        }
+
+        // Atomically consume code
+        int deletedRows = oAuth2CodeRepository.consumeCodeById(storedCode.getId());
+        if (deletedRows == 0) {
+            throw new UnauthorizedException("Authorization code has already been consumed or expired.");
+        }
+        
+        // Update last login
+        userRepository.updateLastLogin(user.getId(), Instant.now());
+        User freshUser = userRepository.findById(user.getId()).orElseThrow();
+
+        return buildAuthResponse(freshUser);
+    }
+
     // ── Flow 6: Logout ───────────────────────────────────────────────────────
 
     @Override
@@ -233,19 +279,23 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public void forgotPassword(String email) {
         // Always return 200 — do not reveal whether email exists (security architecture doc)
-        userRepository.findByEmail(email.toLowerCase().strip()).ifPresent(user -> {
+        userRepository.findByEmail(email.toLowerCase().strip()).ifPresentOrElse(user -> {
             // Delete any existing reset tokens for this user (single active token policy)
             passwordResetTokenRepository.deleteAllByUserId(user.getId());
 
             String resetToken = generateSecureToken();
+            String hashedToken = hashToken(resetToken);
             PasswordResetToken prt = new PasswordResetToken(
                     user,
-                    resetToken,
+                    hashedToken,
                     DateTimeUtils.nowPlusHours(1)  // 1h expiry per security architecture
             );
             passwordResetTokenRepository.save(prt);
 
             sendPasswordResetEmailAsync(user.getEmail(), user.getFirstName(), resetToken);
+            log.info("Password reset email sent to {}", user.getEmail());
+        }, () -> {
+            log.warn("Forgot password requested for non-existent email: {}", email);
         });
     }
 
@@ -258,7 +308,8 @@ public class AuthServiceImpl implements AuthService {
             throw new ValidationException("Passwords do not match");
         }
 
-        PasswordResetToken prt = passwordResetTokenRepository.findByToken(request.getToken())
+        String hashedToken = hashToken(request.getToken());
+        PasswordResetToken prt = passwordResetTokenRepository.findByToken(hashedToken)
                 .orElseThrow(() -> new ValidationException("Invalid or expired reset token"));
 
         if (DateTimeUtils.isExpired(prt.getExpiresAt())) {
@@ -268,7 +319,7 @@ public class AuthServiceImpl implements AuthService {
 
         User user = prt.getUser();
 
-        if (passwordEncoder.matches(request.getNewPassword(), user.getPasswordHash())) {
+        if (user.getPasswordHash() != null && passwordEncoder.matches(request.getNewPassword(), user.getPasswordHash())) {
             throw new ValidationException("New password must differ from the current password");
         }
 
@@ -302,6 +353,17 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .phone(user.getPhone())
+                .profileImageUrl(user.getProfileImageUrl())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
+                .emergencyContactName(user.getEmergencyContactName())
+                .emergencyContactPhone(user.getEmergencyContactPhone())
+                .address(user.getAddress())
+                .city(user.getCity())
+                .state(user.getState())
+                .country(user.getCountry())
+                .postalCode(user.getPostalCode())
                 .roles(java.util.List.of(user.getRole().getName()))
                 .emailVerified(user.isEmailVerified())
                 .createdAt(user.getCreatedAt())
@@ -323,6 +385,16 @@ public class AuthServiceImpl implements AuthService {
         byte[] bytes = new byte[48];
         SECURE_RANDOM.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    private String hashToken(String token) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(token.getBytes(StandardCharsets.UTF_8));
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Failed to hash token", e);
+        }
     }
 
     // ── Async email senders ───────────────────────────────────────────────────
@@ -352,20 +424,31 @@ public class AuthServiceImpl implements AuthService {
     @Async("notificationExecutor")
     public void sendPasswordResetEmailAsync(String to, String firstName, String token) {
         try {
-            String resetUrl = mailConfig.getBaseUrl() + "/reset-password?token=" + token;
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom(mailConfig.getFromAddress());
-            message.setTo(to);
-            message.setSubject("Reset your password — " + mailConfig.getFromName());
-            message.setText(
-                "Hi " + firstName + ",\n\n"
-                + "We received a request to reset your password. Click the link below:\n\n"
-                + resetUrl + "\n\n"
-                + "This link expires in 1 hour.\n\n"
-                + "If you did not request a password reset, you can safely ignore this email.\n\n"
-                + "— " + mailConfig.getFromName()
-            );
-            mailSender.send(message);
+            String resetUrl = frontendUrl + "/reset-password?token=" + token;
+            
+            jakarta.mail.internet.MimeMessage mimeMessage = mailSender.createMimeMessage();
+            org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(mimeMessage, "utf-8");
+            
+            helper.setFrom(mailConfig.getFromAddress(), mailConfig.getFromName());
+            helper.setTo(to);
+            helper.setSubject("Reset your password — SoulOnSummit");
+            
+            String htmlMsg = "<div style='font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;'>"
+                           + "<h2 style='color: #F59E0B;'>SoulOnSummit</h2>"
+                           + "<h3>Reset your password</h3>"
+                           + "<p>Hi " + (firstName != null ? firstName : "") + ",</p>"
+                           + "<p>We received a request to reset the password for your SoulOnSummit account.</p>"
+                           + "<p style='margin: 30px 0;'>"
+                           + "<a href='" + resetUrl + "' style='background-color: #F59E0B; color: #1C2B3A; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;'>Reset Password</a>"
+                           + "</p>"
+                           + "<p>This link will expire in 1 hour.</p>"
+                           + "<p>If you didn't request this password reset, you can safely ignore this email.</p>"
+                           + "<hr style='border: none; border-top: 1px solid #eaeaea; margin-top: 30px;' />"
+                           + "<p style='color: #888; font-size: 12px;'>SoulOnSummit<br/>Adventure awaits.</p>"
+                           + "</div>";
+            
+            helper.setText(htmlMsg, true);
+            mailSender.send(mimeMessage);
         } catch (Exception ex) {
             log.error("Failed to send password reset email to {}: {}", to, ex.getMessage());
         }

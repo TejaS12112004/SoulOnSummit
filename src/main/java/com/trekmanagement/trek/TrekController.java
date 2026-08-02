@@ -107,6 +107,15 @@ public class TrekController {
         return ResponseEntity.ok(ApiResponse.success(departureService.listPublicDepartures(trekId)));
     }
 
+    @GetMapping("/api/v1/treks/departures/upcoming")
+    @Operation(summary = "List all publicly bookable upcoming departures across all treks — paginated, ordered by startDate ASC")
+    public ResponseEntity<ApiResponse<PageResponse<com.trekmanagement.trek.dto.UpcomingDepartureResponse>>> listPublicUpcomingDepartures(
+            @Parameter(description = "Page number (0-indexed)") @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Page size (max 50)")      @RequestParam(defaultValue = "20") int size) {
+
+        return ResponseEntity.ok(ApiResponse.success(departureService.listPublicUpcoming(page, size)));
+    }
+
     // ═══════════════════════════════════════════════════════════════════════
     // ADMIN TREK ENDPOINTS — /api/v1/admin/treks/**
     // Secured: ROLE_ADMIN (enforced in SecurityConfig + @PreAuthorize)

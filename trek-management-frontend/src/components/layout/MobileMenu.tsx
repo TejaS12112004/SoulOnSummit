@@ -46,7 +46,7 @@ export function MobileMenu({ isScrolled = true }: MobileMenuProps) {
       </SheetTrigger>
       
       {/* Right-side drawer as requested */}
-      <SheetContent side="right" className="w-[300px] sm:w-[380px] flex flex-col pt-12 px-6 pb-6 bg-white border-l border-border">
+      <SheetContent side="right" className="w-[300px] sm:w-[380px] flex flex-col pt-12 px-6 pb-6 bg-background border-l border-border">
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
         <div className="flex justify-between items-center mb-8">

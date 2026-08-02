@@ -1,13 +1,52 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { TrekFilters } from '../components/TrekFilters'
 import { TrekHero } from '../components/TrekHero'
 import { TrekToolbar } from '../components/TrekToolbar'
 import { TrekGrid } from '../components/TrekGrid'
+import { useTreks } from '@/hooks/useTreks'
+import type { TrekFilterParams, SortDir } from '@/types/api'
+import type { TrekDifficulty } from '@/types/difficulty'
+
+function parseParams(searchParams: URLSearchParams): TrekFilterParams {
+  const p: TrekFilterParams = {}
+  
+  if (searchParams.has('page')) p.page = Number(searchParams.get('page')) - 1 // 0-indexed API
+  if (searchParams.has('size')) p.size = Number(searchParams.get('size'))
+  
+  if (searchParams.has('search')) p.search = searchParams.get('search')!
+  if (searchParams.has('difficulty')) p.difficulty = searchParams.get('difficulty') as TrekDifficulty
+  
+  if (searchParams.has('duration')) {
+    const dur = searchParams.get('duration')
+    if (dur === 'weekend') p.maxDurationDays = 3
+    if (dur === 'week') { p.minDurationDays = 4; p.maxDurationDays = 7 }
+    if (dur === 'extended') p.minDurationDays = 8
+  }
+  
+  if (searchParams.has('budget')) {
+    const b = searchParams.get('budget')
+    if (b === 'under_5k') p.maxPrice = 4999
+    if (b === '5k_10k') { p.minPrice = 5000; p.maxPrice = 10000 }
+    if (b === 'above_10k') p.minPrice = 10001
+  }
+  
+  if (searchParams.has('region')) p.state = searchParams.get('region')!
+  
+  if (searchParams.has('sortBy')) p.sortBy = searchParams.get('sortBy')!
+  if (searchParams.has('sortDir')) p.sortDir = searchParams.get('sortDir') as SortDir
+
+  return p
+}
 
 export default function TrekListingPage() {
   const [isFiltersVisible, setIsFiltersVisible] = useState(true)
+  const [searchParams] = useSearchParams()
+  const filters = parseParams(searchParams)
+  
+  const { data, isLoading, isError, error, refetch } = useTreks(filters)
   return (
-    <div className="bg-[#E5E7EB] min-h-screen pt-[72px]">
+    <div className="bg-background min-h-screen pt-[72px]">
       
       {/* Hero Section */}
       <TrekHero />
@@ -38,9 +77,17 @@ export default function TrekListingPage() {
           <main className="flex-1 min-w-0 flex flex-col transition-all duration-300">
             <TrekToolbar 
               isFiltersVisible={isFiltersVisible} 
-              onToggleFilters={() => setIsFiltersVisible(!isFiltersVisible)} 
+              onToggleFilters={() => setIsFiltersVisible(!isFiltersVisible)}
+              totalElements={data?.totalElements}
+              currentElements={data?.content?.length}
             />
-            <TrekGrid />
+            <TrekGrid 
+              data={data}
+              isLoading={isLoading}
+              isError={isError}
+              error={error}
+              refetch={refetch}
+            />
           </main>
           
         </div>

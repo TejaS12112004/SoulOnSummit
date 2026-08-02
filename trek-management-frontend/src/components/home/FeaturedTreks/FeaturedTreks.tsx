@@ -1,9 +1,12 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { FeaturedTrekCard } from './FeaturedTrekCard';
-import { FEATURED_TREKS_SECTION, FEATURED_TREKS } from '@/constants/home';
+import { FeaturedTreksSkeleton } from './FeaturedTreksSkeleton';
+import { FEATURED_TREKS_SECTION } from '@/constants/home';
 import { getStaggerContainer, getFadeInUp } from '@/constants/motion';
 import { motion, useReducedMotion } from 'framer-motion';
+import { useHomeFeaturedTreks } from '@/hooks/useHomeFeaturedTreks';
+import { QueryErrorState } from '@/components/ui/QueryErrorState';
 
 // Removed hardcoded background
 
@@ -11,10 +14,13 @@ export function FeaturedTreks() {
   const shouldReduceMotion = useReducedMotion();
   const staggerContainer = getStaggerContainer(shouldReduceMotion ?? false);
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
+  
+  const { data: featuredTreks, isLoading, isError, error, refetch } = useHomeFeaturedTreks();
 
   return (
     <section
-      className="bg-background py-24 px-6"
+      className="bg-background"
+      style={{ padding: '96px 24px' }}
       aria-labelledby="featured-treks-title"
     >
       <div className="container mx-auto">
@@ -74,17 +80,23 @@ export function FeaturedTreks() {
         </motion.div>
 
         {/* Cards grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: '20px',
-          }}
-        >
-          {FEATURED_TREKS.map((trek) => (
-            <FeaturedTrekCard key={trek.id} trek={trek} />
-          ))}
-        </div>
+        {isLoading ? (
+          <FeaturedTreksSkeleton />
+        ) : isError ? (
+          <QueryErrorState error={error} onRetry={refetch} />
+        ) : (
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
+              gap: '20px',
+            }}
+          >
+            {featuredTreks?.map((trek) => (
+              <FeaturedTrekCard key={trek.id} trek={trek} />
+            ))}
+          </div>
+        )}
 
         {/* Gap + View All button */}
         <div style={{ textAlign: 'center', padding: '56px 0 88px' }}>

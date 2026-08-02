@@ -1,5 +1,5 @@
 import type { HeroProps } from '@/components/home/Hero';
-import type { HomeFeaturedTrekViewModel, HomeUpcomingDepartureViewModel } from '@/types/home';
+import type { HomeUpcomingDepartureViewModel } from '@/types/home';
 import type { Category } from '@/types/category';
 import type { Feature } from '@/types/feature';
 import type { Testimonial } from '@/types/testimonial';
@@ -32,62 +32,6 @@ export const FEATURED_TREKS_SECTION = {
   viewAllText: "View All 150+ Treks ➔"
 };
 
-export const FEATURED_TREKS: HomeFeaturedTrekViewModel[] = [
-  {
-    id: "1",
-    title: "Kashmir Great Lakes",
-    subtitle: "",
-    coverImageUrl: "https://images.unsplash.com/photo-1590595906931-81f04f0ccebb?auto=format&fit=crop&q=80&w=800",
-    difficulty: "MODERATE",
-    maxAltitude: 4191,
-    location: "Kashmir, India",
-    state: "Jammu and Kashmir",
-    durationDays: 7,
-    rating: 4.9,
-    reviewCount: 128,
-    nextBatch: "15 Aug 2026",
-    seatsLeft: 4,
-    originalPrice: 22000,
-    price: 18500,
-    featured: true
-  },
-  {
-    id: "2",
-    title: "Everest Base Camp",
-    subtitle: "",
-    coverImageUrl: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&q=80&w=800",
-    difficulty: "DIFFICULT",
-    maxAltitude: 5364,
-    location: "Nepal",
-    state: "Province No. 1",
-    durationDays: 14,
-    rating: 4.9,
-    reviewCount: 320,
-    nextBatch: "12 Oct 2026",
-    seatsLeft: 12,
-    originalPrice: 75000,
-    price: 65000,
-    featured: true
-  },
-  {
-    id: "3",
-    title: "Valley of Flowers",
-    subtitle: "",
-    coverImageUrl: "https://images.unsplash.com/photo-1626621334693-01825cba4837?auto=format&fit=crop&q=80&w=800",
-    difficulty: "EASY",
-    maxAltitude: 3658,
-    location: "Uttarakhand, India",
-    state: "Uttarakhand",
-    durationDays: 6,
-    rating: 4.7,
-    reviewCount: 89,
-    nextBatch: "10 Jul 2026",
-    seatsLeft: 2,
-    originalPrice: 15000,
-    price: 12500,
-    featured: true
-  }
-];
 
 // 🏔️ Sprint 1: Categories 🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️🏔️
 

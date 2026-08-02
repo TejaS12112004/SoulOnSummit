@@ -16,5 +16,12 @@ public interface StorageService {
 
     UploadResponse uploadInvoicePdf(String bookingReference, byte[] pdfBytes);
 
+    UploadResponse uploadUserAvatar(UUID userId, MultipartFile file);
+
+    UploadResponse uploadBlogImage(MultipartFile file);
+
+    UploadResponse uploadSiteLogo(MultipartFile file);
+    UploadResponse uploadSiteFavicon(MultipartFile file);
+
     DeleteFileResponse deleteFile(String bucket, String path);
 }

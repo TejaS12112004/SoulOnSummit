@@ -10,7 +10,7 @@ export interface NavigationItem {
 export const NAV_ITEMS: NavigationItem[] = [
   { label: 'Home', href: '/' },
   { label: 'Treks', href: '/treks' },
-  { label: 'Upcoming Batches', href: '/treks#upcoming' },
+  { label: 'Upcoming Batches', href: '/batches' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ];

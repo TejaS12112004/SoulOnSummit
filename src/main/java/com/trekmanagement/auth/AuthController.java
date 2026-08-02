@@ -128,4 +128,17 @@ public class AuthController {
         authService.resetPassword(request);
         return ResponseEntity.ok(ApiResponse.success("Password reset successful. Please log in."));
     }
+
+    /**
+     * Flow 5b — POST /api/v1/auth/oauth2/exchange
+     * Exchange short-lived OAuth2 code for JWT tokens.
+     */
+    @PostMapping("/oauth2/exchange")
+    @Operation(summary = "Exchange OAuth2 code for JWT tokens")
+    public ResponseEntity<ApiResponse<AuthResponse>> exchangeOAuth2Code(
+            @Valid @RequestBody OAuth2ExchangeRequest request) {
+
+        AuthResponse authResponse = authService.exchangeOAuth2Code(request.getCode());
+        return ResponseEntity.ok(ApiResponse.success(authResponse));
+    }
 }

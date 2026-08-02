@@ -1,5 +1,7 @@
 package com.trekmanagement.trek;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -79,5 +81,34 @@ public interface TrekDepartureRepository extends JpaRepository<TrekDeparture, UU
     @Query("SELECT d FROM TrekDeparture d WHERE d.trek.id = :trekId AND d.status = 'OPEN' AND d.startDate >= :today ORDER BY d.startDate ASC")
     List<TrekDeparture> findOpenUpcomingDepartures(@Param("trekId") UUID trekId, @Param("today") LocalDate today);
 
-    long countByStartDateAfter(LocalDate date);
+    @Query("SELECT COUNT(d) FROM TrekDeparture d WHERE d.isActive = true AND d.trek.published = true AND d.status = :status AND d.startDate >= :date")
+    long countUpcomingActiveDepartures(@Param("status") DepartureStatus status, @Param("date") LocalDate date);
+
+    List<TrekDeparture> findTop5ByStatusAndIsActiveTrueAndTrekPublishedTrueAndStartDateGreaterThanEqualOrderByStartDateAsc(DepartureStatus status, LocalDate after);
+
+    /**
+     * Returns all publicly visible upcoming departures across ALL published, active treks.
+     * Filters:
+     *   - departure.isActive = true          (not soft-deleted)
+     *   - departure.status = OPEN            (CANCELLED/COMPLETED excluded)
+     *   - trek.published = true              (public trek visibility)
+     *   - trek.isActive = true               (not soft-deleted trek)
+     *   - departure.startDate >= :today      (future departures only)
+     *
+     * JOIN FETCH on d.trek avoids N+1 when mapping trek fields into the DTO.
+     * Ordered by startDate ASC so oldest upcoming batch appears first.
+     *
+     * Used by: GET /api/v1/treks/departures/upcoming (public, paginated)
+     */
+    @Query("""
+            SELECT d FROM TrekDeparture d
+            JOIN FETCH d.trek t
+            WHERE d.isActive = true
+              AND d.status = 'OPEN'
+              AND t.published = true
+              AND t.isActive = true
+              AND d.startDate >= :today
+            ORDER BY d.startDate ASC
+            """)
+    Page<TrekDeparture> findPublicUpcoming(@Param("today") LocalDate today, Pageable pageable);
 }

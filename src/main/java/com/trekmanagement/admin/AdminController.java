@@ -1,7 +1,6 @@
 package com.trekmanagement.admin;
 
-import com.trekmanagement.admin.dto.DashboardChartsResponse;
-import com.trekmanagement.admin.dto.DashboardMetricsResponse;
+import com.trekmanagement.admin.dto.DashboardResponse;
 import com.trekmanagement.common.dto.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -24,14 +23,8 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/dashboard")
-    @Operation(summary = "Get high-level dashboard metrics (Admin)")
-    public ResponseEntity<ApiResponse<DashboardMetricsResponse>> getDashboardMetrics() {
-        return ResponseEntity.ok(ApiResponse.success(adminService.getDashboardMetrics()));
-    }
-
-    @GetMapping("/dashboard/charts")
-    @Operation(summary = "Get 30-day historical chart data (Admin)")
-    public ResponseEntity<ApiResponse<DashboardChartsResponse>> getDashboardCharts() {
-        return ResponseEntity.ok(ApiResponse.success(adminService.getDashboardCharts()));
+    @Operation(summary = "Get full dashboard metrics (Admin)")
+    public ResponseEntity<ApiResponse<DashboardResponse>> getDashboardMetrics() {
+        return ResponseEntity.ok(ApiResponse.success(adminService.getDashboardData()));
     }
 }

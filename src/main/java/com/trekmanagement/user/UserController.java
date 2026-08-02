@@ -3,7 +3,9 @@ package com.trekmanagement.user;
 import com.trekmanagement.common.dto.ApiResponse;
 import com.trekmanagement.security.UserPrincipal;
 import com.trekmanagement.user.dto.ChangePasswordRequest;
+import com.trekmanagement.user.dto.UpdatePreferencesRequest;
 import com.trekmanagement.user.dto.UpdateProfileRequest;
+import org.springframework.web.multipart.MultipartFile;
 import com.trekmanagement.user.dto.UserResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -50,5 +52,28 @@ public class UserController {
 
         userService.changePassword(principal.getId(), request);
         return ResponseEntity.ok(ApiResponse.success("Password changed successfully"));
+    }
+
+    @PutMapping("/profile-image")
+    public ResponseEntity<ApiResponse<Void>> updateProfileImage(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @RequestParam("file") MultipartFile file) {
+        userService.updateProfileImage(principal.getId(), file);
+        return ResponseEntity.ok(ApiResponse.success("Profile image updated successfully"));
+    }
+
+    @PutMapping("/preferences")
+    public ResponseEntity<ApiResponse<Void>> updatePreferences(
+            @AuthenticationPrincipal UserPrincipal principal,
+            @Valid @RequestBody UpdatePreferencesRequest request) {
+        userService.updatePreferences(principal.getId(), request);
+        return ResponseEntity.ok(ApiResponse.success("Preferences updated successfully"));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<ApiResponse<Void>> deleteAccount(
+            @AuthenticationPrincipal UserPrincipal principal) {
+        userService.deleteAccount(principal.getId());
+        return ResponseEntity.ok(ApiResponse.success("Account deleted successfully"));
     }
 }

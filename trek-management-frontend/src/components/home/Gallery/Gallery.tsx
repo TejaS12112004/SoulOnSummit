@@ -10,7 +10,8 @@ export function Gallery() {
 
   return (
     <section
-      className="bg-background py-24 px-6"
+      className="bg-background"
+      style={{ padding: '96px 24px' }}
       aria-labelledby="gallery-title"
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>

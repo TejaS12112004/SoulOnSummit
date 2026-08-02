@@ -16,6 +16,18 @@ public class UserAuthDto {
     private final String email;
     private final String firstName;
     private final String lastName;
+    private final String phone;
+    private final String profileImageUrl;
+    private final java.time.LocalDate dateOfBirth;
+    private final String gender;
+    private final String emergencyContactName;
+    private final String emergencyContactPhone;
+    private final String address;
+    private final String city;
+    private final String state;
+    private final String country;
+    private final String postalCode;
+    
     private final List<String> roles;
     private final boolean emailVerified;
     private final Instant createdAt;

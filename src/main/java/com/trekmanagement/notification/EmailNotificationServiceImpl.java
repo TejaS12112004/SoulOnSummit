@@ -4,6 +4,7 @@ import com.trekmanagement.booking.Booking;
 import com.trekmanagement.config.MailConfig;
 import com.trekmanagement.invoice.Invoice;
 import com.trekmanagement.invoice.InvoiceRepository;
+import com.trekmanagement.settings.SiteSettingsService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
     private final JavaMailSender mailSender;
     private final MailConfig mailConfig;
     private final InvoiceRepository invoiceRepository;
+    private final SiteSettingsService siteSettingsService;
 
     @Async("notificationExecutor")
     @Override
@@ -36,6 +38,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
             helper.setSubject("Booking Confirmed: " + booking.getDeparture().getTrek().getTitle());
 
             String customerName = booking.getUser().getFirstName();
+            String companyName = siteSettingsService.getPublicSettings().getCompanyName();
             
             // Look up invoice to include link
             Optional<Invoice> invoiceOpt = invoiceRepository.findByBookingId(booking.getId());
@@ -53,7 +56,7 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
                     <p>Total Participants: %d</p>
                     %s
                     <br/>
-                    <p>Best regards,<br/>The Trek Management Team</p>
+                    <p>Best regards,<br/>%s</p>
                 </body>
                 </html>
                 """.formatted(
@@ -62,7 +65,8 @@ public class EmailNotificationServiceImpl implements EmailNotificationService {
                     booking.getDeparture().getStartDate().toString(),
                     booking.getBookingReference(),
                     booking.getTotalParticipants(),
-                    invoiceSection
+                    invoiceSection,
+                    companyName
                 );
 
             helper.setText(html, true);

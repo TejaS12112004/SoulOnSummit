@@ -4,13 +4,21 @@ import com.trekmanagement.common.exception.ConflictException;
 import com.trekmanagement.common.exception.ResourceNotFoundException;
 import com.trekmanagement.common.exception.ValidationException;
 import com.trekmanagement.user.dto.ChangePasswordRequest;
+import com.trekmanagement.user.dto.UpdatePreferencesRequest;
 import com.trekmanagement.user.dto.UpdateProfileRequest;
 import com.trekmanagement.user.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import com.trekmanagement.storage.StorageService;
+import com.trekmanagement.storage.dto.UploadResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.trekmanagement.user.dto.AdminUserResponse;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Service
@@ -20,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final StorageService storageService;
 
     @Override
     @Transactional(readOnly = true)
@@ -79,10 +88,47 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateProfileImage(UUID userId, String imageUrl) {
-        User user = findById(userId);
-        user.setProfileImageUrl(imageUrl);
+    public void updateProfileImage(UUID userId, MultipartFile file) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        UploadResponse response = storageService.uploadUserAvatar(userId, file);
+        user.setProfileImageUrl(response.getPublicUrl());
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updatePreferences(UUID userId, UpdatePreferencesRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        user.setNotifyBookingUpdates(request.isNotifyBookingUpdates());
+        user.setNotifyUpcomingTreks(request.isNotifyUpcomingTreks());
+        user.setNotifyPromotions(request.isNotifyPromotions());
+
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAccount(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        // Soft delete logic: deactivate account and anonymize PII if needed
+        user.setActive(false);
+        user.setEmail(user.getEmail() + "_deleted_" + Instant.now().toEpochMilli()); // To free up email for re-registration
+        // Optional: clear phone, address, etc.
+        
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AdminUserResponse> searchAdminUsers(String search, Pageable pageable) {
+        Page<User> page = userRepository.searchUsers(search, pageable);
+        return page.map(userMapper::toAdminResponse);
     }
 
     // ── private helpers ──────────────────────────────────────────────────────

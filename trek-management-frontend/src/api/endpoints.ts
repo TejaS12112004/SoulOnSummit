@@ -20,8 +20,13 @@ export const ENDPOINTS = {
     PROFILE:              '/auth/profile',
   },
 
+  USERS: {
+    ME:             '/users/me',
+    PASSWORD:       '/users/me/password',
+  },
+
   HOME: {
-    FEATURED_TREKS:       '/home/featured-treks',
+    FEATURED_TREKS:       '/treks/featured',
     UPCOMING_DEPARTURES:  '/home/upcoming-departures',
   },
 
@@ -35,8 +40,9 @@ export const ENDPOINTS = {
   },
 
   DEPARTURES: {
-    UPCOMING:   '/treks/upcoming-departures',
-    BY_TREK:    (trekId: string) => `/treks/${trekId}/departures`,
+    UPCOMING:        '/treks/upcoming-departures',
+    UPCOMING_PUBLIC: '/treks/departures/upcoming',
+    BY_TREK:         (trekId: string) => `/treks/${trekId}/departures`,
   },
 
   CATEGORIES: {
@@ -49,6 +55,10 @@ export const ENDPOINTS = {
     MY_BOOKINGS: '/bookings',
     BY_ID:       (id: string) => `/bookings/${id}`,
     CANCEL:      (id: string) => `/bookings/${id}/cancel`,
+  },
+
+  PAYMENTS: {
+    VERIFY: '/payments/verify',
   },
 
   GALLERY: {

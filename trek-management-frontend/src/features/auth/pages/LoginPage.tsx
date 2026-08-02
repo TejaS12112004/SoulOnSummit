@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { ROUTES } from '@/constants/routes';
@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const navigate = useNavigate();
   const { login, register, loading } = useAuth(); 
@@ -17,14 +18,23 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let user;
       if (isLogin) {
-        await login({ email, password });
+        user = await login({ email, password });
         toast.success("Welcome back!");
       } else {
-        await register({ email, password, name });
+        const nameParts = name.trim().split(' ');
+        const firstName = nameParts[0] || '';
+        const lastName = nameParts.slice(1).join(' ') || '';
+        user = await register({ email, password, firstName, lastName });
         toast.success("Account created successfully!");
       }
-      navigate(ROUTES.HOME);
+      
+      if (user.roles?.includes('ROLE_ADMIN')) {
+        navigate(ROUTES.ADMIN);
+      } else {
+        navigate(ROUTES.HOME);
+      }
     } catch (error: any) {
       toast.error(error?.message || "Authentication failed. Please try again.");
     }
@@ -32,7 +42,7 @@ export default function LoginPage() {
 
   const handleGoogleAuth = () => {
     // Redirect to Spring Boot OAuth2 endpoint
-    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = import.meta.env.VITE_OAUTH2_LOGIN_URL || 'http://localhost:8080/oauth2/authorization/google';
   };
 
   return (
@@ -126,11 +136,6 @@ export default function LoginPage() {
             <div className="flex flex-col" style={{ gap: '8px' }}>
               <div className="flex items-center justify-between ml-1">
                 <label className="text-[14px] font-semibold text-gray-200">Password</label>
-                {isLogin && (
-                  <button type="button" className="text-xs font-medium text-[#F59E0B] hover:text-[#FCD34D] transition-colors">
-                    Forgot password?
-                  </button>
-                )}
               </div>
               <div className="relative">
                 <Lock 
@@ -138,15 +143,29 @@ export default function LoginPage() {
                   style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }} 
                 />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent focus:bg-white/10 transition-all"
-                  style={{ padding: '12px 14px 12px 42px', fontSize: '14px', letterSpacing: password ? '2px' : 'normal' }}
+                  style={{ padding: '12px 42px', fontSize: '14px', letterSpacing: (password && !showPassword) ? '2px' : 'normal' }}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
               </div>
+              {isLogin && (
+                <div className="flex justify-end mt-2">
+                  <button type="button" onClick={() => navigate('/forgot-password')} className="text-xs font-medium text-[#F59E0B] hover:text-[#FCD34D] transition-colors">
+                    Forgot password?
+                  </button>
+                </div>
+              )}
             </div>
 
             <Button 

@@ -43,7 +43,7 @@ export const Pagination = memo(function Pagination({
     <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4 mt-12 w-full max-w-[800px] mx-auto">
       
       {/* Mobile view just shows current / total instead of complex pagination */}
-      <div className="sm:hidden text-sm font-medium text-gray-600">
+      <div className="sm:hidden text-sm font-medium text-muted-foreground">
         Page {currentPage + 1} of {totalPages}
       </div>
 
@@ -52,10 +52,10 @@ export const Pagination = memo(function Pagination({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 0}
           className={cn(
-            "h-10 px-4 rounded-lg bg-white border border-gray-200 text-[14px] font-medium transition-all shadow-sm hidden sm:flex items-center",
+            "h-10 px-4 rounded-lg bg-card border border-border text-[14px] font-medium transition-all shadow-sm hidden sm:flex items-center",
             currentPage === 0 
-              ? "opacity-50 cursor-not-allowed text-gray-400" 
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              ? "opacity-50 cursor-not-allowed text-muted-foreground" 
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
           )}
         >
           ← Prev
@@ -66,7 +66,7 @@ export const Pagination = memo(function Pagination({
             if (page === 'ellipsis') {
               return (
                 <div key={`ellipsis-${index}`} className="flex h-10 w-8 items-center justify-center">
-                  <MoreHorizontal className="h-4 w-4 text-gray-400" />
+                  <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                 </div>
               )
             }
@@ -82,8 +82,8 @@ export const Pagination = memo(function Pagination({
                 className={cn(
                   "h-10 w-10 rounded-lg flex items-center justify-center text-[14px] font-medium transition-all shadow-sm border",
                   isActive 
-                    ? "bg-[#1F4D3A] text-white border-[#1F4D3A] hover:bg-[#163629]" 
-                    : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+                    ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                    : "bg-card text-foreground border-border hover:bg-muted hover:text-foreground"
                 )}
               >
                 {pageNum + 1}
@@ -96,10 +96,10 @@ export const Pagination = memo(function Pagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages - 1}
           className={cn(
-            "h-10 px-4 rounded-lg bg-white border border-gray-200 text-[14px] font-medium transition-all shadow-sm hidden sm:flex items-center",
+            "h-10 px-4 rounded-lg bg-card border border-border text-[14px] font-medium transition-all shadow-sm hidden sm:flex items-center",
             currentPage === totalPages - 1
-              ? "opacity-50 cursor-not-allowed text-gray-400" 
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              ? "opacity-50 cursor-not-allowed text-muted-foreground" 
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
           )}
         >
           Next →
@@ -111,7 +111,7 @@ export const Pagination = memo(function Pagination({
           <select
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-600 shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#1F4D3A]/20 cursor-pointer"
+            className="h-10 px-3 rounded-lg border border-border bg-card text-sm text-muted-foreground shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
             aria-label="Select items per page"
           >
             {pageSizeOptions.map((opt) => (

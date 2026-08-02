@@ -4,8 +4,20 @@ export interface User {
   firstName: string
   lastName: string
   phone?: string
-  profilePicture?: string
-  roles: Role[]
+  profileImageUrl?: string
+  dateOfBirth?: string
+  gender?: string
+  emergencyContactName?: string
+  emergencyContactPhone?: string
+  address?: string
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  notifyBookingUpdates?: boolean;
+  notifyUpcomingTreks?: boolean;
+  notifyPromotions?: boolean;
+  roles: Role[];
   emailVerified: boolean
   createdAt: string
 }

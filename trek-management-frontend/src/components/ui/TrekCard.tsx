@@ -65,7 +65,7 @@ export function TrekCard({
       transition={{ duration: 0.2, ease: "easeOut" }}
       {...props}
     >
-      <div className="h-full min-h-[460px] flex flex-col overflow-hidden rounded-[20px] bg-white border border-[#F3F0EA] shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-shadow duration-300 group">
+      <div className="h-full min-h-[460px] flex flex-col overflow-hidden rounded-[20px] bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_10px_30px_rgba(0,0,0,0.08)] transition-shadow duration-300 group">
 
         {/* ── Cover Image ── */}
         <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -79,8 +79,8 @@ export function TrekCard({
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
           ) : (
-            <div className="flex h-full w-full flex-col items-center justify-center bg-gray-50">
-              <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-3 shadow-sm border border-gray-100">
+            <div className="flex h-full w-full flex-col items-center justify-center bg-muted">
+              <div className="w-20 h-20 rounded-full bg-card flex items-center justify-center mb-3 shadow-sm border border-border">
                 <Mountain className="h-8 w-8 text-gray-300" />
               </div>
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400">
@@ -113,14 +113,14 @@ export function TrekCard({
         <div className="flex flex-col flex-grow px-5 pt-5 pb-0">
           {/* Title */}
           <h3
-            className="font-bold text-[18px] leading-[1.3] text-gray-900 mb-3 line-clamp-2 group-hover:text-[#1F4D3A] transition-colors font-display"
+            className="font-bold text-[18px] leading-[1.3] text-card-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors font-display"
             title={trek.title}
           >
             {trek.title}
           </h3>
 
           {/* Location */}
-          <div className="flex items-center text-[13px] text-gray-500 mb-4">
+          <div className="flex items-center text-[13px] text-muted-foreground mb-4">
             <MapPin className="mr-2 h-4 w-4 shrink-0 text-[#EC4899] fill-[#EC4899]/10" />
             <span className="truncate">
               {trek.location}{trek.state ? `, ${trek.state}` : ""}
@@ -128,7 +128,7 @@ export function TrekCard({
           </div>
 
           {/* Duration + Altitude */}
-          <div className="flex items-center gap-5 text-[13px] text-gray-500 mb-4">
+          <div className="flex items-center gap-5 text-[13px] text-muted-foreground mb-4">
             <div className="flex items-center gap-1.5">
               <Clock className="h-[15px] w-[15px] shrink-0 text-gray-400" />
               <span>{trek.durationDays} Days</span>
@@ -154,9 +154,9 @@ export function TrekCard({
                 />
               ))}
             </div>
-            <span className="text-[13px] font-medium text-gray-700">
+            <span className="text-[13px] font-medium text-foreground">
               {displayRating.toFixed(1)}{' '}
-              <span className="font-normal text-gray-400">({displayReviews})</span>
+              <span className="font-normal text-muted-foreground">({displayReviews})</span>
             </span>
           </div>
 
@@ -165,11 +165,11 @@ export function TrekCard({
         </div>
 
         {/* ── Price Section ── */}
-        <div className="mx-5 mb-5 pt-4 border-t border-gray-100 flex flex-col">
+        <div className="mx-5 mb-5 pt-4 border-t border-border flex flex-col">
           {/* Strikethrough original price */}
           <div className="h-5 flex items-end">
             {trek.originalPrice != null && trek.originalPrice > trek.startingPrice && (
-              <span className="text-[12px] text-gray-400 line-through">
+              <span className="text-[12px] text-muted-foreground line-through">
                 ₹{trek.originalPrice.toLocaleString()}
               </span>
             )}
@@ -178,12 +178,12 @@ export function TrekCard({
           {/* Price (left) + Next departure (right) */}
           <div className="flex items-end justify-between gap-4 mt-0.5">
             <div className="flex items-baseline gap-1 min-w-0">
-              <span className="text-[22px] font-bold text-[#1F4D3A] tracking-tight leading-none">
+              <span className="text-[22px] font-bold text-primary tracking-tight leading-none">
                 {formatCurrency(trek.startingPrice).replace(".00", "")}
               </span>
-              <span className="text-[13px] text-gray-500 font-medium shrink-0 pb-0.5">/person</span>
+              <span className="text-[13px] text-muted-foreground font-medium shrink-0 pb-0.5">/person</span>
             </div>
-            <div className="text-[12px] text-gray-400 font-medium whitespace-nowrap shrink-0 pb-0.5 text-right">
+            <div className="text-[12px] text-muted-foreground font-medium whitespace-nowrap shrink-0 pb-0.5 text-right">
               Next: {trek.departureDate ? formatDate(trek.departureDate) : 'Jun 20, 2025'}
             </div>
           </div>

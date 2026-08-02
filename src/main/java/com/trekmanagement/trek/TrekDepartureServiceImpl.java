@@ -1,12 +1,17 @@
 package com.trekmanagement.trek;
 
+import com.trekmanagement.common.dto.PageResponse;
 import com.trekmanagement.common.exception.ConflictException;
 import com.trekmanagement.common.exception.ResourceNotFoundException;
 import com.trekmanagement.common.exception.ValidationException;
 import com.trekmanagement.trek.dto.CreateDepartureRequest;
 import com.trekmanagement.trek.dto.DepartureResponse;
 import com.trekmanagement.trek.dto.UpdateDepartureRequest;
+import com.trekmanagement.trek.dto.UpcomingDepartureResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -227,7 +232,25 @@ public class TrekDepartureServiceImpl implements TrekDepartureService {
         return departureMapper.toResponseList(departures);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<UpcomingDepartureResponse> listPublicUpcoming(int page, int size) {
+        // Clamp size to a safe maximum of 50 to prevent unbounded responses
+        int safeSize = Math.min(size, 50);
+
+        // Sorting is enforced in the JPQL query (ORDER BY d.startDate ASC).
+        // We still pass an unsorted Pageable; Spring Data applies both correctly.
+        PageRequest pageable = PageRequest.of(page, safeSize, Sort.unsorted());
+
+        Page<TrekDeparture> departurePage =
+                departureRepository.findPublicUpcoming(LocalDate.now(), pageable);
+
+        Page<UpcomingDepartureResponse> responsePage = departurePage.map(this::toUpcomingResponse);
+        return PageResponse.of(responsePage);
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
+
 
     private Trek findActiveTrek(UUID trekId) {
         return trekRepository.findById(trekId)
@@ -286,5 +309,51 @@ public class TrekDepartureServiceImpl implements TrekDepartureService {
         if (availableSeats < 0) {
             throw new ValidationException("Available seats must not be negative");
         }
+    }
+
+    /**
+     * Maps a TrekDeparture (with its Trek already JOIN-FETCHed) to an UpcomingDepartureResponse.
+     *
+     * Derived flags use the SAME 30%-threshold rule as TrekDepartureMapper.computeDerivedFlags:
+     *   soldOut     = availableSeats == 0
+     *   fillingFast = !soldOut && availableSeats <= ceil(totalSeats * 0.30)
+     *
+     * ONLY expose what is safe for public consumption (no admin notes, no booking data).
+     */
+    private UpcomingDepartureResponse toUpcomingResponse(TrekDeparture d) {
+        Trek trek = d.getTrek();
+
+        int available = d.getAvailableSeats() != null ? d.getAvailableSeats() : 0;
+        int total     = d.getTotalSeats()     != null ? d.getTotalSeats()     : 0;
+
+        boolean soldOut     = available == 0;
+        boolean fillingFast = !soldOut && total > 0 && available <= (int) Math.ceil(total * 0.30);
+
+        // Only set discountPrice when it is genuinely a discount (< full price)
+        BigDecimal discountPrice = null;
+        if (d.getDiscountPrice() != null && d.getDiscountPrice().compareTo(d.getPrice()) < 0) {
+            discountPrice = d.getDiscountPrice();
+        }
+
+        return UpcomingDepartureResponse.builder()
+                .departureId(d.getId())
+                .trekId(trek.getId())
+                .trekTitle(trek.getTitle())
+                .location(trek.getLocation())
+                .state(trek.getState())
+                .difficulty(trek.getDifficulty())
+                .durationDays(trek.getDurationDays())
+                .coverImageUrl(trek.getCoverImageUrl())
+                .startDate(d.getStartDate())
+                .endDate(d.getEndDate())
+                .registrationDeadline(d.getRegistrationDeadline())
+                .price(d.getPrice())
+                .discountPrice(discountPrice)
+                .totalSeats(d.getTotalSeats())
+                .availableSeats(d.getAvailableSeats())
+                .status(d.getStatus())
+                .soldOut(soldOut)
+                .fillingFast(fillingFast)
+                .build();
     }
 }

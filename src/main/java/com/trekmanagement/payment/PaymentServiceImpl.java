@@ -7,6 +7,13 @@ import com.razorpay.Utils;
 import com.trekmanagement.booking.Booking;
 import com.trekmanagement.booking.BookingRepository;
 import com.trekmanagement.booking.BookingStatus;
+import com.trekmanagement.common.exception.ResourceNotFoundException;
+import com.trekmanagement.common.exception.ValidationException;
+import com.trekmanagement.payment.dto.AdminPaymentResponse;
+import com.trekmanagement.invoice.InvoiceRepository;
+import com.trekmanagement.invoice.Invoice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.trekmanagement.common.exception.PaymentException;
 import com.trekmanagement.common.exception.ResourceNotFoundException;
 import com.trekmanagement.config.RazorpayConfig;
@@ -22,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -30,8 +38,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final BookingRepository bookingRepository;
+    private final PaymentMapper paymentMapper;
     private final RazorpayClient razorpayClient;
     private final RazorpayConfig razorpayConfig;
+    private final InvoiceRepository invoiceRepository;
     private final InvoiceService invoiceService;
     private final EmailNotificationService notificationService;
 
@@ -151,5 +161,58 @@ public class PaymentServiceImpl implements PaymentService {
         // Async side effects
         invoiceService.generateAndUpload(booking);
         notificationService.sendConfirmation(booking);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<AdminPaymentResponse> searchAdminPayments(String search, Pageable pageable) {
+        Page<Payment> payments = paymentRepository.searchPayments(search, pageable);
+        return payments.map(payment -> {
+            AdminPaymentResponse response = paymentMapper.toAdminResponse(payment);
+            invoiceRepository.findByBookingId(payment.getBooking().getId())
+                    .ifPresent(invoice -> response.setInvoiceUrl(invoice.getInvoiceUrl()));
+            return response;
+        });
+    }
+
+    @Override
+    @Transactional
+    public void markAsPaid(UUID paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found"));
+
+        if (payment.getStatus() == PaymentStatus.SUCCESS) {
+            throw new ValidationException("Payment is already successful");
+        }
+
+        payment.setStatus(PaymentStatus.SUCCESS);
+        payment.setPaidAt(Instant.now());
+        payment.setPaymentMethod("MANUAL");
+        paymentRepository.save(payment);
+
+        Booking booking = payment.getBooking();
+        booking.setStatus(BookingStatus.CONFIRMED);
+        bookingRepository.save(booking);
+        
+        // Generate invoice if we mark as paid manually
+        invoiceService.generateAndUpload(booking);
+    }
+
+    @Override
+    @Transactional
+    public void refundPayment(UUID paymentId) {
+        Payment payment = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment not found"));
+
+        if (payment.getStatus() != PaymentStatus.SUCCESS) {
+            throw new ValidationException("Only successful payments can be refunded");
+        }
+
+        payment.setStatus(PaymentStatus.REFUNDED);
+        paymentRepository.save(payment);
+        
+        Booking booking = payment.getBooking();
+        booking.setStatus(BookingStatus.REFUNDED);
+        bookingRepository.save(booking);
     }
 }

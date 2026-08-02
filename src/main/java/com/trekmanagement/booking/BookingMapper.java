@@ -12,6 +12,10 @@ public interface BookingMapper {
     ParticipantResponse toParticipantResponse(BookingParticipant participant);
 
     @Mapping(target = "departureId", source = "departure.id")
+    @Mapping(target = "trekTitle", source = "departure.trek.title")
+    @Mapping(target = "startDate", source = "departure.startDate")
+    @Mapping(target = "endDate", source = "departure.endDate")
+    @Mapping(target = "location", source = "departure.trek.location")
     @Mapping(target = "paymentStatus", expression = "java(booking.getLatestPaymentStatus())")
     BookingResponse toResponse(Booking booking);
 

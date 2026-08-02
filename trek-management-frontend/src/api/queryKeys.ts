@@ -10,7 +10,7 @@
  */
 
 import type { TrekFilterParams } from '@/types/api'
-import type { AdminFilters } from '@/features/admin/types'
+
 
 export const queryKeys = {
   // ── Auth ──────────────────────────────────────────────────────────
@@ -38,9 +38,11 @@ export const queryKeys = {
 
   // ── Departures ────────────────────────────────────────────────────
   departures: {
-    all:      () => ['departures'] as const,
-    upcoming: () => ['departures', 'upcoming'] as const,
-    byTrek:   (trekId: string) => ['departures', 'trek', trekId] as const,
+    all:            () => ['departures'] as const,
+    upcoming:       () => ['departures', 'upcoming'] as const,
+    upcomingBatches: (params: { page: number; size: number }) =>
+                    ['departures', 'upcoming-batches', params] as const,
+    byTrek:         (trekId: string) => ['departures', 'trek', trekId] as const,
   },
 
   // ── Categories ────────────────────────────────────────────────────
@@ -68,7 +70,7 @@ export const queryKeys = {
     
     treks: {
       all:     () => ['admin', 'treks'] as const,
-      list:    (filters: AdminFilters) => ['admin', 'treks', 'list', filters] as const,
+      list:    (filters: any) => ['admin', 'treks', 'list', filters] as const,
       byId:    (id: string) => ['admin', 'treks', id] as const,
     },
 
@@ -80,7 +82,7 @@ export const queryKeys = {
 
     bookings: {
       all:     () => ['admin', 'bookings'] as const,
-      list:    (filters: AdminFilters) => ['admin', 'bookings', 'list', filters] as const,
+      list:    (filters: any) => ['admin', 'bookings', 'list', filters] as const,
       byId:    (id: string) => ['admin', 'bookings', id] as const,
     }
   }

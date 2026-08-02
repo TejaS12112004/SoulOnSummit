@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Map, FileText, CalendarDays, KeyRound, User, Settings } from 'lucide-react';
+import { Home, Map } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 import { cn } from '@/utils/cn';
 
