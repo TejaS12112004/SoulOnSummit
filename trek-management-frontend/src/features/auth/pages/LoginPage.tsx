@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { ROUTES } from '@/constants/routes';
 import { toast } from 'sonner';
+import { env } from '@/config/env';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -41,8 +42,10 @@ export default function LoginPage() {
   };
 
   const handleGoogleAuth = () => {
-    // Redirect to Spring Boot OAuth2 endpoint
-    window.location.href = import.meta.env.VITE_OAUTH2_LOGIN_URL || 'https://soul-on-summit-backend.onrender.com/oauth2/callback/google';
+    // Derive the backend origin from VITE_API_BASE_URL (e.g. http://localhost:8080/api/v1 → http://localhost:8080)
+    // This ensures Google OAuth works correctly in both local dev and production without any hardcoded URLs.
+    const backendOrigin = env.apiBaseUrl.replace(/\/api\/v1\/?$/, '');
+    window.location.href = `${backendOrigin}/oauth2/authorization/google`;
   };
 
   return (

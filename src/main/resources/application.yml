@@ -242,3 +242,8 @@ springdoc:
     enabled: false     # Disable Swagger UI in production
   api-docs:
     enabled: false
+
+management:
+  health:
+    mail:
+      enabled: false
