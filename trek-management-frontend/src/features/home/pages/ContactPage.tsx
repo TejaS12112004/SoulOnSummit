@@ -39,7 +39,7 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.12 } },
 };
 
-const INSTAGRAM_URL = 'https://www.instagram.com/soulonsummit/';
+const INSTAGRAM_URL = 'https://www.instagram.com/thesoulonsummit/';
 
 export default function ContactPage() {
   const { settings } = usePublicSettings();
