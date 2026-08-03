@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const navigate = useNavigate();
-  const { login, register, loading } = useAuth(); 
+  const { login, register, loading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +29,7 @@ export default function LoginPage() {
         user = await register({ email, password, firstName, lastName });
         toast.success("Account created successfully!");
       }
-      
+
       if (user.roles?.includes('ROLE_ADMIN')) {
         navigate(ROUTES.ADMIN);
       } else {
@@ -42,15 +42,15 @@ export default function LoginPage() {
 
   const handleGoogleAuth = () => {
     // Redirect to Spring Boot OAuth2 endpoint
-    window.location.href = import.meta.env.VITE_OAUTH2_LOGIN_URL || 'http://localhost:8080/oauth2/authorization/google';
+    window.location.href = import.meta.env.VITE_OAUTH2_LOGIN_URL || 'https://soul-on-summit-backend.onrender.com/oauth2/callback/google';
   };
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 bg-black overflow-hidden" style={{ height: '100vh' }}>
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-105"
-        style={{ 
+        style={{
           backgroundImage: 'url("https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920")'
         }}
       />
@@ -58,7 +58,7 @@ export default function LoginPage() {
       <div className="absolute inset-0 z-0 bg-black/60 backdrop-blur-[2px]" />
 
       {/* Back to Home Button */}
-      <Link 
+      <Link
         to={ROUTES.HOME}
         className="absolute top-6 left-6 z-20 flex items-center gap-2 text-gray-300 hover:text-white transition-colors group"
       >
@@ -69,37 +69,37 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-md" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
         {/* Logo / Header */}
         <div className="text-center flex flex-col items-center font-sans" style={{ marginBottom: '20px', marginTop: '10px' }}>
-          <img 
-            src="/logo.jpeg" 
-            alt="The Soul On Summit Logo" 
-            className="rounded-full shadow-lg shadow-black/40 border-2 border-white/10" 
-            style={{ width: '96px', height: '96px', marginBottom: '16px', objectFit: 'cover' }} 
+          <img
+            src="/logo.jpeg"
+            alt="The Soul On Summit Logo"
+            className="rounded-full shadow-lg shadow-black/40 border-2 border-white/10"
+            style={{ width: '96px', height: '96px', marginBottom: '16px', objectFit: 'cover' }}
           />
           <h1 className="text-white font-sans font-extrabold tracking-tight" style={{ fontSize: '28px', lineHeight: '1.2' }}>
             {isLogin ? 'Welcome Back' : 'Join the Adventure'}
           </h1>
           <p className="text-gray-300 font-medium font-sans" style={{ marginTop: '4px', fontSize: '14px' }}>
-            {isLogin 
-              ? 'Log in to manage your bookings and explore new treks.' 
+            {isLogin
+              ? 'Log in to manage your bookings and explore new treks.'
               : 'Create an account to start your journey into the mountains.'}
           </p>
         </div>
 
         {/* Glassmorphism Card */}
-        <div 
+        <div
           className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[20px] shadow-2xl"
           style={{ padding: '24px' }}
         >
           <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: '16px' }}>
-            
+
             {/* Name Input (Register Only) */}
             {!isLogin && (
               <div className="flex flex-col animate-in fade-in slide-in-from-top-2 duration-300" style={{ gap: '8px' }}>
                 <label className="text-[14px] font-semibold text-gray-200 ml-1">Full Name</label>
                 <div className="relative">
-                  <User 
-                    className="absolute text-gray-400" 
-                    style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }} 
+                  <User
+                    className="absolute text-gray-400"
+                    style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
                   />
                   <input
                     type="text"
@@ -117,9 +117,9 @@ export default function LoginPage() {
             <div className="flex flex-col" style={{ gap: '8px' }}>
               <label className="text-[14px] font-semibold text-gray-200 ml-1">Email Address</label>
               <div className="relative">
-                <Mail 
-                  className="absolute text-gray-400" 
-                  style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }} 
+                <Mail
+                  className="absolute text-gray-400"
+                  style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
                 />
                 <input
                   type="email"
@@ -138,9 +138,9 @@ export default function LoginPage() {
                 <label className="text-[14px] font-semibold text-gray-200">Password</label>
               </div>
               <div className="relative">
-                <Lock 
-                  className="absolute text-gray-400" 
-                  style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }} 
+                <Lock
+                  className="absolute text-gray-400"
+                  style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
                 />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -168,8 +168,8 @@ export default function LoginPage() {
               )}
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
               className="w-full bg-[#F59E0B] hover:bg-[#D97706] text-[#1C2B3A] font-bold rounded-xl shadow-[0_8px_20px_rgba(245,158,11,0.3)] transition-all hover:-translate-y-0.5 group flex justify-center items-center disabled:opacity-50 disabled:hover:translate-y-0"
               style={{ height: '46px', marginTop: '8px', fontSize: '15px' }}
@@ -185,9 +185,9 @@ export default function LoginPage() {
             <div className="h-px bg-white/10 flex-1" />
           </div>
 
-          <Button 
-            type="button" 
-            variant="outline" 
+          <Button
+            type="button"
+            variant="outline"
             onClick={handleGoogleAuth}
             className="w-full bg-white hover:bg-gray-50 text-gray-900 border-none rounded-xl font-bold transition-all shadow-md flex items-center justify-center"
             style={{ height: '46px', fontSize: '14px' }}
@@ -218,7 +218,7 @@ export default function LoginPage() {
         <div className="text-center" style={{ marginTop: '24px' }}>
           <p className="text-gray-300 font-medium text-[14px]">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
-            <button 
+            <button
               onClick={() => setIsLogin(!isLogin)}
               className="text-[#F59E0B] font-bold hover:text-[#FCD34D] hover:underline transition-all focus:outline-none"
             >
