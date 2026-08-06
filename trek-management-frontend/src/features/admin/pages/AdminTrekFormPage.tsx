@@ -223,7 +223,7 @@ export function AdminTrekFormPage() {
 
     } catch (error: any) {
       console.error(error);
-      toast.error(error?.response?.data?.message || 'Failed to save trek');
+      toast.error(error?.message || 'Failed to save trek');
     } finally {
       setIsSubmittingForm(false);
     }
