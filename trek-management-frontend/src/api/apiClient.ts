@@ -100,7 +100,7 @@ apiClient.interceptors.response.use(
             localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
             localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
             localStorage.removeItem(STORAGE_KEYS.USER);
-            if (!window.location.pathname.includes('/login')) {
+            if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/oauth2/callback')) {
               window.location.href = '/login';
             }
             return Promise.reject(refreshError);
@@ -114,7 +114,7 @@ apiClient.interceptors.response.use(
       localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN)
       localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN)
       localStorage.removeItem(STORAGE_KEYS.USER)
-      if (!window.location.pathname.includes('/login')) {
+      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/oauth2/callback')) {
         window.location.href = '/login'
       }
     }
