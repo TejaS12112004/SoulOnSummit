@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { CreditCard, Landmark, Smartphone } from 'lucide-react';
 import { formatCurrency } from '@/utils/formatters/currency';
 import type { CreateBookingResponseDto } from '@/types/api';
 
@@ -13,33 +12,11 @@ interface BookingStep4Props {
 
 export function BookingStep4({ totalPrice, onCreateBooking, isPending, onSuccess, onBack }: BookingStep4Props) {
   const [paymentType, setPaymentType] = useState<'full' | 'advance'>('full');
-  const [paymentMethod, setPaymentMethod] = useState<'card' | 'netbanking' | 'upi'>('card');
   const [agreed, setAgreed] = useState(false);
 
   const advanceAmount = Math.round(totalPrice * 0.3);
   const amountToPay = paymentType === 'full' ? totalPrice : advanceAmount;
 
-  const inputStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '14px 16px',
-    borderRadius: '12px',
-    border: '1.5px solid #E2E8F0',
-    fontSize: '14px',
-    color: '#0F172A',
-    fontFamily: "'Poppins', system-ui, sans-serif",
-    outline: 'none',
-    transition: 'border-color 0.2s ease',
-    boxSizing: 'border-box',
-  };
-
-  const labelStyle: React.CSSProperties = {
-    display: 'block',
-    fontSize: '13px',
-    fontWeight: 700,
-    color: '#334155',
-    marginBottom: '8px',
-    fontFamily: "'Poppins', system-ui, sans-serif",
-  };
 
   const handlePay = async () => {
     if (!agreed) return;
@@ -209,75 +186,6 @@ export function BookingStep4({ totalPrice, onCreateBooking, isPending, onSuccess
         </div>
       </div>
 
-      {/* Payment Methods */}
-      <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
-        <button
-          onClick={() => setPaymentMethod('card')}
-          style={{
-            flex: 1, padding: '12px', borderRadius: '12px',
-            border: `1.5px solid ${paymentMethod === 'card' ? '#3B82F6' : '#E2E8F0'}`,
-            background: paymentMethod === 'card' ? '#EFF6FF' : '#ffffff',
-            color: paymentMethod === 'card' ? '#1D4ED8' : '#64748B',
-            fontWeight: 600, fontSize: '14px', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            fontFamily: "'Poppins', system-ui, sans-serif", transition: 'all 0.2s ease'
-          }}
-        >
-          <CreditCard style={{ width: '18px', height: '18px' }} /> Card
-        </button>
-        <button
-          onClick={() => setPaymentMethod('netbanking')}
-          style={{
-            flex: 1, padding: '12px', borderRadius: '12px',
-            border: `1.5px solid ${paymentMethod === 'netbanking' ? '#3B82F6' : '#E2E8F0'}`,
-            background: paymentMethod === 'netbanking' ? '#EFF6FF' : '#ffffff',
-            color: paymentMethod === 'netbanking' ? '#1D4ED8' : '#64748B',
-            fontWeight: 600, fontSize: '14px', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            fontFamily: "'Poppins', system-ui, sans-serif", transition: 'all 0.2s ease'
-          }}
-        >
-          <Landmark style={{ width: '18px', height: '18px' }} /> Net Banking
-        </button>
-        <button
-          onClick={() => setPaymentMethod('upi')}
-          style={{
-            flex: 1, padding: '12px', borderRadius: '12px',
-            border: `1.5px solid ${paymentMethod === 'upi' ? '#3B82F6' : '#E2E8F0'}`,
-            background: paymentMethod === 'upi' ? '#EFF6FF' : '#ffffff',
-            color: paymentMethod === 'upi' ? '#1D4ED8' : '#64748B',
-            fontWeight: 600, fontSize: '14px', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            fontFamily: "'Poppins', system-ui, sans-serif", transition: 'all 0.2s ease'
-          }}
-        >
-          <Smartphone style={{ width: '18px', height: '18px' }} /> UPI
-        </button>
-      </div>
-
-      {/* Card Details Form (Design Facade - Razorpay will actually handle this) */}
-      {paymentMethod === 'card' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '32px', opacity: 0.8 }}>
-          <div>
-            <label style={labelStyle}>Card Number</label>
-            <input type="text" placeholder="1234 5678 9012 3456" style={inputStyle} readOnly />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '16px' }}>
-            <div>
-              <label style={labelStyle}>Cardholder Name</label>
-              <input type="text" placeholder="Name on card" style={inputStyle} readOnly />
-            </div>
-            <div>
-              <label style={labelStyle}>Expiry Date</label>
-              <input type="text" placeholder="MM / YY" style={inputStyle} readOnly />
-            </div>
-            <div>
-              <label style={labelStyle}>CVV</label>
-              <input type="password" placeholder="•••" style={inputStyle} readOnly />
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Terms & Conditions */}
       <div style={{
