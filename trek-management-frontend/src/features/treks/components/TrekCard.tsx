@@ -117,7 +117,7 @@ export function TrekCard({ trek }: TrekCardProps) {
         </div>
 
         {/* Ratings */}
-        {rating !== null && (
+        {rating != null && (
           <div className="flex items-center" style={{ marginBottom: '16px', gap: '8px' }}>
             <div className="flex items-center" style={{ gap: '2px' }}>
               {[1, 2, 3, 4, 5].map((star) => (
@@ -129,7 +129,7 @@ export function TrekCard({ trek }: TrekCardProps) {
             </div>
             <span className="text-[12px] font-medium text-muted-foreground">
               <span className="text-foreground font-bold">{rating}</span> 
-              {reviewCount !== null && ` (${reviewCount})`}
+              {reviewCount != null && ` (${reviewCount})`}
             </span>
           </div>
         )}
@@ -138,26 +138,27 @@ export function TrekCard({ trek }: TrekCardProps) {
         <hr className="border-border" style={{ marginBottom: '20px', marginTop: '8px' }} />
 
         {/* Footer Pricing & Date */}
-        <div className="mt-auto flex items-end justify-between">
-          <div className="flex flex-col">
-            {originalPrice && (
-              <span className="text-[12px] text-muted-foreground line-through font-medium leading-none" style={{ marginBottom: '4px' }}>
-                {formatCurrency(originalPrice)}
-              </span>
-            )}
-            <div className="flex items-baseline" style={{ gap: '6px' }}>
-              <span className="text-[26px] font-extrabold text-primary leading-none tracking-tight">
-                {lowestPrice !== null ? formatCurrency(lowestPrice) : 'TBA'}
-              </span>
-              <span className="text-[13px] text-muted-foreground font-medium">/person</span>
-            </div>
-          </div>
-          
+        <div className="mt-auto flex flex-col justify-end gap-1">
           {nextDepartureDate && (
-            <div className="text-[13px] font-medium text-muted-foreground">
-              Next: {nextDepartureDate}
+            <div className="text-[12px] font-semibold text-[#10B981]">
+              Next Departure: {nextDepartureDate}
             </div>
           )}
+          <div className="flex items-end justify-between">
+            <div className="flex flex-col">
+              {originalPrice != null && (
+                <span className="text-[12px] text-muted-foreground line-through font-medium leading-none" style={{ marginBottom: '4px' }}>
+                  {formatCurrency(originalPrice)}
+                </span>
+              )}
+              <div className="flex items-baseline" style={{ gap: '6px' }}>
+                <span className="text-[24px] font-extrabold text-primary leading-none tracking-tight">
+                  {lowestPrice != null ? formatCurrency(lowestPrice) : 'TBA'}
+                </span>
+                <span className="text-[13px] text-muted-foreground font-medium">/person</span>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
