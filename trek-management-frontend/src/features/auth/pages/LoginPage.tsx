@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
@@ -14,7 +14,16 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { login, register, loading } = useAuth();
+
+  useEffect(() => {
+    const error = searchParams.get('error');
+    if (error) {
+      const errorMessage = error.replace(/_/g, ' ');
+      toast.error(errorMessage.charAt(0).toUpperCase() + errorMessage.slice(1) || 'Authentication failed');
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

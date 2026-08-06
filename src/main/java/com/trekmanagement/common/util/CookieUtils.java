@@ -29,7 +29,7 @@ public class CookieUtils {
                 .path("/")
                 .httpOnly(true)
                 .secure(isSecure)
-                .sameSite("Lax")
+                .sameSite(isSecure ? "None" : "Lax")
                 .maxAge(maxAge)
                 .build();
                 
@@ -41,8 +41,11 @@ public class CookieUtils {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
+                    boolean isSecure = request.isSecure() || "https".equalsIgnoreCase(request.getHeader("X-Forwarded-Proto"));
                     ResponseCookie deleteCookie = ResponseCookie.from(name, "")
                             .path("/")
+                            .secure(isSecure)
+                            .sameSite(isSecure ? "None" : "Lax")
                             .maxAge(0)
                             .build();
                     response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
