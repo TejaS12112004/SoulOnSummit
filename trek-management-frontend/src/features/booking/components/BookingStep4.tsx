@@ -11,11 +11,8 @@ interface BookingStep4Props {
 }
 
 export function BookingStep4({ totalPrice, onCreateBooking, isPending, onSuccess, onBack }: BookingStep4Props) {
-  const [paymentType, setPaymentType] = useState<'full' | 'advance'>('full');
   const [agreed, setAgreed] = useState(false);
-
-  const advanceAmount = Math.round(totalPrice * 0.3);
-  const amountToPay = paymentType === 'full' ? totalPrice : advanceAmount;
+  const amountToPay = totalPrice;
 
 
   const handlePay = async () => {
@@ -127,64 +124,6 @@ export function BookingStep4({ totalPrice, onCreateBooking, isPending, onSuccess
         </p>
       </div>
 
-      {/* Payment Type Selection */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '32px' }}>
-        <div 
-          onClick={() => setPaymentType('full')}
-          style={{
-            border: `2px solid ${paymentType === 'full' ? '#1F4D3A' : '#E2E8F0'}`,
-            background: paymentType === 'full' ? '#F0FDF4' : '#ffffff',
-            borderRadius: '16px',
-            padding: '16px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div style={{
-              width: '18px', height: '18px', borderRadius: '50%',
-              border: `2px solid ${paymentType === 'full' ? '#1F4D3A' : '#CBD5E1'}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff'
-            }}>
-              {paymentType === 'full' && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1F4D3A' }} />}
-            </div>
-            <span style={{ fontWeight: 700, fontSize: '15px', color: '#0F172A' }}>
-              Pay Full &mdash; {formatCurrency(totalPrice)}
-            </span>
-          </div>
-          <p style={{ margin: '0 0 0 30px', fontSize: '12px', color: '#64748B' }}>
-            Best value, no additional charges
-          </p>
-        </div>
-
-        <div 
-          onClick={() => setPaymentType('advance')}
-          style={{
-            border: `2px solid ${paymentType === 'advance' ? '#1F4D3A' : '#E2E8F0'}`,
-            background: paymentType === 'advance' ? '#F0FDF4' : '#ffffff',
-            borderRadius: '16px',
-            padding: '16px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div style={{
-              width: '18px', height: '18px', borderRadius: '50%',
-              border: `2px solid ${paymentType === 'advance' ? '#1F4D3A' : '#CBD5E1'}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff'
-            }}>
-              {paymentType === 'advance' && <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#1F4D3A' }} />}
-            </div>
-            <span style={{ fontWeight: 700, fontSize: '15px', color: '#0F172A' }}>
-              Pay Advance &mdash; {formatCurrency(advanceAmount)}
-            </span>
-          </div>
-          <p style={{ margin: '0 0 0 30px', fontSize: '12px', color: '#64748B' }}>
-            30% now, rest before trek
-          </p>
-        </div>
-      </div>
 
 
       {/* Terms & Conditions */}

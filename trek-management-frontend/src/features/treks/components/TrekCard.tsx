@@ -140,8 +140,8 @@ export function TrekCard({ trek }: TrekCardProps) {
         {/* Footer Pricing & Date */}
         <div className="mt-auto flex flex-col justify-end gap-1">
           {nextDepartureDate && (
-            <div className="text-[12px] font-semibold text-[#10B981]">
-              Next Departure: {nextDepartureDate}
+            <div className="text-[12px] font-semibold text-[#10B981] truncate">
+              Next Departure: {new Date(nextDepartureDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
             </div>
           )}
           <div className="flex items-end justify-between">
