@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import { AdminTrekDeparturesSection } from '../components/AdminTrekDeparturesSection';
 
 const trekSchema = z.object({
   title: z.string().min(1, "Title is required").max(255),
@@ -343,7 +344,7 @@ export function AdminTrekFormPage() {
           </div>
         </div>
 
-        {/* F. MEDIA */}
+      {/* F. MEDIA */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 space-y-4">
           <h2 className="text-xl font-semibold text-gray-900 border-b pb-2">Media & Documents</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -502,6 +503,11 @@ export function AdminTrekFormPage() {
           </Button>
         </div>
       </form>
+
+      {/* DEPARTURES SECTION - Only visible in Edit Mode */}
+      {isEditMode && initialTrek && (
+        <AdminTrekDeparturesSection trekId={id} departures={initialTrek.departures || []} />
+      )}
     </div>
   );
 }

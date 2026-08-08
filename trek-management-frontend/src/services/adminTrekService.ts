@@ -8,7 +8,10 @@ import type {
   CreateItineraryDayRequest,
   UpdateItineraryDayRequest,
   ItineraryDayResponse,
-  TrekFilterRequest
+  TrekFilterRequest,
+  DepartureResponse,
+  CreateDepartureRequest,
+  UpdateDepartureRequest
 } from '@/types/trek';
 
 class AdminTrekService {
@@ -64,6 +67,29 @@ class AdminTrekService {
 
   async deleteItineraryDay(dayId: string): Promise<void> {
     await apiClient.delete(`/admin/itinerary/${dayId}`);
+  }
+
+  // ── DEPARTURE MANAGEMENT ──────────────────────────────────────────────────
+
+  async createDeparture(trekId: string, data: CreateDepartureRequest): Promise<DepartureResponse> {
+    const response = await apiClient.post<ApiResponse<DepartureResponse>>(`/admin/treks/${trekId}/departures`, data);
+    return response.data.data;
+  }
+
+  async updateDeparture(trekId: string, departureId: string, data: UpdateDepartureRequest): Promise<DepartureResponse> {
+    const response = await apiClient.put<ApiResponse<DepartureResponse>>(`/admin/treks/${trekId}/departures/${departureId}`, data);
+    return response.data.data;
+  }
+
+  async deleteDeparture(trekId: string, departureId: string): Promise<void> {
+    await apiClient.delete(`/admin/treks/${trekId}/departures/${departureId}`);
+  }
+
+  async changeDepartureStatus(trekId: string, departureId: string, status: string): Promise<DepartureResponse> {
+    const response = await apiClient.patch<ApiResponse<DepartureResponse>>(`/admin/treks/${trekId}/departures/${departureId}/status`, null, {
+      params: { status }
+    });
+    return response.data.data;
   }
 
   // ── STORAGE MANAGEMENT ────────────────────────────────────────────────────

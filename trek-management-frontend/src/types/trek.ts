@@ -71,6 +71,34 @@ export interface CreateItineraryDayRequest {
 
 export interface UpdateItineraryDayRequest extends Partial<CreateItineraryDayRequest> {}
 
+export type DepartureStatus = 'OPEN' | 'CANCELLED' | 'COMPLETED';
+
+export interface DepartureResponse {
+  id: string;
+  trekId: string;
+  startDate: string;
+  endDate: string;
+  registrationDeadline: string;
+  price: number;
+  discountPrice?: number;
+  totalSeats: number;
+  availableSeats: number;
+  status: DepartureStatus;
+  isActive: boolean;
+}
+
+export interface CreateDepartureRequest {
+  startDate: string;
+  endDate: string;
+  registrationDeadline: string;
+  price: number;
+  discountPrice?: number;
+  totalSeats: number;
+  availableSeats?: number;
+}
+
+export interface UpdateDepartureRequest extends Partial<CreateDepartureRequest> {}
+
 export interface TrekResponse {
   id: string;
   title: string;
