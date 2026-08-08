@@ -30,7 +30,7 @@ public class SupabaseStorageClient {
     public String upload(String bucket, String path, byte[] content, String contentType) {
         try {
             supabaseWebClient.post()
-                    .uri("/storage/v1/object/{bucket}/{path}", bucket, path)
+                    .uri("/storage/v1/object/" + bucket + "/" + path)
                     .header(HttpHeaders.CONTENT_TYPE, contentType)
                     .bodyValue(content)
                     .retrieve()
@@ -49,7 +49,7 @@ public class SupabaseStorageClient {
     public void delete(String bucket, String path) {
         try {
             supabaseWebClient.delete()
-                    .uri("/storage/v1/object/{bucket}/{path}", bucket, path)
+                    .uri("/storage/v1/object/" + bucket + "/" + path)
                     .retrieve()
                     .toBodilessEntity()
                     .block();
