@@ -123,9 +123,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ApiErrorResponse> handleStorage(StorageException ex) {
         log.error("Storage error: {}", ex.getMessage(), ex);
+        String details = ex.getCause() != null ? ex.getCause().getMessage() : "";
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiErrorResponse.of("File operation failed", "STORAGE_ERROR"));
+                .body(ApiErrorResponse.of("File operation failed: " + ex.getMessage() + " | " + details, "STORAGE_ERROR"));
     }
 
     @ExceptionHandler(InvalidFileTypeException.class)
