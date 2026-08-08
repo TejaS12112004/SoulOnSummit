@@ -33,7 +33,10 @@ export function AdminTreksPage() {
       queryClient.invalidateQueries({ queryKey: ['adminTreks'] });
       queryClient.invalidateQueries({ queryKey: ['treks'] }); // Invalidate public lists
     },
-    onError: () => toast.error('Failed to publish trek'),
+    onError: (error: any) => {
+      const message = error.response?.data?.message || 'Failed to publish trek';
+      toast.error(message);
+    },
   });
 
   const unpublishMutation = useMutation({
