@@ -123,7 +123,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(StorageException.class)
     public ResponseEntity<ApiErrorResponse> handleStorage(StorageException ex) {
         log.error("Storage error: {}", ex.getMessage(), ex);
-        String details = ex.getCause() != null ? ex.getCause().getMessage() : "";
+        String details = "";
+        if (ex.getCause() instanceof org.springframework.web.reactive.function.client.WebClientResponseException wce) {
+            details = wce.getStatusCode() + " - " + wce.getResponseBodyAsString();
+        } else if (ex.getCause() != null) {
+            details = ex.getCause().getMessage();
+        }
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ApiErrorResponse.of("File operation failed: " + ex.getMessage() + " | " + details, "STORAGE_ERROR"));
