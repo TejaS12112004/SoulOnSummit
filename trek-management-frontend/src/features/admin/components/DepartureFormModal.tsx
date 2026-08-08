@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
@@ -92,14 +91,14 @@ export function DepartureFormModal({ trekId, isOpen, onClose, departure }: Depar
     }
   };
 
-  return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>{isEditMode ? 'Edit Departure' : 'Add New Departure'}</DialogTitle>
-        </DialogHeader>
+  return isOpen ? (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-[500px] overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-xl font-semibold">{isEditMode ? 'Edit Departure' : 'Add New Departure'}</h2>
+        </div>
         
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 py-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Start Date <span className="text-red-500">*</span></label>
@@ -155,7 +154,7 @@ export function DepartureFormModal({ trekId, isOpen, onClose, departure }: Depar
             </Button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
-  );
+      </div>
+    </div>
+  ) : null;
 }
