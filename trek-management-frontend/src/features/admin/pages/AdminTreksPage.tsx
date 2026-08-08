@@ -22,8 +22,8 @@ export function AdminTreksPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ['adminTreks', { page, size: 10 }],
-    queryFn: () => adminTrekService.listAdminTreks({ page, size: 10 }),
+    queryKey: ['adminTreks', { page, size: 10, isActive: true }],
+    queryFn: () => adminTrekService.listAdminTreks({ page, size: 10, isActive: true }),
   });
 
   const publishMutation = useMutation({
