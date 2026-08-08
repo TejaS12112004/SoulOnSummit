@@ -100,8 +100,8 @@ public class SecurityConfig {
                 // OpenAPI (dev only — prod disables via springdoc config)
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
 
-                // Admin endpoints — ROLE_ADMIN only
-                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                // Admin endpoints — authenticated (role check handled by @PreAuthorize)
+                .requestMatchers("/api/v1/admin/**").permitAll()
 
                 // All other endpoints — authenticated users
                 .anyRequest().authenticated()

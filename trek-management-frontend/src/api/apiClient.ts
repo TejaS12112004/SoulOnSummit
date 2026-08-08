@@ -141,9 +141,10 @@ apiClient.interceptors.response.use(
 
     // 5xx Server Errors
     if (status && status >= 500) {
+      const serverMessage = error.response?.data?.message || 'Our servers are temporarily unavailable. Please try again shortly.';
       const apiError: ApiError = {
         success: false,
-        message: 'Our servers are temporarily unavailable. Please try again shortly.',
+        message: serverMessage,
         errors: undefined,
         status,
       }

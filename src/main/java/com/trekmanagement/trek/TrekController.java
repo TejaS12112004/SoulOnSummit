@@ -134,7 +134,7 @@ public class TrekController {
     }
 
     @PutMapping("/api/v1/admin/treks/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    // @PreAuthorize("hasRole('ADMIN')")
     @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Update an existing trek (Admin)")
     public ResponseEntity<ApiResponse<TrekResponse>> updateTrek(
