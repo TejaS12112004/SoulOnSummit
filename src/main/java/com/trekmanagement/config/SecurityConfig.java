@@ -79,6 +79,9 @@ public class SecurityConfig {
             // Authorization rules
             .authorizeHttpRequests(auth -> auth
 
+                // Health check (UptimeRobot)
+                .requestMatchers("/api/health").permitAll()
+
                 // Public auth endpoints
                 .requestMatchers("/api/v1/auth/**", "/oauth2/**").permitAll()
 
