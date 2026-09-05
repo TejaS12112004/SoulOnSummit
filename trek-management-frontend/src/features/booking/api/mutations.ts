@@ -7,11 +7,11 @@ export const useCreateBooking = () => {
   const queryClient = useQueryClient();
   
   return useMutation<CreateBookingResponseDto, Error, CreateBookingRequestDto>({
-    mutationFn: (data: CreateBookingRequestDto) => bookingService.create(data),
-    onSuccess: (data, variables) => {
+    mutationFn: (payload: CreateBookingRequestDto) => bookingService.create(payload),
+    onSuccess: () => {
       // Invalidate both trek details and departures to update availableSeats
       queryClient.invalidateQueries({ queryKey: queryKeys.treks.all });
-      queryClient.invalidateQueries({ queryKey: queryKeys.departures.all });
+      queryClient.invalidateQueries({ queryKey: queryKeys.departures.all() });
     },
   });
 };
