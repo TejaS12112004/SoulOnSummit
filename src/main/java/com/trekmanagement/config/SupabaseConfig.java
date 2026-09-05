@@ -35,7 +35,6 @@ public class SupabaseConfig {
                 .baseUrl(url)
                 .defaultHeader("apikey", serviceRoleKey)
                 .defaultHeader("Authorization", "Bearer " + serviceRoleKey)
-                .defaultHeader("Content-Type", "application/octet-stream")
                 .build();
     }
 }

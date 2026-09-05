@@ -42,6 +42,7 @@ public class CreateDepartureRequest {
 
     @NotNull(message = "Total seats is required")
     @Min(value = 1, message = "Total seats must be at least 1")
+    @Max(value = 12, message = "Total seats cannot exceed 12 (small group policy)")
     private Integer totalSeats;
 
     /**
@@ -49,5 +50,6 @@ public class CreateDepartureRequest {
      * Must be >= 0 and <= totalSeats — enforced in service layer.
      */
     @Min(value = 0, message = "Available seats must be non-negative")
+    @Max(value = 12, message = "Available seats cannot exceed 12")
     private Integer availableSeats;
 }

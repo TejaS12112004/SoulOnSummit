@@ -31,9 +31,11 @@ public class UpdateDepartureRequest {
     private BigDecimal discountPrice;
 
     @Min(value = 1, message = "Total seats must be at least 1")
+    @Max(value = 12, message = "Total seats cannot exceed 12 (small group policy)")
     private Integer totalSeats;
 
     @Min(value = 0, message = "Available seats must be non-negative")
+    @Max(value = 12, message = "Available seats cannot exceed 12")
     private Integer availableSeats;
 
     private DepartureStatus status;
