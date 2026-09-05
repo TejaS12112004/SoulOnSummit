@@ -5,10 +5,10 @@ export function TrekFilters() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const difficultyColors: Record<string, string> = {
-    'EASY': '#10B981',      // Green
-    'MODERATE': '#F59E0B',  // Yellow
-    'DIFFICULT': '#EF4444',      // Red
-    'EXTREME': '#8B5CF6' // Purple
+    'EASY': '#10B981',
+    'MODERATE': '#F59E0B',
+    'DIFFICULT': '#EF4444',
+    'EXTREME': '#8B5CF6'
   };
 
   const handleFilterChange = (key: string, value: string) => {
@@ -18,7 +18,7 @@ export function TrekFilters() {
       } else {
         prev.set(key, value)
       }
-      prev.delete('page') // Reset page on filter change
+      prev.delete('page')
       return prev
     })
   }
@@ -29,8 +29,8 @@ export function TrekFilters() {
 
   return (
     <form 
-      className="w-full lg:w-[260px] shrink-0 bg-card rounded-2xl shadow-sm border border-border flex flex-col text-left sticky" 
-      style={{ padding: '24px', gap: '24px', top: '100px', height: 'fit-content' }}
+      className="w-full bg-card rounded-2xl shadow-sm border border-border flex flex-col text-left" 
+      style={{ padding: '20px', gap: '20px', height: 'fit-content' }}
       onSubmit={(e) => e.preventDefault()}
     >
       
@@ -64,46 +64,50 @@ export function TrekFilters() {
       {/* Difficulty Section */}
       <div className="flex flex-col gap-[10px]">
         <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Difficulty</h3>
-        <div className="flex flex-col" style={{ gap: '12px' }}>
+        {/* Mobile: horizontal pills; Desktop: vertical list */}
+        <div className="flex flex-wrap md:flex-col gap-2 md:gap-3">
           {[
             { label: 'Easy', value: 'EASY' },
             { label: 'Moderate', value: 'MODERATE' },
             { label: 'Hard', value: 'DIFFICULT' },
             { label: 'Challenging', value: 'EXTREME' }
-          ].map((diff) => (
-            <label key={diff.value} className="flex items-center cursor-pointer group" style={{ gap: '12px' }}>
-              <div className="relative flex items-center justify-center">
-                <input 
-                  type="radio" 
-                  name="difficulty" 
-                  value={diff.value}
-                  checked={searchParams.get('difficulty') === diff.value}
-                  onChange={(e) => handleFilterChange('difficulty', e.target.value)}
-                  className="w-[18px] h-[18px] rounded-full border-2 border-border cursor-pointer appearance-none checked:border-[5px] hover:border-muted-foreground transition-all bg-card"
-                  style={{ accentColor: difficultyColors[diff.value] }}
-                />
-                <style>{`
-                  input[name="difficulty"][value="${diff.value}"]:checked {
-                    border-color: ${difficultyColors[diff.value]} !important;
-                  }
-                `}</style>
-              </div>
-              <span className="text-[14px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">{diff.label}</span>
-            </label>
-          ))}
+          ].map((diff) => {
+            const isChecked = searchParams.get('difficulty') === diff.value;
+            return (
+              <label key={diff.value} className="flex items-center cursor-pointer group gap-3">
+                <div className="relative flex items-center justify-center">
+                  <input 
+                    type="radio" 
+                    name="difficulty" 
+                    value={diff.value}
+                    checked={isChecked}
+                    onChange={(e) => handleFilterChange('difficulty', e.target.value)}
+                    className="w-[18px] h-[18px] rounded-full border-2 border-border cursor-pointer appearance-none checked:border-[5px] hover:border-muted-foreground transition-all bg-card"
+                    style={{ accentColor: difficultyColors[diff.value] }}
+                  />
+                  <style>{`
+                    input[name="difficulty"][value="${diff.value}"]:checked {
+                      border-color: ${difficultyColors[diff.value]} !important;
+                    }
+                  `}</style>
+                </div>
+                <span className="text-[14px] font-medium text-muted-foreground group-hover:text-foreground transition-colors">{diff.label}</span>
+              </label>
+            );
+          })}
         </div>
       </div>
 
       {/* Duration Section */}
       <div className="flex flex-col gap-[10px]">
         <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Duration</h3>
-        <div className="flex flex-col" style={{ gap: '12px' }}>
+        <div className="flex flex-col gap-3">
           {[
             { label: 'Weekend (1-3 days)', value: 'weekend' },
             { label: 'Week (4-7 days)', value: 'week' },
             { label: 'Extended (8+ days)', value: 'extended' }
           ].map((dur) => (
-            <label key={dur.value} className="flex items-center cursor-pointer group" style={{ gap: '12px' }}>
+            <label key={dur.value} className="flex items-center cursor-pointer group gap-3">
               <div className="relative flex items-center justify-center">
                 <input 
                   type="radio" 
@@ -123,13 +127,13 @@ export function TrekFilters() {
       {/* Budget Section */}
       <div className="flex flex-col gap-[10px]">
         <h3 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">Budget</h3>
-        <div className="flex flex-col" style={{ gap: '12px' }}>
+        <div className="flex flex-col gap-3">
           {[
             { label: 'Under ₹5,000', value: 'under_5k' },
             { label: '₹5,000 - ₹10,000', value: '5k_10k' },
             { label: 'Above ₹10,000', value: 'above_10k' }
           ].map((price) => (
-            <label key={price.value} className="flex items-center cursor-pointer group" style={{ gap: '12px' }}>
+            <label key={price.value} className="flex items-center cursor-pointer group gap-3">
               <div className="relative flex items-center justify-center">
                 <input 
                   type="radio" 

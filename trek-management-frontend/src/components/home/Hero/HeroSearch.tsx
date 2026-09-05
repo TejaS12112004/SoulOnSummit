@@ -17,18 +17,14 @@ export function HeroSearch({ placeholder, onSearch }: HeroSearchProps) {
 
   return (
     <div
+      className="flex items-center w-full max-w-[580px] gap-2 px-4 md:px-[22px]"
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        width: '580px',
-        maxWidth: '90vw',
         background: 'rgba(12, 18, 26, 0.82)',
         backdropFilter: 'blur(16px)',
         border: '1px solid rgba(255,255,255,0.12)',
         borderRadius: '9999px',
-        padding: '6px 6px 6px 22px',
+        padding: '6px 6px 6px 16px',
         boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-        gap: '10px',
       }}
     >
       <Search
@@ -39,8 +35,8 @@ export function HeroSearch({ placeholder, onSearch }: HeroSearchProps) {
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-        placeholder={placeholder || 'Search treks, destinations, or activities...'}
-        className="flex-1 border-none outline-none shadow-none focus-visible:ring-0 bg-transparent px-0 h-[38px]"
+        placeholder={placeholder || 'Search treks, destinations...'}
+        className="flex-1 border-none outline-none shadow-none focus-visible:ring-0 bg-transparent px-0 h-[38px] min-w-0"
         style={{
           color: '#FFFFFF',
           fontSize: '0.92rem',
@@ -55,15 +51,16 @@ export function HeroSearch({ placeholder, onSearch }: HeroSearchProps) {
           background: '#F59E0B',
           color: '#1C2B3A',
           borderRadius: '9999px',
-          height: '46px',
-          paddingLeft: '28px',
-          paddingRight: '28px',
-          fontSize: '0.92rem',
+          height: '40px',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+          fontSize: '0.85rem',
           fontWeight: 700,
           fontFamily: 'var(--font-sans-custom)',
           border: 'none',
           flexShrink: 0,
           cursor: 'pointer',
+          whiteSpace: 'nowrap',
         }}
       >
         Explore

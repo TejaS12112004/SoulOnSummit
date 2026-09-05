@@ -20,7 +20,7 @@ export function FeaturedTreks() {
   return (
     <section
       className="bg-background"
-      style={{ padding: '96px 24px' }}
+      style={{ padding: 'clamp(48px, 8vw, 96px) clamp(16px, 4vw, 24px)' }}
       aria-labelledby="featured-treks-title"
     >
       <div className="container mx-auto">

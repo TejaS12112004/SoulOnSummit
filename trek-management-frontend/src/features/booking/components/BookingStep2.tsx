@@ -11,7 +11,7 @@ interface BookingStep2Props {
 export function BookingStep2({ participants, updateParticipant, onContinue, onBack }: BookingStep2Props) {
   const inputStyle: React.CSSProperties = {
     width: '100%',
-    padding: '14px 16px',
+    padding: '12px 14px',
     borderRadius: '12px',
     border: '1.5px solid #E2E8F0',
     fontSize: '14px',
@@ -29,12 +29,6 @@ export function BookingStep2({ participants, updateParticipant, onContinue, onBa
     color: '#334155',
     marginBottom: '8px',
     fontFamily: "'Poppins', system-ui, sans-serif",
-  };
-
-  const gridStyle: React.CSSProperties = {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '24px',
   };
 
   // Basic validation before continuing
@@ -61,17 +55,16 @@ export function BookingStep2({ participants, updateParticipant, onContinue, onBa
     <div style={{
       background: '#ffffff',
       borderRadius: '24px',
-      padding: '40px',
+      padding: 'clamp(20px, 4vw, 40px)',
       boxShadow: '0 2px 16px rgba(0,0,0,0.07)',
       display: 'flex',
       flexDirection: 'column',
       fontFamily: "'Poppins', system-ui, sans-serif",
-      minHeight: '520px',
     }}>
       {/* Header */}
-      <div style={{ marginBottom: '32px' }}>
+      <div style={{ marginBottom: '24px' }}>
         <h2 style={{
-          fontSize: '28px',
+          fontSize: 'clamp(20px, 5vw, 28px)',
           fontWeight: 700,
           color: '#0F172A',
           margin: '0 0 6px 0',
@@ -85,26 +78,26 @@ export function BookingStep2({ participants, updateParticipant, onContinue, onBa
         </p>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', marginBottom: '32px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginBottom: '24px' }}>
         {participants.map((p, index) => (
           <div key={index} style={{
             background: '#F8FAFC',
             borderRadius: '16px',
-            padding: '24px',
+            padding: 'clamp(16px, 3vw, 24px)',
             border: '1px solid #E2E8F0',
           }}>
             <h3 style={{
               fontSize: '16px',
               fontWeight: 700,
               color: '#0F172A',
-              margin: '0 0 20px 0',
+              margin: '0 0 16px 0',
               fontFamily: "'Poppins', system-ui, sans-serif",
             }}>
               Traveller {index + 1} {index === 0 && <span style={{ color: '#64748B', fontSize: '14px', fontWeight: 500 }}>(Primary)</span>}
             </h3>
 
-            {/* Form Grid */}
-            <div style={gridStyle}>
+            {/* Responsive grid: 1 col on mobile, 2 col on sm+ */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label style={labelStyle}>Full Name</label>
                 <input
@@ -163,27 +156,22 @@ export function BookingStep2({ participants, updateParticipant, onContinue, onBa
         ))}
       </div>
 
-      {/* Spacer to push buttons to the bottom */}
-      <div style={{ flex: 1 }} />
-
       {/* Footer Buttons */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingTop: '24px',
-        marginTop: '16px',
+        paddingTop: '20px',
+        marginTop: '8px',
         borderTop: '1.5px solid #F1F5F9',
       }}>
         <button
           onClick={onBack}
           style={{
-            background: '#ffffff',
-            border: '1.5px solid #E2E8F0',
-            borderRadius: '999px',
-            padding: '12px 28px',
+            background: 'none',
+            border: 'none',
             cursor: 'pointer',
-            color: '#64748B',
+            color: '#94A3B8',
             fontSize: '14px',
             fontWeight: 600,
             fontFamily: "'Poppins', system-ui, sans-serif",
@@ -201,7 +189,7 @@ export function BookingStep2({ participants, updateParticipant, onContinue, onBa
             color: '#ffffff',
             border: 'none',
             borderRadius: '999px',
-            padding: '12px 32px',
+            padding: '12px 28px',
             fontWeight: 700,
             fontSize: '15px',
             cursor: 'pointer',

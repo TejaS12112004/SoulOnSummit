@@ -134,15 +134,12 @@ function BatchCard({ batch }: BatchCardProps) {
   return (
     <motion.div
       variants={fadeUp}
+      className="flex flex-col sm:flex-row sm:items-center gap-4"
       style={{
         background: 'rgba(255,255,255,0.03)',
         border: '1px solid rgba(240,235,224,0.08)',
         borderRadius: '16px',
-        padding: '20px 24px',
-        display: 'grid',
-        gridTemplateColumns: '1fr auto',
-        gap: '16px',
-        alignItems: 'center',
+        padding: 'clamp(16px, 3vw, 20px) clamp(16px, 4vw, 24px)',
         cursor: 'pointer',
         transition: 'background 0.2s, border-color 0.2s',
       }}
@@ -150,20 +147,20 @@ function BatchCard({ batch }: BatchCardProps) {
       onClick={() => navigate(toTrekDetail(batch.trekId))}
     >
       {/* Left: Trek info */}
-      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', minWidth: 0 }}>
+      <div style={{ display: 'flex', gap: '16px', alignItems: 'center', minWidth: 0, flex: 1 }}>
         {/* Cover thumbnail */}
         {batch.coverImageUrl ? (
           <img
             src={batch.coverImageUrl}
             alt={batch.trekTitle}
-            style={{ width: '64px', height: '64px', borderRadius: '12px', objectFit: 'cover', flexShrink: 0 }}
+            style={{ width: '56px', height: '56px', borderRadius: '10px', objectFit: 'cover', flexShrink: 0 }}
           />
         ) : (
           <div
             style={{
-              width: '64px', height: '64px', borderRadius: '12px', flexShrink: 0,
+              width: '56px', height: '56px', borderRadius: '10px', flexShrink: 0,
               background: 'linear-gradient(135deg, #1F4D3A, #0D2B1F)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem',
             }}
           >
             🏔️
@@ -172,26 +169,26 @@ function BatchCard({ batch }: BatchCardProps) {
 
         <div style={{ minWidth: 0 }}>
           {/* Trek name + difficulty */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
-            <span style={{ fontFamily: 'var(--font-display-custom)', fontWeight: 700, fontSize: '1.05rem', color: '#F0EBE0', whiteSpace: 'nowrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '5px' }}>
+            <span style={{ fontFamily: 'var(--font-display-custom)', fontWeight: 700, fontSize: 'clamp(0.9rem, 2.5vw, 1.05rem)', color: '#F0EBE0' }}>
               {batch.trekTitle}
             </span>
             <DifficultyBadge difficulty={batch.difficulty} />
           </div>
 
           {/* Date range + Duration */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginBottom: '8px' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(240,235,224,0.65)', fontSize: '0.8rem', fontFamily: 'var(--font-sans-custom)' }}>
-              <Calendar style={{ width: '13px', height: '13px' }} aria-hidden="true" />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '6px' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(240,235,224,0.65)', fontSize: '0.78rem', fontFamily: 'var(--font-sans-custom)' }}>
+              <Calendar style={{ width: '12px', height: '12px' }} aria-hidden="true" />
               {formatDateRange(batch.startDate, batch.endDate)}
             </span>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(240,235,224,0.65)', fontSize: '0.8rem', fontFamily: 'var(--font-sans-custom)' }}>
-              <Clock style={{ width: '13px', height: '13px' }} aria-hidden="true" />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(240,235,224,0.65)', fontSize: '0.78rem', fontFamily: 'var(--font-sans-custom)' }}>
+              <Clock style={{ width: '12px', height: '12px' }} aria-hidden="true" />
               {batch.durationDays} days
             </span>
             {batch.location && (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(240,235,224,0.65)', fontSize: '0.8rem', fontFamily: 'var(--font-sans-custom)' }}>
-                <MapPin style={{ width: '13px', height: '13px' }} aria-hidden="true" />
+              <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'rgba(240,235,224,0.65)', fontSize: '0.78rem', fontFamily: 'var(--font-sans-custom)' }}>
+                <MapPin style={{ width: '12px', height: '12px' }} aria-hidden="true" />
                 {batch.location}{batch.state ? `, ${batch.state}` : ''}
               </span>
             )}
@@ -203,7 +200,7 @@ function BatchCard({ batch }: BatchCardProps) {
       </div>
 
       {/* Right: Price + Actions */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px', flexShrink: 0 }}>
+      <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 sm:gap-3 flex-shrink-0">
         <PriceDisplay batch={batch} />
 
         <div style={{ display: 'flex', gap: '8px' }}>
@@ -215,15 +212,16 @@ function BatchCard({ batch }: BatchCardProps) {
               borderColor: 'rgba(240,235,224,0.2)',
               color: 'rgba(240,235,224,0.8)',
               background: 'transparent',
-              fontSize: '0.78rem',
+              fontSize: '0.75rem',
               fontWeight: 600,
-              height: '36px',
-              padding: '0 14px',
+              height: '34px',
+              padding: '0 12px',
               borderRadius: '8px',
+              whiteSpace: 'nowrap',
             }}
           >
             <Link to={toTrekDetail(batch.trekId)} onClick={(e) => e.stopPropagation()}>
-              View Trek
+              View
             </Link>
           </Button>
 
@@ -234,11 +232,12 @@ function BatchCard({ batch }: BatchCardProps) {
               style={{
                 background: '#F59E0B',
                 color: '#1C2B3A',
-                fontSize: '0.78rem',
+                fontSize: '0.75rem',
                 fontWeight: 700,
-                height: '36px',
-                padding: '0 14px',
+                height: '34px',
+                padding: '0 12px',
                 borderRadius: '8px',
+                whiteSpace: 'nowrap',
               }}
             >
               <Link to={bookingUrl} onClick={(e) => e.stopPropagation()}>
@@ -313,7 +312,7 @@ export default function UpcomingBatchesPage() {
         className="relative overflow-hidden"
         style={{
           background: 'linear-gradient(135deg, #0D2B1F 0%, #1F4D3A 60%, #0a1f16 100%)',
-          padding: '80px 24px 64px',
+          padding: 'clamp(48px, 8vw, 80px) clamp(16px, 4vw, 24px) clamp(40px, 6vw, 64px)',
         }}
         aria-label="Upcoming Batches"
       >
@@ -357,7 +356,7 @@ export default function UpcomingBatchesPage() {
       </section>
 
       {/* ── Filters + Content ── */}
-      <section style={{ maxWidth: '1000px', margin: '0 auto', padding: '40px 24px 80px' }}>
+      <section className="max-w-[1000px] mx-auto px-4 md:px-6" style={{ paddingTop: '40px', paddingBottom: '80px' }}>
 
         {/* Filters bar */}
         <div

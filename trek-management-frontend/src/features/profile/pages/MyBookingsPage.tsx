@@ -51,112 +51,81 @@ export function MyBookingsPage() {
     : bookings;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="flex flex-col">
       <h1 className="text-foreground" style={{ fontSize: '1.5rem', fontWeight: 800, margin: '0 0 24px', fontFamily: 'var(--font-display)', letterSpacing: '-0.02em' }}>
         {isUpcomingOnly ? 'Upcoming Treks' : 'My Bookings'}
       </h1>
       
-      {/* Container Card */}
-      <div className="bg-card border border-border shadow-sm" style={{
-        borderRadius: '16px',
-        padding: '24px 32px',
-        overflowX: 'auto',
-      }}>
-        
-        {displayedBookings.length === 0 ? (
-          <div className="text-muted-foreground" style={{ textAlign: 'center', padding: '48px' }}>
-            {isUpcomingOnly ? "You have no upcoming treks." : "You have no bookings yet."}
-          </div>
-        ) : (
-          <div style={{ minWidth: '850px' }}>
-            {/* Table Header */}
-            <div className="border-b border-border text-muted-foreground" style={{ 
-              display: 'grid', gridTemplateColumns: '1.2fr 2.5fr 1fr 0.8fr 1fr 1fr 1.5fr', 
-              gap: '16px', paddingBottom: '16px',
-              fontSize: '0.75rem', fontWeight: 700, 
-              textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'inherit'
-            }}>
-              <div>Booking ID</div>
-              <div>Trek</div>
-              <div>Date</div>
-              <div>Persons</div>
-              <div>Paid</div>
-              <div>Status</div>
-              <div>Actions</div>
-            </div>
-
-            {/* Table Rows */}
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {displayedBookings.map((booking, index) => {
-                const statusStyle = getStatusStyle(booking.status);
-                return (
-                  <div key={booking.id} className="border-b border-border text-foreground" style={{ 
-                    display: 'grid', gridTemplateColumns: '1.2fr 2.5fr 1fr 0.8fr 1fr 1fr 1.5fr', 
-                    gap: '16px', alignItems: 'center', padding: '20px 0',
-                    borderBottom: index !== displayedBookings.length - 1 ? undefined : 'none',
-                    fontSize: '0.85rem', fontFamily: 'inherit'
-                  }}>
-                    
-                    {/* ID */}
-                    <div className="font-semibold text-muted-foreground">
-                      {booking.bookingReference}
+      {displayedBookings.length === 0 ? (
+        <div className="bg-card border border-border shadow-sm rounded-2xl p-12 text-center text-muted-foreground">
+          {isUpcomingOnly ? "You have no upcoming treks." : "You have no bookings yet."}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {displayedBookings.map((booking) => {
+            const statusStyle = getStatusStyle(booking.status);
+            return (
+              <div key={booking.id} className="bg-card border border-border shadow-sm rounded-2xl p-4 md:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  {/* Trek info */}
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="bg-muted border border-border rounded-lg overflow-hidden flex-shrink-0" style={{ width: '52px', height: '40px' }}>
+                      <img 
+                        src={booking.trekImageUrl || "https://images.unsplash.com/photo-1522199670076-2852f80289c3?auto=format&fit=crop&q=80&w=150"} 
+                        alt={booking.trekTitle} 
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                      />
                     </div>
-
-                    {/* Trek */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div className="bg-muted border border-border" style={{ width: '40px', height: '28px', borderRadius: '6px', overflow: 'hidden', flexShrink: 0 }}>
-                        <img src={booking.trekImageUrl || "https://images.unsplash.com/photo-1522199670076-2852f80289c3?auto=format&fit=crop&q=80&w=150"} alt={booking.trekTitle} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                      <span className="font-bold text-foreground">{booking.trekTitle}</span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-foreground text-[0.9rem] truncate">{booking.trekTitle}</div>
+                      <div className="text-muted-foreground text-[0.75rem] font-semibold">{booking.bookingReference}</div>
                     </div>
-
-                    {/* Date & Persons */}
-                    <div>{format(new Date(booking.startDate), 'MMM d, yyyy')}</div>
-                    <div>{booking.totalParticipants}</div>
-                    
-                    {/* Paid */}
-                    <div className="font-extrabold text-foreground">{formatCurrency(booking.totalAmount)}</div>
-                    
-                    {/* Status Pill */}
-                    <div>
-                      <span style={{ 
-                        background: statusStyle.bg, color: statusStyle.text, 
-                        padding: '6px 12px', borderRadius: '999px', fontSize: '0.75rem', 
-                        fontWeight: 800, textTransform: 'capitalize' 
-                      }}>
-                        {booking.status.replace('_', ' ')}
-                      </span>
-                    </div>
-
-                    {/* Actions */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <button className="bg-background text-primary border border-primary hover:bg-primary/5" style={{
-                        padding: '6px 14px', borderRadius: '8px', fontSize: '0.75rem',
-                        fontWeight: 700, cursor: 'pointer', transition: 'background 0.2s'
-                      }}
-                      >
-                        View
-                      </button>
-
-                      {booking.status === 'COMPLETED' && (
-                        <button className="bg-background text-muted-foreground border border-border hover:bg-muted" style={{
-                          padding: '6px 14px', borderRadius: '8px', fontSize: '0.75rem',
-                          fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'
-                        }}
-                        >
-                          Review
-                        </button>
-                      )}
-                    </div>
-
                   </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </div>
-      
+
+                  {/* Meta info */}
+                  <div className="flex flex-wrap items-center gap-3 text-[0.8rem]">
+                    <div className="text-muted-foreground">
+                      {format(new Date(booking.startDate), 'MMM d, yyyy')}
+                    </div>
+                    <div className="text-muted-foreground">
+                      {booking.totalParticipants} {booking.totalParticipants === 1 ? 'person' : 'persons'}
+                    </div>
+                    <div className="font-extrabold text-foreground">
+                      {formatCurrency(booking.totalAmount)}
+                    </div>
+                    <span style={{ 
+                      background: statusStyle.bg, color: statusStyle.text, 
+                      padding: '5px 10px', borderRadius: '999px', fontSize: '0.72rem', 
+                      fontWeight: 800, textTransform: 'capitalize', whiteSpace: 'nowrap',
+                    }}>
+                      {booking.status.replace('_', ' ')}
+                    </span>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button className="bg-background text-primary border border-primary hover:bg-primary/5" style={{
+                      padding: '6px 14px', borderRadius: '8px', fontSize: '0.75rem',
+                      fontWeight: 700, cursor: 'pointer', transition: 'background 0.2s'
+                    }}>
+                      View
+                    </button>
+
+                    {booking.status === 'COMPLETED' && (
+                      <button className="bg-background text-muted-foreground border border-border hover:bg-muted" style={{
+                        padding: '6px 14px', borderRadius: '8px', fontSize: '0.75rem',
+                        fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'
+                      }}>
+                        Review
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

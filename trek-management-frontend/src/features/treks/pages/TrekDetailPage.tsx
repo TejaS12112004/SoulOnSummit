@@ -29,7 +29,7 @@ export default function TrekDetailPage() {
 
   if (isError || !trek) {
     return (
-      <div className="min-h-[60vh] px-8 py-20 bg-background">
+      <div className="min-h-[60vh] px-4 md:px-8 py-20 bg-background">
         <div className="max-w-7xl mx-auto">
           <QueryErrorState error={error} onRetry={refetch} />
         </div>
@@ -51,11 +51,11 @@ export default function TrekDetailPage() {
       <TrekDetailHero trek={trek} />
 
       {/* Page body */}
-      <div className="max-w-[1280px] mx-auto px-4 lg:px-8 py-10 pb-20">
-        <div className="flex flex-col lg:flex-row gap-7 items-start">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-8 md:py-10 pb-16 md:pb-20">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-7 items-start">
 
           {/* ── Left column ──────────────────────────────────────────── */}
-          <div className="flex-1 min-w-0 w-full flex flex-col gap-5">
+          <div className="flex-1 min-w-0 w-full flex flex-col gap-4 md:gap-5">
             <TrekOverview trek={trek} />
             <TrekHighlights highlights={trek.highlights} />
             <TrekItinerary trek={trek} />
@@ -71,8 +71,8 @@ export default function TrekDetailPage() {
           </div>
 
           {/* ── Right sidebar ─────────────────────────────────────────── */}
-          <div className="w-full lg:w-[340px] shrink-0">
-            <div style={{ position: 'sticky', top: '96px' }}>
+          <div className="w-full lg:w-[340px] lg:shrink-0">
+            <div className="lg:sticky lg:top-24">
               <BookingSidebar trek={trek} selectedBatch={selectedBatch} />
             </div>
           </div>

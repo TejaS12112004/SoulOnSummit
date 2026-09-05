@@ -11,14 +11,14 @@ export function WhyChooseUs() {
   return (
     <section
       className="bg-background"
-      style={{ padding: '96px 24px' }}
+      style={{ padding: 'clamp(48px, 8vw, 96px) clamp(16px, 4vw, 24px)' }}
       aria-labelledby="why-choose-us-title"
     >
-      <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+      <div className="max-w-[1100px] mx-auto">
 
         {/* Header */}
         <motion.div
-          style={{ textAlign: 'center', marginBottom: '56px' }}
+          className="text-center mb-10 md:mb-14"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -43,7 +43,7 @@ export function WhyChooseUs() {
             id="why-choose-us-title"
             style={{
               fontFamily: 'var(--font-display-custom)',
-              fontSize: 'clamp(2.4rem, 4vw, 3.6rem)',
+              fontSize: 'clamp(1.8rem, 5vw, 3.6rem)',
               fontWeight: 700,
               lineHeight: 1.1,
               letterSpacing: '-0.02em',
@@ -54,13 +54,9 @@ export function WhyChooseUs() {
           </motion.h2>
         </motion.div>
 
-        {/* 3-col grid, 2 rows */}
+        {/* Responsive grid: 1 col mobile, 2 col tablet, 3 col desktop */}
         <motion.div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: '16px',
-          }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"

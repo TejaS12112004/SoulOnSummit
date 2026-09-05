@@ -14,8 +14,8 @@ import { OrderSummary } from '../components/OrderSummary';
 
 const defaultParticipant = (): ParticipantResponseDto => ({
   fullName: '',
-  age: 20, // default valid age
-  gender: 'MALE', // default valid gender
+  age: 20,
+  gender: 'MALE',
   phone: '',
   email: '',
   emergencyContactName: '',
@@ -27,35 +27,26 @@ export function BookingPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // Fetch real trek data
   const { data: trek, isLoading, isError } = useTrekDetail(trekId ?? '');
-  
-  // Create booking mutation
   const createBooking = useCreateBooking();
 
-  // Step state
   const [currentStep, setCurrentStep] = useState(1);
   
-  // Booking Data State
   const initialBatchId = searchParams.get('batch');
   const [selectedBatchId, setSelectedBatchId] = useState<string | null>(initialBatchId);
   const [travellers, setTravellers] = useState(1);
   
-  // Store an array of participants based on travellers count
   const [participants, setParticipants] = useState<ParticipantResponseDto[]>([defaultParticipant()]);
 
-  // Keep array length in sync with travellers count
   const handleSetTravellers = (count: number) => {
     setTravellers(count);
     setParticipants(prev => {
       const newArr = [...prev];
       if (count > prev.length) {
-        // Add new empty participants
         for (let i = prev.length; i < count; i++) {
           newArr.push(defaultParticipant());
         }
       } else if (count < prev.length) {
-        // Remove trailing participants
         newArr.splice(count);
       }
       return newArr;
@@ -70,7 +61,6 @@ export function BookingPage() {
     });
   };
 
-  // State to hold final successful booking ID
   const [confirmedBookingId, setConfirmedBookingId] = useState<string | null>(null);
 
   if (isLoading) {
@@ -81,7 +71,6 @@ export function BookingPage() {
     return <div className="min-h-screen bg-background flex items-center justify-center text-foreground">Error loading trek details.</div>;
   }
 
-  // Find the selected departure to determine real pricing
   const selectedDeparture = trek.departures?.find(d => d.id === selectedBatchId);
   const basePricePerPerson = selectedDeparture?.price ?? trek.lowestPrice ?? 0;
   const discountPerPerson = selectedDeparture?.discountPrice 
@@ -106,17 +95,14 @@ export function BookingPage() {
         departureId: selectedBatchId,
         participants: participants,
       });
-      // Razorpay flow will be initiated from Step 4 using res.razorpayOrderId
-      // For now, on successful backend creation, we transition to step 5.
       setConfirmedBookingId(res.bookingId);
-      return res; // return to step 4 so it can handle razorpay
+      return res;
     } catch (e) {
       console.error("Booking failed", e);
       throw e;
     }
   };
 
-  // Create mock order summary format for OrderSummary component backward compatibility
   const orderSummaryTrek = {
     title: trek.title,
     image: trek.coverImageUrl,
@@ -130,14 +116,11 @@ export function BookingPage() {
       <BookingHeader currentStep={currentStep} trekTitle={trek.title} />
 
       {/* Main Content Area */}
-      <div style={{
-        paddingTop: '48px',
-        paddingBottom: '80px',
-        flex: 1,
-      }}>
-        <div className="max-w-[1020px] mx-auto px-5 flex flex-col lg:flex-row gap-7 items-center lg:items-start justify-center">
+      <div className="flex-1 pt-8 pb-16 px-4">
+        <div className="max-w-[1020px] mx-auto flex flex-col lg:flex-row gap-6 items-start justify-center">
+
           {/* Left – Booking Step */}
-          <div className="flex-1 min-w-0 w-full max-w-[620px]">
+          <div className="w-full lg:flex-1 lg:min-w-0 lg:max-w-[620px]">
             {currentStep === 1 && (
               <BookingStep1
                 departures={trek.departures}
@@ -185,7 +168,7 @@ export function BookingPage() {
           </div>
 
           {/* Right – Order Summary */}
-          <div className="w-full max-w-[620px] lg:max-w-none lg:w-[340px] shrink-0">
+          <div className="w-full lg:w-[320px] lg:shrink-0">
             <OrderSummary trek={orderSummaryTrek} travellers={travellers} selectedBatchId={selectedBatchId} />
           </div>
         </div>

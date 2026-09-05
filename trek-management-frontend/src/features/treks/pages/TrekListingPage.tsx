@@ -11,7 +11,7 @@ import type { TrekDifficulty } from '@/types/difficulty'
 function parseParams(searchParams: URLSearchParams): TrekFilterParams {
   const p: TrekFilterParams = {}
   
-  if (searchParams.has('page')) p.page = Number(searchParams.get('page')) - 1 // 0-indexed API
+  if (searchParams.has('page')) p.page = Number(searchParams.get('page')) - 1
   if (searchParams.has('size')) p.size = Number(searchParams.get('size'))
   
   if (searchParams.has('search')) p.search = searchParams.get('search')!
@@ -40,7 +40,7 @@ function parseParams(searchParams: URLSearchParams): TrekFilterParams {
 }
 
 export default function TrekListingPage() {
-  const [isFiltersVisible, setIsFiltersVisible] = useState(true)
+  const [isFiltersVisible, setIsFiltersVisible] = useState(false) // hidden by default on mobile
   const [searchParams] = useSearchParams()
   const filters = parseParams(searchParams)
   
@@ -54,24 +54,20 @@ export default function TrekListingPage() {
       {/* Main Content Area */}
       <div 
         id="trek-grid-section" 
-        className="w-full max-w-[1300px] mx-auto px-6 lg:px-12 pb-24"
-        style={{ paddingTop: '80px' }}
+        className="w-full max-w-[1300px] mx-auto px-4 md:px-6 lg:px-12 pb-24"
+        style={{ paddingTop: '40px' }}
       >
-        <div className="flex flex-col lg:flex-row gap-10 items-start">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-10 items-start">
           
-          {/* Sidebar */}
-          <div 
-            className={`lg:sticky lg:top-[100px] z-10 transition-all duration-500 ease-in-out overflow-hidden ${
-              isFiltersVisible ? 'w-full lg:max-w-[300px] opacity-100' : 'max-h-0 lg:max-h-none lg:max-w-0 opacity-0 lg:-ml-10'
-            }`}
-          >
-            <div className="w-full lg:w-[260px]">
+          {/* Sidebar — full width on mobile when visible, fixed sidebar on desktop */}
+          {isFiltersVisible && (
+            <div className="w-full lg:w-[260px] lg:shrink-0 lg:sticky lg:top-[100px]">
               <TrekFilters />
             </div>
-          </div>
+          )}
           
           {/* Main Grid Area */}
-          <main className="flex-1 min-w-0 flex flex-col transition-all duration-300">
+          <main className="flex-1 min-w-0 w-full flex flex-col">
             <TrekToolbar 
               isFiltersVisible={isFiltersVisible} 
               onToggleFilters={() => setIsFiltersVisible(!isFiltersVisible)}

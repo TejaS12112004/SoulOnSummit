@@ -32,10 +32,7 @@ export function HeroContent({
   const staggerContainer = getStaggerContainer(shouldReduceMotion ?? false);
 
   return (
-    <div
-      className="relative text-center px-6 w-full max-w-[1000px] mx-auto z-10"
-      style={{ marginTop: '0px' }}
-    >
+    <div className="relative text-center px-4 md:px-6 w-full max-w-[1000px] mx-auto z-10">
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -62,12 +59,12 @@ export function HeroContent({
           </motion.div>
         )}
 
-        {/* Main headline — sized to fit one line at normal desktop widths */}
+        {/* Main headline */}
         <motion.h1
           variants={fadeInUp}
           style={{
             fontFamily: 'var(--font-display-custom)',
-            fontSize: 'clamp(2rem, 4.2vw, 4rem)',
+            fontSize: 'clamp(1.8rem, 6vw, 4rem)',
             fontWeight: 800,
             color: '#FFFFFF',
             lineHeight: 1.08,
@@ -82,7 +79,7 @@ export function HeroContent({
                 display: 'block',
                 fontStyle: 'italic',
                 color: '#F59E0B',
-                fontSize: 'clamp(1.8rem, 3.8vw, 3.6rem)',
+                fontSize: 'clamp(1.5rem, 5vw, 3.6rem)',
                 fontWeight: 700,
                 lineHeight: 1.12,
                 marginTop: '0.04em',
@@ -98,7 +95,7 @@ export function HeroContent({
         <motion.p
           variants={fadeInUp}
           style={{
-            fontSize: 'clamp(0.95rem, 1.4vw, 1.1rem)',
+            fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
             color: 'rgba(255,255,255,0.88)',
             marginBottom: '2.2rem',
             maxWidth: '580px',
@@ -113,7 +110,7 @@ export function HeroContent({
         {/* Search bar */}
         <motion.div
           variants={fadeInUp}
-          style={{ marginBottom: '1.4rem', display: 'flex', justifyContent: 'center', width: '100%' }}
+          className="mb-5 flex justify-center w-full"
         >
           <HeroSearch placeholder={searchPlaceholder} onSearch={handleSearch} />
         </motion.div>
@@ -121,8 +118,7 @@ export function HeroContent({
         {/* CTA Buttons */}
         <motion.div
           variants={fadeInUp}
-          className="flex gap-4 justify-center flex-wrap items-center"
-          style={{ marginTop: '0.4rem' }}
+          className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-1 w-full"
         >
           <Button
             asChild
@@ -131,7 +127,7 @@ export function HeroContent({
               color: '#1C2B3A',
               borderRadius: '10px',
               height: '52px',
-              minWidth: '182px',
+              minWidth: '160px',
               fontSize: '0.95rem',
               fontWeight: 700,
               fontFamily: 'var(--font-sans-custom)',
@@ -141,8 +137,10 @@ export function HeroContent({
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              paddingLeft: '26px',
-              paddingRight: '26px',
+              paddingLeft: '24px',
+              paddingRight: '24px',
+              width: '100%',
+              maxWidth: '280px',
             }}
           >
             <Link to={primaryCTA.href}>
@@ -159,7 +157,7 @@ export function HeroContent({
                 color: '#FFFFFF',
                 borderRadius: '10px',
                 height: '52px',
-                minWidth: '182px',
+                minWidth: '160px',
                 fontSize: '0.95rem',
                 fontWeight: 700,
                 fontFamily: 'var(--font-sans-custom)',
@@ -168,9 +166,11 @@ export function HeroContent({
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingLeft: '26px',
-                paddingRight: '26px',
+                paddingLeft: '24px',
+                paddingRight: '24px',
                 backdropFilter: 'blur(4px)',
+                width: '100%',
+                maxWidth: '280px',
               }}
             >
               <Link to={secondaryCTA.href}>
