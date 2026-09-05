@@ -46,7 +46,7 @@ export function Navbar() {
       initial={false}
       role="banner"
     >
-      <div className="max-w-[1440px] w-full mx-auto px-6 lg:px-12 flex items-center justify-between h-full gap-8">
+      <div className="max-w-[1440px] w-full mx-auto px-4 md:px-6 lg:px-12 flex items-center justify-between h-full gap-4 md:gap-8">
 
         <div className="shrink-0">
           <Logo isScrolled={solid} />

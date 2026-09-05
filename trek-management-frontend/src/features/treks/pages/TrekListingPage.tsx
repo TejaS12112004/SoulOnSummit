@@ -61,14 +61,11 @@ export default function TrekListingPage() {
           
           {/* Sidebar */}
           <div 
-            className="lg:sticky lg:top-[100px] z-10 transition-all duration-500 ease-in-out overflow-hidden"
-            style={{ 
-              maxWidth: isFiltersVisible ? '300px' : '0px',
-              opacity: isFiltersVisible ? 1 : 0,
-              marginLeft: isFiltersVisible ? '0' : '-40px' // Offset the gap-10 when hidden
-            }}
+            className={`lg:sticky lg:top-[100px] z-10 transition-all duration-500 ease-in-out overflow-hidden ${
+              isFiltersVisible ? 'w-full lg:max-w-[300px] opacity-100' : 'max-h-0 lg:max-h-none lg:max-w-0 opacity-0 lg:-ml-10'
+            }`}
           >
-            <div className="w-[260px]">
+            <div className="w-full lg:w-[260px]">
               <TrekFilters />
             </div>
           </div>

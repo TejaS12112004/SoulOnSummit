@@ -29,7 +29,7 @@ export function TrekFilters() {
 
   return (
     <form 
-      className="w-[260px] shrink-0 bg-card rounded-2xl shadow-sm border border-border flex flex-col text-left sticky" 
+      className="w-full lg:w-[260px] shrink-0 bg-card rounded-2xl shadow-sm border border-border flex flex-col text-left sticky" 
       style={{ padding: '24px', gap: '24px', top: '100px', height: 'fit-content' }}
       onSubmit={(e) => e.preventDefault()}
     >

@@ -135,18 +135,9 @@ export function BookingPage() {
         paddingBottom: '80px',
         flex: 1,
       }}>
-        <div style={{
-          maxWidth: '1020px',
-          margin: '0 auto',
-          padding: '0 20px',
-          display: 'flex',
-          flexDirection: 'row',
-          gap: '28px',
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-        }}>
+        <div className="max-w-[1020px] mx-auto px-5 flex flex-col lg:flex-row gap-7 items-center lg:items-start justify-center">
           {/* Left – Booking Step */}
-          <div style={{ flex: '1 1 0', minWidth: 0, maxWidth: '620px' }}>
+          <div className="flex-1 min-w-0 w-full max-w-[620px]">
             {currentStep === 1 && (
               <BookingStep1
                 departures={trek.departures}
@@ -194,7 +185,7 @@ export function BookingPage() {
           </div>
 
           {/* Right – Order Summary */}
-          <div style={{ width: '340px', flexShrink: 0 }}>
+          <div className="w-full max-w-[620px] lg:max-w-none lg:w-[340px] shrink-0">
             <OrderSummary trek={orderSummaryTrek} travellers={travellers} selectedBatchId={selectedBatchId} />
           </div>
         </div>

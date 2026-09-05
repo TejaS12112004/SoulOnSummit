@@ -90,7 +90,7 @@ export function TrekDetailHero({ trek }: TrekDetailHeroProps) {
       </div>
 
       {/* ── Thumbnail Bar ──────────────────────────────────────────── */}
-      <div className="w-full bg-[#163A28] flex justify-center items-center gap-3.5 py-3.5 px-6">
+      <div className="w-full bg-[#163A28] flex flex-wrap justify-center items-center gap-3.5 py-3.5 px-6">
         {thumbnails.length > 0 ? (
           thumbnails.map((img, idx) => (
             <button

@@ -51,11 +51,11 @@ export default function TrekDetailPage() {
       <TrekDetailHero trek={trek} />
 
       {/* Page body */}
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 32px 80px 32px' }}>
-        <div style={{ display: 'flex', gap: '28px', alignItems: 'flex-start' }}>
+      <div className="max-w-[1280px] mx-auto px-4 lg:px-8 py-10 pb-20">
+        <div className="flex flex-col lg:flex-row gap-7 items-start">
 
           {/* ── Left column ──────────────────────────────────────────── */}
-          <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <div className="flex-1 min-w-0 w-full flex flex-col gap-5">
             <TrekOverview trek={trek} />
             <TrekHighlights highlights={trek.highlights} />
             <TrekItinerary trek={trek} />
@@ -71,7 +71,7 @@ export default function TrekDetailPage() {
           </div>
 
           {/* ── Right sidebar ─────────────────────────────────────────── */}
-          <div style={{ width: '340px', flexShrink: 0 }}>
+          <div className="w-full lg:w-[340px] shrink-0">
             <div style={{ position: 'sticky', top: '96px' }}>
               <BookingSidebar trek={trek} selectedBatch={selectedBatch} />
             </div>

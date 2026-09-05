@@ -48,7 +48,7 @@ export function ProfileSidebar() {
       </div>
 
       {/* Navigation Links */}
-      <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <nav className="flex flex-row md:flex-col gap-1 overflow-x-auto md:overflow-visible pb-2 md:pb-0 scrollbar-hide">
         {SIDEBAR_LINKS.map((link) => {
           const Icon = link.icon;
           return (
@@ -56,7 +56,7 @@ export function ProfileSidebar() {
               key={link.href}
               to={link.href}
               end={link.href === ROUTES.PROFILE}
-              className={({ isActive }) => `flex items-center gap-3 px-4 py-2.5 rounded-xl text-[0.9rem] font-semibold transition-all ${
+              className={({ isActive }) => `flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5 rounded-xl text-[0.85rem] md:text-[0.9rem] font-semibold transition-all whitespace-nowrap ${
                 isActive 
                   ? 'bg-primary text-primary-foreground' 
                   : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -74,7 +74,7 @@ export function ProfileSidebar() {
             await logout();
             navigate(ROUTES.LOGIN);
           }}
-          className="flex items-center gap-3 px-4 py-2.5 rounded-xl mt-6 text-[0.9rem] font-semibold text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all text-left w-full"
+          className="flex items-center justify-center md:justify-start gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-2.5 rounded-xl md:mt-6 text-[0.85rem] md:text-[0.9rem] font-semibold text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all text-left whitespace-nowrap"
         >
           <LogOut style={{ width: 16, height: 16 }} />
           Logout

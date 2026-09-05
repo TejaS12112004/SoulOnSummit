@@ -85,13 +85,7 @@ export function FeaturedTreks() {
         ) : isError ? (
           <QueryErrorState error={error} onRetry={refetch} />
         ) : (
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '20px',
-            }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {featuredTreks?.map((trek) => (
               <FeaturedTrekCard key={trek.id} trek={trek} />
             ))}

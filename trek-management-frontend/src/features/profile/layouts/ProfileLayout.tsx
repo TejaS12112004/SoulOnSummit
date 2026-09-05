@@ -12,10 +12,10 @@ export function ProfileLayout() {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-8">
-      <div className="max-w-[1280px] mx-auto px-8 flex gap-8 items-start">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 flex flex-col md:flex-row gap-8 items-start">
         
         {/* Sidebar - Reduced width */}
-        <aside className="w-[250px] shrink-0">
+        <aside className="w-full md:w-[250px] shrink-0">
           <ProfileSidebar />
         </aside>
 
