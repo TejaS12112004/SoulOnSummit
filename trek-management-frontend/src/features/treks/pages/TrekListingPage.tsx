@@ -46,7 +46,7 @@ export default function TrekListingPage() {
   
   const { data, isLoading, isError, error, refetch } = useTreks(filters)
   return (
-    <div className="bg-background min-h-screen pt-[72px]">
+    <div className="bg-background min-h-screen">
       
       {/* Hero Section */}
       <TrekHero />

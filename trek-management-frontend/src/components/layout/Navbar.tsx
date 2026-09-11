@@ -23,7 +23,7 @@ export function Navbar() {
   const { settings } = usePublicSettings();
   const supportPhone = settings?.supportPhone || '+91 90582 90383';
 
-  const isHero = pathname === '/' || pathname === '/home';
+  const isHero = pathname === '/' || pathname === '/home' || pathname === '/treks';
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const isPastThreshold = latest > NAVBAR_SCROLL_THRESHOLD;
