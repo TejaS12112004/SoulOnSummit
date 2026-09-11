@@ -123,14 +123,14 @@ export default function LoginPage() {
         <span className="text-sm font-semibold tracking-wide uppercase">Home</span>
       </Link>
 
-      <div className="relative z-10 w-full max-w-md" style={{ maxHeight: '100vh', overflowY: 'auto' }}>
+      <div className="relative z-10 w-full max-w-md" style={{ maxHeight: '100vh', overflowY: 'hidden' }}>
         {/* Logo / Header */}
-        <div className="text-center flex flex-col items-center font-sans" style={{ marginBottom: '20px', marginTop: '10px' }}>
+        <div className="text-center flex flex-col items-center font-sans" style={{ marginBottom: '16px', marginTop: '0px' }}>
           <img
             src="/logo.jpeg"
             alt="The Soul On Summit Logo"
             className="rounded-full shadow-lg shadow-black/40 border-2 border-white/10"
-            style={{ width: '96px', height: '96px', marginBottom: '16px', objectFit: 'cover' }}
+            style={{ width: '72px', height: '72px', marginBottom: '12px', objectFit: 'cover' }}
           />
           <h1 className="text-white font-sans font-extrabold tracking-tight" style={{ fontSize: '28px', lineHeight: '1.2' }}>
             {isLogin ? 'Welcome Back' : 'Join the Adventure'}
@@ -145,9 +145,9 @@ export default function LoginPage() {
         {/* Glassmorphism Card */}
         <div
           className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[20px] shadow-2xl"
-          style={{ padding: '24px' }}
+          style={{ padding: '20px' }}
         >
-          <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: '16px' }}>
+          <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: '12px' }}>
 
             <div className="flex flex-col" style={{ gap: '8px' }}>
               <label className="text-[14px] font-semibold text-gray-200 ml-1">Email Address</label>
@@ -262,7 +262,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="flex items-center justify-between" style={{ marginTop: '24px', marginBottom: '20px' }}>
+          <div className="flex items-center justify-between" style={{ marginTop: '16px', marginBottom: '16px' }}>
             <div className="h-px bg-white/10 flex-1" />
             <span className="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Or continue with</span>
             <div className="h-px bg-white/10 flex-1" />
@@ -298,7 +298,7 @@ export default function LoginPage() {
         </div>
 
         {/* Toggle between Login and Register */}
-        <div className="text-center" style={{ marginTop: '24px' }}>
+        <div className="text-center" style={{ marginTop: '16px' }}>
           <p className="text-gray-300 font-medium text-[14px]">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
             <button
