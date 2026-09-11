@@ -54,7 +54,7 @@ export function DepartureCard({ departure, isLast }: DepartureCardProps) {
       role="button"
       tabIndex={0}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleCardClick(); } }}
-      aria-label={`${departure.trekTitle} departing ${departure.departureDate}`}
+      aria-label={`${departure.trekTitle} departing ${departure.startDate}`}
       style={{
         display: 'flex',
         alignItems: 'center',
