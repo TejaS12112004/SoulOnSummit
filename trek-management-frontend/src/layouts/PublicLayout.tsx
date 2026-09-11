@@ -3,7 +3,7 @@ import { Navbar } from '@/components/layout/Navbar';
 
 export function PublicLayout() {
   const { pathname } = useLocation();
-  const isHero = pathname === '/' || pathname === '/home';
+  const isHero = pathname === '/' || pathname === '/home' || pathname === '/treks';
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--color-beige)' }}>
