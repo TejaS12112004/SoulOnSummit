@@ -34,4 +34,7 @@ public class RegisterRequest {
         message = "Password must contain uppercase, lowercase, digit, and special character"
     )
     private String password;
+
+    @NotBlank(message = "OTP is required")
+    private String otp;
 }

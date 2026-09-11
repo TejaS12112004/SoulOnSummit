@@ -8,9 +8,17 @@ import type {
   RegisterRequest,
   ResendVerificationRequest,
   ResetPasswordRequest,
+  SendOtpRequest,
+  VerifyOtpRequest
 } from '@/types/auth'
 
 const authService = {
+  sendRegistrationOtp: (data: SendOtpRequest) =>
+    apiClient.post<ApiResponse<void>>('/auth/register/send-otp', data).then((r) => r.data),
+
+  verifyRegistrationOtp: (data: VerifyOtpRequest) =>
+    apiClient.post<ApiResponse<void>>('/auth/register/verify-otp', data).then((r) => r.data),
+
   register: (data: RegisterRequest) =>
     apiClient.post<ApiResponse<void>>('/auth/register', data).then((r) => r.data),
 

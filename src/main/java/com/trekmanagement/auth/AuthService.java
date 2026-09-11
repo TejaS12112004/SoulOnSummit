@@ -4,8 +4,12 @@ import com.trekmanagement.auth.dto.*;
 
 public interface AuthService {
 
+    void sendRegistrationOtp(SendOtpRequest request);
+
+    void verifyRegistrationOtp(VerifyOtpRequest request);
+
     /**
-     * Flow 1: Register new user, send verification email.
+     * Flow 1: Register new user (requires verified OTP).
      * Returns 201 — body contains confirmation message only (no tokens yet).
      */
     void register(RegisterRequest request);

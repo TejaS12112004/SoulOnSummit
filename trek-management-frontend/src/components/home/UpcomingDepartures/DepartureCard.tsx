@@ -3,11 +3,11 @@ import { Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { formatCurrency } from '@/utils/formatters/currency';
 import { toTrekDetail } from '@/constants/routes';
-import type { HomeUpcomingDepartureViewModel } from '@/types/home';
+import type { UpcomingBatchResponse } from '@/types/api';
 import type { TrekDifficulty } from '@/types/difficulty';
 
 interface DepartureCardProps {
-  departure: HomeUpcomingDepartureViewModel;
+  departure: UpcomingBatchResponse;
   isLast?: boolean;
 }
 
@@ -90,7 +90,7 @@ export function DepartureCard({ departure, isLast }: DepartureCardProps) {
           fontFamily: 'var(--font-sans-custom)',
         }}>
           <Calendar style={{ width: '13px', height: '13px' }} aria-hidden="true" />
-          {departure.departureDate}
+          {departure.startDate}
         </div>
       </div>
 

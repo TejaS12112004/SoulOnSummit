@@ -8,6 +8,7 @@ export function RouteFocusHandler() {
     // When route changes, focus the main content area for accessibility
     // Use requestAnimationFrame to ensure the new page has rendered before focusing
     requestAnimationFrame(() => {
+      window.scrollTo(0, 0); // Scroll to top
       const mainContent = document.getElementById('main-content')
       if (mainContent) {
         mainContent.focus({ preventScroll: true })

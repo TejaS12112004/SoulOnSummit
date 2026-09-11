@@ -21,7 +21,7 @@ export function Navbar() {
   const { isAuthenticated } = useAuth();
   const { pathname } = useLocation();
   const { settings } = usePublicSettings();
-  const supportPhone = settings?.supportPhone || '+1 (555) 123-4567';
+  const supportPhone = settings?.supportPhone || '+91 90582 90383';
 
   const isHero = pathname === '/' || pathname === '/home';
 

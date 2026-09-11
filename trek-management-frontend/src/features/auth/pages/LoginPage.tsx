@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, ArrowLeft, Loader2, Eye, EyeOff, Hash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { ROUTES } from '@/constants/routes';
 import { toast } from 'sonner';
 import { env } from '@/config/env';
+import authService from '@/services/authService';
 
 export default function LoginPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [registrationStep, setRegistrationStep] = useState<1 | 2 | 3>(1);
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
+  const [localLoading, setLocalLoading] = useState(false);
+  
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { login, register, loading } = useAuth();
@@ -27,38 +32,78 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      let user;
-      if (isLogin) {
-        user = await login({ email, password });
+    if (isLogin) {
+      try {
+        const user = await login({ email, password });
         toast.success("Welcome back!");
-      } else {
-        const nameParts = name.trim().split(' ');
-        const firstName = nameParts[0] || '';
-        const lastName = nameParts.slice(1).join(' ') || '';
-        user = await register({ email, password, firstName, lastName });
-        toast.success("Account created successfully!");
+        if (user.roles?.includes('ROLE_ADMIN')) {
+          navigate(ROUTES.ADMIN);
+        } else {
+          navigate(ROUTES.HOME);
+        }
+      } catch (error: any) {
+        toast.error(error?.message || "Authentication failed. Please try again.");
       }
-
-      if (user.roles?.includes('ROLE_ADMIN')) {
-        navigate(ROUTES.ADMIN);
-      } else {
-        navigate(ROUTES.HOME);
+    } else {
+      // Registration flow
+      if (registrationStep === 1) {
+        setLocalLoading(true);
+        try {
+          await authService.sendRegistrationOtp({ email });
+          toast.success("OTP sent to your email!");
+          setRegistrationStep(2);
+        } catch (error: any) {
+          toast.error(error?.message || "Failed to send OTP.");
+        } finally {
+          setLocalLoading(false);
+        }
+      } else if (registrationStep === 2) {
+        setLocalLoading(true);
+        try {
+          await authService.verifyRegistrationOtp({ email, otp });
+          toast.success("Email verified!");
+          setRegistrationStep(3);
+        } catch (error: any) {
+          toast.error(error?.message || "Invalid OTP.");
+        } finally {
+          setLocalLoading(false);
+        }
+      } else if (registrationStep === 3) {
+        try {
+          const nameParts = name.trim().split(' ');
+          const firstName = nameParts[0] || '';
+          const lastName = nameParts.slice(1).join(' ') || '';
+          const user = await register({ email, password, firstName, lastName, otp });
+          toast.success("Account created successfully!");
+          if (user.roles?.includes('ROLE_ADMIN')) {
+            navigate(ROUTES.ADMIN);
+          } else {
+            navigate(ROUTES.HOME);
+          }
+        } catch (error: any) {
+          toast.error(error?.message || "Registration failed. Please try again.");
+        }
       }
-    } catch (error: any) {
-      toast.error(error?.message || "Authentication failed. Please try again.");
     }
   };
 
   const handleGoogleAuth = () => {
-    // Derive the backend origin from VITE_API_BASE_URL (e.g. http://localhost:8080/api/v1 → http://localhost:8080)
-    // This ensures Google OAuth works correctly in both local dev and production without any hardcoded URLs.
     const backendOrigin = env.apiBaseUrl.replace(/\/api\/v1\/?$/, '');
     window.location.href = `${backendOrigin}/oauth2/authorization/google`;
   };
+  
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setRegistrationStep(1);
+    setOtp('');
+    setPassword('');
+    setName('');
+  };
+
+  const isFormLoading = loading || localLoading;
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 bg-black overflow-hidden" style={{ height: '100vh' }}>
+    <div className="h-screen w-full relative flex items-center justify-center p-4 bg-black overflow-hidden">
       {/* Background Image */}
       <div
         className="absolute inset-0 z-0 bg-cover bg-center transition-transform duration-1000 scale-105"
@@ -104,8 +149,48 @@ export default function LoginPage() {
         >
           <form onSubmit={handleSubmit} className="flex flex-col" style={{ gap: '16px' }}>
 
-            {/* Name Input (Register Only) */}
-            {!isLogin && (
+            <div className="flex flex-col" style={{ gap: '8px' }}>
+              <label className="text-[14px] font-semibold text-gray-200 ml-1">Email Address</label>
+              <div className="relative">
+                <Mail
+                  className="absolute text-gray-400"
+                  style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
+                />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  disabled={(!isLogin && registrationStep > 1) || isFormLoading}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent focus:bg-white/10 transition-all disabled:opacity-50"
+                  style={{ padding: '12px 14px 12px 42px', fontSize: '14px' }}
+                />
+              </div>
+            </div>
+
+            {!isLogin && registrationStep === 2 && (
+              <div className="flex flex-col animate-in fade-in slide-in-from-top-2 duration-300" style={{ gap: '8px' }}>
+                <label className="text-[14px] font-semibold text-gray-200 ml-1">OTP Code</label>
+                <div className="relative">
+                  <Hash
+                    className="absolute text-gray-400"
+                    style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
+                  />
+                  <input
+                    type="text"
+                    required
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="123456"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent focus:bg-white/10 transition-all"
+                    style={{ padding: '12px 14px 12px 42px', fontSize: '14px', letterSpacing: '2px' }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {!isLogin && registrationStep === 3 && (
               <div className="flex flex-col animate-in fade-in slide-in-from-top-2 duration-300" style={{ gap: '8px' }}>
                 <label className="text-[14px] font-semibold text-gray-200 ml-1">Full Name</label>
                 <div className="relative">
@@ -126,68 +211,54 @@ export default function LoginPage() {
               </div>
             )}
 
-            <div className="flex flex-col" style={{ gap: '8px' }}>
-              <label className="text-[14px] font-semibold text-gray-200 ml-1">Email Address</label>
-              <div className="relative">
-                <Mail
-                  className="absolute text-gray-400"
-                  style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
-                />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent focus:bg-white/10 transition-all"
-                  style={{ padding: '12px 14px 12px 42px', fontSize: '14px' }}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col" style={{ gap: '8px' }}>
-              <div className="flex items-center justify-between ml-1">
-                <label className="text-[14px] font-semibold text-gray-200">Password</label>
-              </div>
-              <div className="relative">
-                <Lock
-                  className="absolute text-gray-400"
-                  style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
-                />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent focus:bg-white/10 transition-all"
-                  style={{ padding: '12px 42px', fontSize: '14px', letterSpacing: (password && !showPassword) ? '2px' : 'normal' }}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-              {isLogin && (
-                <div className="flex justify-end mt-2">
-                  <button type="button" onClick={() => navigate('/forgot-password')} className="text-xs font-medium text-[#F59E0B] hover:text-[#FCD34D] transition-colors">
-                    Forgot password?
+            {(isLogin || (!isLogin && registrationStep === 3)) && (
+              <div className="flex flex-col animate-in fade-in slide-in-from-top-2 duration-300" style={{ gap: '8px' }}>
+                <div className="flex items-center justify-between ml-1">
+                  <label className="text-[14px] font-semibold text-gray-200">Password</label>
+                </div>
+                <div className="relative">
+                  <Lock
+                    className="absolute text-gray-400"
+                    style={{ left: '14px', top: '50%', transform: 'translateY(-50%)', width: '18px', height: '18px' }}
+                  />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent focus:bg-white/10 transition-all"
+                    style={{ padding: '12px 42px', fontSize: '14px', letterSpacing: (password && !showPassword) ? '2px' : 'normal' }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
-              )}
-            </div>
+                {isLogin && (
+                  <div className="flex justify-end mt-2">
+                    <button type="button" onClick={() => navigate('/forgot-password')} className="text-xs font-medium text-[#F59E0B] hover:text-[#FCD34D] transition-colors">
+                      Forgot password?
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
 
             <Button
               type="submit"
-              disabled={loading}
+              disabled={isFormLoading}
               className="w-full bg-[#F59E0B] hover:bg-[#D97706] text-[#1C2B3A] font-bold rounded-xl shadow-[0_8px_20px_rgba(245,158,11,0.3)] transition-all hover:-translate-y-0.5 group flex justify-center items-center disabled:opacity-50 disabled:hover:translate-y-0"
               style={{ height: '46px', marginTop: '8px', fontSize: '15px' }}
             >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : isLogin ? 'Sign In' : 'Create Account'}
-              {!loading && <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />}
+              {isFormLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 
+                isLogin ? 'Sign In' : 
+                (registrationStep === 1 ? 'Send OTP' : 
+                 registrationStep === 2 ? 'Verify OTP' : 'Create Account')}
+              {!isFormLoading && <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />}
             </Button>
           </form>
 
@@ -231,7 +302,7 @@ export default function LoginPage() {
           <p className="text-gray-300 font-medium text-[14px]">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{' '}
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={toggleMode}
               className="text-[#F59E0B] font-bold hover:text-[#FCD34D] hover:underline transition-all focus:outline-none"
             >
               {isLogin ? 'Register now' : 'Sign In'}

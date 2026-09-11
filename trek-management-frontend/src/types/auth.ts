@@ -35,6 +35,7 @@ export interface RegisterRequest {
   lastName: string
   email: string
   password: string
+  otp: string
   phone?: string
 }
 
@@ -61,6 +62,15 @@ export interface ResendVerificationRequest {
 
 export interface RefreshRequest {
   refreshToken: string
+}
+
+export interface SendOtpRequest {
+  email: string
+}
+
+export interface VerifyOtpRequest {
+  email: string
+  otp: string
 }
 
 export interface ChangePasswordRequest {

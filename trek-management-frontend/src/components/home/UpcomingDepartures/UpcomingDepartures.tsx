@@ -1,12 +1,23 @@
 import { motion, useReducedMotion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 import { DepartureCard } from './DepartureCard';
-import { UPCOMING_DEPARTURES_SECTION, UPCOMING_DEPARTURES } from '@/constants/home';
+import { UPCOMING_DEPARTURES_SECTION } from '@/constants/home';
 import { getFadeInUp, getStaggerContainer } from '@/constants/motion';
+import homeService from '@/services/homeService';
+import type { UpcomingBatchResponse } from '@/types/api';
 
 export function UpcomingDepartures() {
   const shouldReduceMotion = useReducedMotion();
   const staggerContainer = getStaggerContainer(shouldReduceMotion ?? false);
   const fadeInUp = getFadeInUp(shouldReduceMotion ?? false);
+  
+  const [departures, setDepartures] = useState<UpcomingBatchResponse[]>([]);
+
+  useEffect(() => {
+    homeService.getUpcomingDepartures().then(setDepartures).catch(console.error);
+  }, []);
+
+  if (!departures || departures.length === 0) return null;
 
   return (
     <section
@@ -61,9 +72,9 @@ export function UpcomingDepartures() {
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
         >
-          {UPCOMING_DEPARTURES.map((dep, i) => (
+          {departures.map((dep, i) => (
             <motion.div key={dep.departureId} variants={fadeInUp}>
-              <DepartureCard departure={dep} isLast={i === UPCOMING_DEPARTURES.length - 1} />
+              <DepartureCard departure={dep} isLast={i === departures.length - 1} />
             </motion.div>
           ))}
         </motion.div>

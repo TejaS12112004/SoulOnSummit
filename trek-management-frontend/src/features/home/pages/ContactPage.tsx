@@ -49,7 +49,7 @@ export default function ContactPage() {
 
   const phone = settings?.supportPhone || '+91 90582 90383';
   const email = settings?.supportEmail || 'thesoulonsummit@gmail.com';
-  const address = settings?.businessAddress || 'Uttarakhand, India';
+  const address = settings?.businessAddress || 'Bhopal, India';
   const instagramUrl = settings?.instagramUrl || INSTAGRAM_URL;
   const facebookUrl = settings?.facebookUrl;
   const youtubeUrl = settings?.youtubeUrl;

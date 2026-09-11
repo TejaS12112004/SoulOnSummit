@@ -27,7 +27,7 @@ export const ENDPOINTS = {
 
   HOME: {
     FEATURED_TREKS:       '/treks/featured',
-    UPCOMING_DEPARTURES:  '/home/upcoming-departures',
+    UPCOMING_DEPARTURES:  '/treks/departures/upcoming',
   },
 
   TREKS: {

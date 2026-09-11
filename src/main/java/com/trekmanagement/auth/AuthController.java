@@ -19,8 +19,34 @@ public class AuthController {
     private final AuthService authService;
 
     /**
-     * Flow 1 — POST /api/v1/auth/register
-     * Register a new user account. Sends verification email.
+     * Flow 1a — POST /api/v1/auth/register/send-otp
+     * Send OTP for registration.
+     */
+    @PostMapping("/register/send-otp")
+    @Operation(summary = "Send OTP for registration")
+    public ResponseEntity<ApiResponse<Void>> sendRegistrationOtp(
+            @Valid @RequestBody SendOtpRequest request) {
+
+        authService.sendRegistrationOtp(request);
+        return ResponseEntity.ok(ApiResponse.success("OTP sent successfully."));
+    }
+
+    /**
+     * Flow 1b — POST /api/v1/auth/register/verify-otp
+     * Verify OTP for registration.
+     */
+    @PostMapping("/register/verify-otp")
+    @Operation(summary = "Verify OTP for registration")
+    public ResponseEntity<ApiResponse<Void>> verifyRegistrationOtp(
+            @Valid @RequestBody VerifyOtpRequest request) {
+
+        authService.verifyRegistrationOtp(request);
+        return ResponseEntity.ok(ApiResponse.success("OTP verified successfully."));
+    }
+
+    /**
+     * Flow 1c — POST /api/v1/auth/register
+     * Register a new user account (requires verified OTP).
      * Returns 201 Created.
      */
     @PostMapping("/register")
@@ -31,7 +57,7 @@ public class AuthController {
         authService.register(request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Registration successful. Please verify your email."));
+                .body(ApiResponse.success("Registration successful. You can now log in."));
     }
 
     /**

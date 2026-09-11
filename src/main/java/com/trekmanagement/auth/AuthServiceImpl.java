@@ -45,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepository roleRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final RegistrationOtpRepository registrationOtpRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final OAuth2CodeRepository oAuth2CodeRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -61,9 +62,51 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void register(RegisterRequest request) {
-        if (userRepository.existsByEmail(request.getEmail())) {
+    public void sendRegistrationOtp(SendOtpRequest request) {
+        String email = request.getEmail().toLowerCase().strip();
+        if (userRepository.existsByEmail(email)) {
             throw new ConflictException("An account with this email already exists");
+        }
+        registrationOtpRepository.deleteAllByEmail(email);
+        
+        String otp = String.format("%06d", SECURE_RANDOM.nextInt(1000000));
+        RegistrationOtp registrationOtp = new RegistrationOtp(email, otp, DateTimeUtils.nowPlusHours(1));
+        registrationOtpRepository.save(registrationOtp);
+        
+        sendOtpEmailAsync(email, otp);
+    }
+
+    @Override
+    @Transactional
+    public void verifyRegistrationOtp(VerifyOtpRequest request) {
+        String email = request.getEmail().toLowerCase().strip();
+        RegistrationOtp otpRecord = registrationOtpRepository.findTopByEmailOrderByCreatedAtDesc(email)
+                .orElseThrow(() -> new ValidationException("No OTP requested for this email"));
+        
+        if (DateTimeUtils.isExpired(otpRecord.getExpiresAt())) {
+            throw new ValidationException("OTP has expired");
+        }
+        
+        if (!otpRecord.getOtp().equals(request.getOtp())) {
+            throw new ValidationException("Invalid OTP");
+        }
+        
+        otpRecord.setVerified(true);
+        registrationOtpRepository.save(otpRecord);
+    }
+
+    @Override
+    @Transactional
+    public void register(RegisterRequest request) {
+        String email = request.getEmail().toLowerCase().strip();
+        if (userRepository.existsByEmail(email)) {
+            throw new ConflictException("An account with this email already exists");
+        }
+
+        RegistrationOtp otpRecord = registrationOtpRepository.findTopByEmailOrderByCreatedAtDesc(email)
+                .orElseThrow(() -> new ValidationException("No OTP found for this email. Please request an OTP first."));
+        if (!otpRecord.isVerified() || !otpRecord.getOtp().equals(request.getOtp())) {
+            throw new ValidationException("Invalid or unverified OTP.");
         }
 
         if (request.getPhone() != null && userRepository.existsByPhone(request.getPhone())) {
@@ -77,23 +120,15 @@ public class AuthServiceImpl implements AuthService {
         user.setRole(role);
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
-        user.setEmail(request.getEmail().toLowerCase().strip());
+        user.setEmail(email);
         user.setPhone(request.getPhone());
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setEmailVerified(false);
+        user.setEmailVerified(true);
         user.setActive(true);
 
         User saved = userRepository.save(user);
 
-        String verificationToken = generateSecureToken();
-        EmailVerificationToken evToken = new EmailVerificationToken(
-                saved,
-                verificationToken,
-                DateTimeUtils.nowPlusHours(24)
-        );
-        emailVerificationTokenRepository.save(evToken);
-
-        sendVerificationEmailAsync(saved.getEmail(), saved.getFirstName(), verificationToken);
+        registrationOtpRepository.delete(otpRecord);
 
         log.info("User registered: {}", saved.getEmail());
     }
@@ -398,6 +433,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // ── Async email senders ───────────────────────────────────────────────────
+
+    @Async("notificationExecutor")
+    public void sendOtpEmailAsync(String to, String otp) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(mailConfig.getFromAddress());
+            message.setTo(to);
+            message.setSubject("Your Registration OTP — " + mailConfig.getFromName());
+            message.setText("Hi,\n\nYour registration OTP is: " + otp + "\n\nThis OTP is valid for 1 hour.\n\n— " + mailConfig.getFromName());
+            mailSender.send(message);
+        } catch (Exception ex) {
+            log.error("Failed to send OTP email to {}: {}", to, ex.getMessage());
+        }
+    }
 
     @Async("notificationExecutor")
     public void sendVerificationEmailAsync(String to, String firstName, String token) {
